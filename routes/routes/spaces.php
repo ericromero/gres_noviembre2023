@@ -5,23 +5,40 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\SpaceController;
 
-// Ruta para mostrar la lista de espacios
-Route::get('/spaces', [SpaceController::class, 'index'])->name('spaces.index');
+Route::middleware(['role:Administrador|Coordinador|Gestor de eventos'])->group(function () {
+        // Buscador de espacios disponibles
+        Route::get('/buscador_de_espacios', [SpaceController::class,'search'])->name('spaces.search');
 
-// Ruta para mostrar el formulario de creación de espacio
-Route::get('/spaces/create', [SpaceController::class, 'create'])->name('spaces.create');
+        // Buscador de espacios disponibles
+        Route::post('/buscador_de_espacios', [SpaceController::class,'search'])->name('spaces.search');
+});
 
-// Ruta para guardar el nuevo espacio en la base de datos
-Route::post('/spaces', [SpaceController::class, 'store'])->name('spaces.store');
+Route::middleware(['role:Coordinador'])->group(function () {
+    // Ruta para mostrar la lista de espacios
+    Route::get('/mis_espacios', [SpaceController::class, 'my_spaces'])->name('spaces.my-spaces');
+});
 
-// Ruta para mostrar los detalles de un espacio específico
-Route::get('/spaces/{id}', [SpaceController::class, 'show'])->name('spaces.show');
+Route::middleware(['role:Administrador'])->group(function () {
+    // Ruta para mostrar la lista de espacios
+    Route::get('/espacio', [SpaceController::class, 'index'])->name('spaces.index');
 
-// Ruta para mostrar el formulario de edición de un espacio
-Route::get('/spaces/{id}/edit', [SpaceController::class, 'edit'])->name('spaces.edit');
+    // Ruta para mostrar el formulario de creación de espacio
+    Route::get('/espacio/nuevo', [SpaceController::class, 'create'])->name('spaces.create');
 
-// Ruta para actualizar los datos de un espacio en la base de datos
-Route::put('/spaces/{id}', [SpaceController::class, 'update'])->name('spaces.update');
+    // Ruta para guardar el nuevo espacio en la base de datos
+    Route::post('/espacio', [SpaceController::class, 'store'])->name('spaces.store');
 
-// Ruta para eliminar un espacio
-Route::delete('/spaces/{id}', [SpaceController::class, 'destroy'])->name('spaces.destroy');
+    // Ruta para mostrar los detalles de un espacio específico
+    Route::get('/espacio/{id}', [SpaceController::class, 'show'])->name('spaces.show');
+
+    // Ruta para mostrar el formulario de edición de un espacio
+    Route::get('/espacio/{space}/edit', [SpaceController::class, 'edit'])->name('spaces.edit');
+
+    // Ruta para actualizar los datos de un espacio en la base de datos
+    Route::put('/espacio/{space}', [SpaceController::class, 'update'])->name('spaces.update');
+
+    // Ruta para eliminar un espacio
+    Route::delete('/espacio/{space}', [SpaceController::class, 'destroy'])->name('spaces.destroy');
+
+
+});

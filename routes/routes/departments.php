@@ -4,23 +4,25 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\DepartmentController;
 
-// Ruta para mostrar la lista de departamentos
-Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
+Route::middleware(['role:Administrador'])->group(function () {
+    // Ruta para mostrar la lista de departamentos
+    Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
 
-// Ruta para mostrar el formulario de creación de departamento
-Route::get('/departments/create', [DepartmentController::class, 'create'])->name('departments.create');
+    // Ruta para mostrar el formulario de creación de departamento
+    Route::get('/departments/create', [DepartmentController::class, 'create'])->name('departments.create');
 
-// Ruta para guardar el nuevo departamento en la base de datos
-Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
+    // Ruta para guardar el nuevo departamento en la base de datos
+    Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
 
-// Ruta para mostrar los detalles de un departamento específico
-Route::get('/departments/{id}', [DepartmentController::class, 'show'])->name('departments.show');
+    // Ruta para mostrar los detalles de un departamento específico
+    Route::get('/departments/{id}', [DepartmentController::class, 'show'])->name('departments.show');
 
-// Ruta para mostrar el formulario de edición de un departamento
-Route::get('/departments/{id}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
+    // Ruta para mostrar el formulario de edición de un departamento
+    Route::get('/departments/{id}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
 
-// Ruta para actualizar los datos de un departamento en la base de datos
-Route::put('/departments/{id}', [DepartmentController::class, 'update'])->name('departments.update');
+    // Ruta para actualizar los datos de un departamento en la base de datos
+    Route::put('/departments/{id}', [DepartmentController::class, 'update'])->name('departments.update');
 
-// Ruta para eliminar un departamento
-Route::delete('/departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+    // Ruta para eliminar un departamento
+    Route::delete('/departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+});

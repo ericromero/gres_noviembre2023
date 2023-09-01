@@ -16,6 +16,7 @@ class Space extends Model
         'location',
         'capacity',
         'availability',
+        'photography',
         'department_id',
     ];
 
@@ -30,4 +31,10 @@ class Space extends Model
     {
         return $this->hasMany(SpaceAvailability::class);
     }
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event_spaces', 'space_id', 'event_id');
+    }
+
 }

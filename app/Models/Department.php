@@ -18,4 +18,24 @@ class Department extends Model
     {
         return $this->hasOne(User::class, 'responsible_id');
     }
+
+    public function adscriptions()
+    {
+        return $this->hasMany(Adscription::class);
+    }
+
+    public function spaces()
+    {
+        return $this->hasMany(Space::class, 'department_id');
+    }
+
+    public function coordinator()
+    {
+        return $this->belongsTo(User::class, 'responsible_id');
+    }
+
+    public function team()
+    {
+        return $this->hasOne(Team::class);
+    }
 }

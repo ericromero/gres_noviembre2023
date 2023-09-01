@@ -12,48 +12,49 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         // Crea el usuario "Eric Romero Martínez" si no existe
-        $user = User::firstOrCreate([
+        User::firstOrCreate([
             'name' => 'Eric Romero Martínez',
             'email' => 'ericrm@unam.mx',
-            'doi'=>'843913'
-        ], [
+            'doi'=>'843913',
+            'degree'=>'Mtro.',
+            ], [
             'password' => Hash::make('SuperAdmin123###'),
-        ]);
+            ])->assignRole('Administrador');
 
         // Asigna el rol "Administrador" al usuario utilizando Spatie Permission
-        $adminRole = Role::firstOrCreate(['name' => 'Administrador']);
-        $user->assignRole($adminRole);
+        // $adminRole = Role::firstOrCreate(['name' => 'Administrador']);
+        // $user->assignRole($adminRole);
 
-        // Crea usuarios responsables del los departamentos
-        $user = User::firstOrCreate([
-            'name' => 'Karina',
-            'email' => 'karina@unam.mx',
-            'doi'=>'1001'
-        ], [
-            'password' => Hash::make('123456'),
-        ]);
+        //Crea usuarios responsables del los departamentos
+        // $user = User::firstOrCreate([
+        //     'name' => 'Karina',
+        //     'email' => 'karina@unam.mx',
+        //     'doi'=>'1001'
+        // ], [
+        //     'password' => Hash::make('123456'),
+        // ]);
 
-        $user = User::firstOrCreate([
-            'name' => 'Carlos',
-            'email' => 'carlos@unam.mx',
-            'doi'=>'1002'
-        ], [
-            'password' => Hash::make('123456'),
-        ]);
-        $user = User::firstOrCreate([
-            'name' => 'Ricardo',
-            'email' => 'ricardo@unam.mx',
-            'doi'=>'1003'
-        ], [
-            'password' => Hash::make('123456'),
-        ]);
-        $user = User::firstOrCreate([
-            'name' => 'Magda',
-            'email' => 'magda@unam.mx',
-            'doi'=>'1004'
-        ], [
-            'password' => Hash::make('123456'),
-        ]);
+        // $user = User::firstOrCreate([
+        //     'name' => 'Carlos',
+        //     'email' => 'carlos@unam.mx',
+        //     'doi'=>'1002'
+        // ], [
+        //     'password' => Hash::make('123456'),
+        // ]);
+        // $user = User::firstOrCreate([
+        //     'name' => 'Ricardo',
+        //     'email' => 'ricardo@unam.mx',
+        //     'doi'=>'1003'
+        // ], [
+        //     'password' => Hash::make('123456'),
+        // ]);
+        // $user = User::firstOrCreate([
+        //     'name' => 'Magda',
+        //     'email' => 'magda@unam.mx',
+        //     'doi'=>'1004'
+        // ], [
+        //     'password' => Hash::make('123456'),
+        // ]);
         
         
     }

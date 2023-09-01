@@ -3,17 +3,75 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Crear Evento') }}
         </h2>
+
+        {{-- Código para el manejo de notificaciones --}}
+        @if(session('success'))
+            <div class="bg-green-200 text-green-800 p-4 mb-4 rounded-md">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <div class="text-gray-600 mb-2">
-            <p>Ingresa toda la informacíón de tu evento, en caso de que se requiera realizar el registro, escribe la URL del herraemienta de registro.</p>
+            <p>Ingresa toda la información de tu evento, en caso de que se requiera realizar el registro, escribe la URL del herramienta de registro.</p>
+            
+                <form action="{{ route('users.altaAcademicoPre') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="space" value="{{$space->id}}">
+                    <input type="hidden" name="start_date" value="{{$start_date}}">
+                    <input type="hidden" name="end_date" value="{{$end_date}}">
+                    <input type="hidden" name="start_time" value="{{$start_time}}">
+                    <input type="hidden" name="end_time" value="{{$end_time}}">
+                    En caso de que el o la académica no esté en lista, puedes agregarle dando clic aquí <button type="submit" class="text-orange-500 hover:underline">Dar de alta a un académico(a).
+                </form>
+            
         </div>
     </x-slot>
 
     <div class="py-2">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">                
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+
+                        <div class="mb-2">
+                            @if (isset($space)&&$space->name!=null)
+                                <h2 class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Espacio solicitado: {{$space->name}}</h2>
+                                <input name="space" type="hidden" value="{{$space->id}}">
+                            @else
+                                <h2 class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Espacio solicitado: Evento virtual.</h2>
+                            @endif                            
+                        </div>
+
+                        <div class="mb-4 block text-gray-700 dark:text-gray-300 font-bold mb-2"">
+                            Fecha o periodo: del {{$start_date}} al {{$end_date}}, de {{$start_time}} a {{$end_time}} horas.
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="department" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Departamento solicitante:</label>
+                            <select name="department" id="department" class="form-select @error('department') border-red-500 @enderror" required>
+                                <option value="">Seleccionar tipo de evento</option>
+                                @foreach($departments as $department)
+                                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('event_type_id')
+                            <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="event_type_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Tipo de Evento:</label>
+                            <select name="event_type_id" id="event_type_id" class="form-select @error('event_type_id') border-red-500 @enderror" required>
+                                <option value="">Seleccionar tipo de evento</option>
+                                @foreach($eventTypes as $eventType)
+                                    <option value="{{ $eventType->id }}">{{ $eventType->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('event_type_id')
+                            <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         <div class="mb-4">
                             <label for="title" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Título:</label>
@@ -24,6 +82,26 @@
                         </div>
 
                         <div class="mb-4">
+                            <label for="responsable" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Responsable:</label>
+                            <select name="responsable" id="responsable" class="form-select" required>
+                                <option value="">Seleccionar responsable</option>
+                                @foreach($academicos as $academico)
+                                    <option value="{{ $academico->id }}">{{ $academico->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="corresponsable" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Corresponsable:</label>
+                            <select name="corresponsable" id="corresponsable" class="form-select" required>
+                                <option value="">Seleccionar corresponsable</option>
+                                @foreach($academicos as $academico)
+                                    <option value="{{ $academico->id }}">{{ $academico->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
                             <label for="summary" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Resumen:</label>
                             <textarea name="summary" id="summary" class="form-textarea @error('summary') border-red-500 @enderror" required>{{ old('summary') }}</textarea>
                             @error('summary')
@@ -31,36 +109,40 @@
                             @enderror
                         </div>
 
-                        <div class="mb-4">
-                            <label for="start_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Fecha de inicio:</label>
-                            <input type="date" name="start_date" id="start_date" class="form-input @error('start_date') border-red-500 @enderror" value="{{ old('start_date') }}" min="{{ now()->addDays(4)->format('Y-m-d') }}" required>
-                            @error('start_date')
-                            <p class="text-red-500 text-sm">{{ $message }}</p>
-                            @enderror
+                        <div class="flex">
+                            <div>
+                                {{-- <label for="start_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Fecha de inicio:</label> --}}
+                                <input type="hidden" name="start_date" id="start_date" class="form-input @error('start_date') border-red-500 @enderror" value="{{ $start_date}}" min="{{ now()->addDays(4)->format('Y-m-d') }}" max="{{ now()->addMonths(6)->format('Y-m-d') }}" required>
+                                @error('start_date')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="ml-4">
+                                {{-- <label for="end_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Fecha de fin:</label> --}}
+                                <input type="hidden" name="end_date" id="end_date" class="form-input @error('end_date') border-red-500 @enderror" value="{{$end_date}}" min="{{ now()->addDays(4)->format('Y-m-d') }}" max="{{ now()->addMonths(6)->format('Y-m-d') }}" required>
+                                @error('end_date')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="end_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Fecha de fin:</label>
-                            <input type="date" name="end_date" id="end_date" class="form-input @error('end_date') border-red-500 @enderror" value="{{ old('end_date') }}" min="{{ now()->addDays(4)->format('Y-m-d') }}" required>
-                            @error('end_date')
-                            <p class="text-red-500 text-sm">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <div class="flex">
+                            <div>
+                                {{-- <label for="start_time" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Inicio:</label> --}}
+                                <input type="hidden" name="start_time" id="start_time" class="form-input @error('start_time') border-red-500 @enderror" value="{{$start_time}}" required readonly>
+                                @error('start_time')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                        <div class="mb-4">
-                            <label for="start_time" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Hora de inicio: <span class="text-sm">(en formato de 24 horas y a partir de las 7:00 horas)</span></label>
-                            <input type="time" name="start_time" id="start_time" class="form-input @error('start_time') border-red-500 @enderror" value="{{ old('start_time') }}" min="07:00" max="21:00" step="1800" required>
-                            @error('start_time')
-                            <p class="text-red-500 text-sm">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="end_time" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Hora de fin:<span class="text-sm">(en formato de 24 horas y hasta las 21:00)</span></label>
-                            <input type="time" name="end_time" id="end_time" class="form-input @error('end_time') border-red-500 @enderror" value="{{ old('end_time') }}" min="07:00" max="21:00" step="1800" required>
-                            @error('end_time')
-                            <p class="text-red-500 text-sm">{{ $message }}</p>
-                            @enderror
+                            <div class="ml-4">
+                                {{-- <label for="end_time" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Término:</label> --}}
+                                <input type="hidden" name="end_time" id="end_time" class="form-input @error('end_time') border-red-500 @enderror" value="{{$end_time}}" required readonly>
+                                @error('end_time')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="mb-4">
@@ -72,6 +154,14 @@
                         </div>
 
                         <div class="mb-4">
+                            <label for="program" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Programa (PDF):</label>
+                            <input type="file" name="program" id="program" class="form-input @error('program') border-red-500 @enderror">
+                            @error('program')
+                            <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- <div class="mb-4">
                             <label for="space_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Espacio:</label>
                             <select name="space_id" id="space_id" class="form-select @error('space_id') border-red-500 @enderror" required>
                                 <option value="">Seleccionar espacio</option>
@@ -82,7 +172,7 @@
                             @error('space_id')
                             <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div class="mb-4">
                             <label for="requires_registration" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Requiere Registro:</label>
@@ -95,6 +185,16 @@
                             @error('registration_url')
                             <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="transmission_required" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Requiere transmisión:</label>
+                            <input type="checkbox" name="transmission_required" class="form-checkbox">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="recording_required" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Requiere grabación:</label>
+                            <input type="checkbox" name="recording_required" class="form-checkbox">
                         </div>
                         
                         <script>
@@ -120,7 +220,7 @@
                             </div>
 
                             <div class="flex items-center justify-end mt-4 ml-4">
-                                <a href="{{ route('events.my-events') }}" class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md">Cancelar registro</a>
+                                <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md">Cancelar registro</a>
                             </div>
                         </div>
                     </form>

@@ -15,6 +15,7 @@ class CreateSpacesTable extends Migration
             $table->string('location')->nullable();
             $table->integer('capacity')->nullable();
             $table->boolean('availability')->default(true);
+            $table->string('photography')->nullable();
 
             // Restricciones de llaves foráneas
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');

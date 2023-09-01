@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Cartelera - Facultad de Psicología') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -21,7 +21,7 @@
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
                 </a> --}}
                 <a href="{{ route('dashboard') }}">
-                    <img src="{{ asset('logo.png') }}" alt="G-RES" class="block h-10 w-auto" />
+                    <img src="{{ asset('images/50anios.png') }}" alt="G-RES" class="w-full sm:max-w-md  bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg" />
                 </a>
                 
             </div>

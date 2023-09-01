@@ -7,63 +7,117 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            {{-- Código para el manejo de notificaciones --}}
+            @if(session('success'))
+                <div class="bg-green-200 text-green-800 p-4 mb-4 rounded-md">
+                    {{ session('success') }}
+                </div>
+            @endif
+            
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 
+                <!-- Imagen y enlace para gestionar roles -->
+                {{-- @hasrole('Administrador')
+                    <a href="{{ route('roles.index') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/permisos.png') }}" alt="Permisos" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Roles</p>
+                        </div>
+                    </a>
+                @endhasrole --}}
+                
+
                 <!-- Imagen y enlace para gestionar permisos -->
-                {{-- <a href="{{ route('permissions.index') }}"> --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
-                        <img src="{{ asset('images/permisos.png') }}" alt="Permisos" class="mx-auto h-20">
-                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Permisos</p>
-                    </div>
-                {{-- </a> --}}
+                {{-- @hasrole('Administrador')
+                    <a href="{{ route('permissions.index') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/permisos.png') }}" alt="Permisos" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Permisos</p>
+                        </div>
+                    </a>
+                @endhasrole --}}
 
                 <!-- Imagen y enlace para gestionar usuarios -->
-                {{-- <a href="{{ route('users.index') }}"> --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
-                        <img src="{{ asset('images/usuarios.png') }}" alt="Usuarios" class="mx-auto h-20">
-                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Usuarios</p>
-                    </div>
-                {{-- </a> --}}
+                @hasrole('Administrador')
+                    <a href="{{ route('users.index') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/usuarios.png') }}" alt="Usuarios" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Usuarios</p>
+                        </div>
+                    </a>
+                @endhasrole
 
                 <!-- Imagen y enlace para gestionar departamentos -->
-                {{-- <a href="{{ route('departments.index') }}"> --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
-                        <img src="{{ asset('images/departamento.png') }}" alt="Departamentos" class="mx-auto h-20">
-                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Departamentos</p>
-                    </div>
-                {{-- </a> --}}
+                {{-- @hasrole('Administrador')
+                    <a href="{{ route('departments.index') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/departamento.png') }}" alt="Departamentos" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Departamentos</p>
+                        </div>
+                    </a>
+                @endhasrole --}}
 
                 <!-- Imagen y enlace para gestionar espacios -->
-                {{-- <a href="{{ route('spaces.index') }}"> --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
-                        <img src="{{ asset('images/espacios.png') }}" alt="Espacios" class="mx-auto h-20">
-                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Espacios</p>
-                    </div>
-                {{-- </a> --}}
+                @hasrole('Administrador')
+                    <a href="{{ route('spaces.index') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/espacios.png') }}" alt="Espacios" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Espacios</p>
+                        </div>
+                    </a>
+                @endhasrole
 
-                <!-- Imagen y enlace para crear evento -->
-                <a href="{{ route('events.my-events') }}">
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
-                        <img src="{{ asset('images/evento.png') }}" alt="Mis eventos" class="mx-auto h-20">
-                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Mis eventos</p>
-                    </div>
-                </a>
+                <!-- Imagen y enlace para consultar espacios -->
+                @hasanyrole('Coordinador')
+                    <a href="{{ route('spaces.my-spaces') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/espacios.png') }}" alt="Mis espacios" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Mis espacios</p>
+                        </div>
+                    </a>
+                @endhasrole
 
-                <!-- Imagen y enlace para solicitar espacio -->
-                {{-- <a href="{{ route('event-schedule.create') }}"> --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
-                        <img src="{{ asset('images/calendario.png') }}" alt="Solicitar espacio" class="mx-auto h-20">
-                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Solicitar espacio</p>
-                    </div>
-                {{-- </a> --}}
+                <!-- Imagen y enlace para contruir el equipo de trabajo -->
+                @hasanyrole('Coordinador')
+                    <a href="{{ route('users.team') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/equipo.png') }}" alt="Equipo de trabajo" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Equipo de trabajo</p>
+                        </div>
+                    </a>
+                @endhasrole
+
+                <!-- Imagen y enlace para crear un nuevo evento -->
+                @hasanyrole('Coordinador|Gestor de eventos')
+                    <a href="{{ route('spaces.search') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/calendario.png') }}" alt="Solicitar espacio" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Registrar evento</p>
+                        </div>
+                    </a>
+                @endhasrole
 
                 <!-- Imagen y enlace para revisar los eventos solicitados -->
-                <a href="{{ route('events.review-events') }}">
+                @hasanyrole('Coordinador|Gestor de eventos')
+                    <a href="{{ route('events.byArea') }}">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                            <img src="{{ asset('images/autorizacioneventos.png') }}" alt="Autorización de eventos" class="mx-auto h-20">
+                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Eventos de la coordinación</p>
+                        </div>
+                    </a>
+                @endhasrole
+                
+                <!-- Imagen y enlace Mis eventos -->
+                @hasrole('Gestor de espacios')
+                <a href="{{ route('event_spaces.review') }}">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
-                        <img src="{{ asset('images/autorizacioneventos.png') }}" alt="Autorización de eventos" class="mx-auto h-20">
-                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Autorización de eventos</p>
+                        <img src="{{ asset('images/evento.png') }}" alt="Mis eventos" class="mx-auto h-20">
+                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Espacios solicitados</p>
                     </div>
                 </a>
+                @endhasrole
+
             </div>
         </div>
     </div>

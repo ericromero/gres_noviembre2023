@@ -11,7 +11,9 @@
     </x-slot>
 
     <div class="py-2">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">  
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            
             {{-- Código para el manejo de notificaciones --}}
             @if(session('success'))
                 <div class="bg-green-200 text-green-800 p-4 mb-4 rounded-md">
@@ -20,7 +22,7 @@
             @endif
 
             <!-- Botón para crear evento -->
-            <a href="{{ route('events.create') }}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">
+            <a href="{{ route('spaces.search') }}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">
                 <i class="fas fa-plus mr-2"></i>Crear evento
             </a>
 
@@ -35,7 +37,11 @@
                                 <p class="text-gray-500 mb-2">{{ $event->summary }}</p>
                                 <p><strong>Fecha:</strong> {{ $event->start_date }} - {{ $event->end_date }}</p>
                                 <p><strong>Horario:</strong> {{ $event->start_time }} - {{ $event->end_time }}</p>
-                                <p><strong>Espacio:</strong> {{ $event->space->name }}</p>
+                                @if ($event->space!=null)
+                                    <p><strong>Espacio:</strong> {{ $event->space->name }}</p>
+                                @endif
+                                
+                                
                                 @if ($event->registration_url!=null)
                                     <p><strong>Registro:</strong> {{ $event->registration_url }}</p>
                                 @else
@@ -66,6 +72,17 @@
                                 @endif
                                 @if($event->published==1)
                                     <p class="text-center text-green-600"><strong>¡EVENTO PUBLICADO!</strong>
+                                @endif
+                            </div>
+                            <div class="p-4 flex justify-end items-center space-x-2">
+                                @if($event->published==0)
+                                    <a href="{{ route('events.menuEdit', $event) }}" class="text-blue-500 hover:underline">Actualizar información</a>
+                                
+                                    <form action="{{ route('events.destroy', $event) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar el registro?'.$event->name)">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-500 hover:underline">Borrar registro</button>
+                                    </form>
                                 @endif
                             </div>
                         </div>

@@ -35,6 +35,15 @@
             <main>
                 {{ $slot }}
             </main>
+
+            <!-- Footer -->
+            <footer class="bg-gray-200 dark:bg-gray-700 py-4 text-center">
+                <div class="max-w-7xl mx-auto">
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">
+                        Este sistema es desarrollado y actualizado en la División del Sistema Universidad Abierta de la Facultad de Psicología de la Universidad Nacional Autónoma de México. Todos los derechos reservados 2023.
+                    </p>
+                </div>
+            </footer>
         </div>
     </body>
 </html>

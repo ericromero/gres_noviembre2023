@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+
 
 use Spatie\Permission\Traits\HasRoles;
 
@@ -20,11 +20,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'degree',
         'name',
         'email',
         'password',
         'doi',
-        'department_id',
     ];
 
     /**
@@ -47,13 +47,28 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function department()
+    public function adscriptions()
     {
-        return $this->belongsTo(Department::class, 'department_id');
+        return $this->hasMany(Adscription::class);
     }
 
     public function events()
     {
         return $this->hasMany(Event::class, 'user_id');
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'adscriptions');
+    }
+
+    public function coordinatedDepartment()
+    {
+        return $this->hasOne(Department::class, 'responsible_id');
+    }
+
+    public function team()
+    {
+        return $this->hasOne(Team::class);
     }
 }

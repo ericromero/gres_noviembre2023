@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +26,6 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -40,4 +40,8 @@ require __DIR__.'/routes/departments.php';
 require __DIR__.'/routes/spaces.php';
 require __DIR__.'/routes/events.php';
 require __DIR__.'/routes/event-schedule.php';
+require __DIR__.'/routes/roles.php';
 require __DIR__.'/routes/permissions.php';
+require __DIR__.'/routes/event-type.php';
+require __DIR__.'/routes/event-participant.php';
+require __DIR__.'/routes/event-spaces.php';
