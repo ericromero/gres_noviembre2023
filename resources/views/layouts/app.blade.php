@@ -14,12 +14,17 @@
         <!-- Enlace al CDN de Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-lKLTSUjkpW1oxO6b0ch4+ZkQUh4Kp4PA9c6R9W6Fq1S9C2jcUj/LXMp0n+yWJpT1Itjx/yHTy8dprchvy0wGA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+        <!-- Estilos personalizados -->
+        <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    {{-- <body class="font-sans antialiased"> --}}
+    <body class="font-sans antialiased flex flex-col min-h-screen">
+        {{-- <div class="min-h-screen bg-gray-100 dark:bg-gray-900"> --}}
+        <div class="flex-grow">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -32,7 +37,8 @@
             @endif
 
             <!-- Page Content -->
-            <main>
+            {{-- <main> --}}
+            <main class="flex-grow">
                 {{ $slot }}
             </main>
 

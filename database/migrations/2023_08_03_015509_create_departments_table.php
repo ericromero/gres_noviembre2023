@@ -11,8 +11,8 @@ class CreateDepartmentsTable extends Migration
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->unsignedBigInteger('responsible_id')->unique()->nullable();
+            $table->text('description');
+            $table->unsignedBigInteger('responsible_id')->unique();
             $table->unsignedBigInteger('institution_id');
 
             // Restricciones de llaves foráneas

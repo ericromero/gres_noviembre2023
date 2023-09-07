@@ -49,14 +49,14 @@
                 @endhasrole
 
                 <!-- Imagen y enlace para gestionar departamentos -->
-                {{-- @hasrole('Administrador')
+                @hasrole('Administrador')
                     <a href="{{ route('departments.index') }}">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
                             <img src="{{ asset('images/departamento.png') }}" alt="Departamentos" class="mx-auto h-20">
                             <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Departamentos</p>
                         </div>
                     </a>
-                @endhasrole --}}
+                @endhasrole
 
                 <!-- Imagen y enlace para gestionar espacios -->
                 @hasrole('Administrador')

@@ -298,12 +298,12 @@ class EventController extends Controller
 
         // Notificación al gestor de grabación
         if($event->recording_required) {
-            Mail::to('eric.romero.mtz@gmail.com')->send(new RequestRecordEmail($event, $space));
+            Mail::to('	udemat.psicologia@unam.mx')->send(new RequestRecordEmail($event, $space));
         }
 
         // Notificación al gestor de transmisión 
         if($event->transmission_required) {
-            Mail::to('eric.romero.mtz@gmail.com')->send(new RequestStreamingEmail($event, $space));
+            Mail::to('	udemat.psicologia@unam.mx')->send(new RequestStreamingEmail($event, $space));
         }
 
         return redirect()->route('dashboard')->with('success', 'Evento registrado correctamente. En el apartado "Eventos de la coordinación" puede publicar el evento.');

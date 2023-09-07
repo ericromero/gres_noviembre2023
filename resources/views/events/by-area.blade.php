@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Mis eventos') }}
+            {{ __('Eventos de la División/Coordinación') }}
         </h2>
         <div class="text-gray-600 mb-2">
             <p>Aquí puedes ver los eventos registrados por el área.</p>
@@ -40,11 +40,27 @@
                                 <p><strong>Solicitud de espacio:</strong> {{ $event->eventspace->status }}</p>
                                 @if($event->eventspace->status=="rechazado")
                                     <p><strong>Motivo de rechazo:</strong> {{ $event->eventspace->observation }}</p>                              
-                                @endif                   
+                                @endif
+                                
+                                <p><strong>Espacio solicitado:</strong>
+                                    @if ($event->space_required)
+                                        @if ($event->eventspace)
+                                            {{ $event->eventspace->space->name }} ({{ $event->eventspace->status }})
+                                        @else
+                                            No se ha registrado un espacio
+                                        @endif
+                                    @else
+                                        No se requiere espacio
+                                    @endif
+                                </p>
+
+                                @if ($event->eventspace && $event->eventspace->status == "rechazado")
+                                    <p><strong>Motivo de rechazo:</strong> {{ $event->eventspace->observation }}</p>
+                                @endif
                                 
                                 @if($event->published==1)
                                     <p class="text-center text-green-600"><strong>¡EVENTO PUBLICADO!</strong>
-                                        <button type="submit" class="text-red-500 hover:underline">Cancelar evento</button>
+                                    {{-- <button type="submit" class="text-red-500 hover:underline">Cancelar evento</button> --}}
                                 @endif
                             </div>
                             

@@ -15,14 +15,14 @@ Route::middleware(['role:Administrador'])->group(function () {
     Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
 
     // Ruta para mostrar los detalles de un departamento específico
-    Route::get('/departments/{id}', [DepartmentController::class, 'show'])->name('departments.show');
+    //Route::get('/departments/{id}', [DepartmentController::class, 'show'])->name('departments.show');
 
     // Ruta para mostrar el formulario de edición de un departamento
-    Route::get('/departments/{id}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
+    Route::get('/departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
 
     // Ruta para actualizar los datos de un departamento en la base de datos
-    Route::put('/departments/{id}', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::put('/departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
 
     // Ruta para eliminar un departamento
-    Route::delete('/departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+    Route::delete('/departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 });

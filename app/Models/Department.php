@@ -16,8 +16,9 @@ class Department extends Model
 
     public function responsible()
     {
-        return $this->hasOne(User::class, 'responsible_id');
+        return $this->belongsTo(User::class, 'responsible_id');
     }
+
 
     public function adscriptions()
     {
