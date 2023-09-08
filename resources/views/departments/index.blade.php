@@ -26,9 +26,11 @@
                             <h3 class="text-lg font-semibold">{{ $department->name }}</h3>
                             <p class="text-gray-600">{{ $department->description }}</p>
                         </div>
+                        @if($department->responsible!=null)
                         <div class="p-4 border-t dark:border-gray-700">
                             <p class="text-gray-600">Responsable: {{ $department->responsible->name }}</p>
                         </div>
+                        @endif
                         <div class="p-4 flex justify-end items-center space-x-2">
                             <a href="{{ route('departments.edit', $department) }}" class="text-blue-500 hover:underline">Actualizar</a>
                             <form action="{{ route('departments.destroy', $department) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este departamento?')">

@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(UsersTableSeeder::class);      
         $this->call(InstitutionsSeeder::class);
-        //$this->call(DepartmentsSeeder::class);
-        $this->call(ChannelsSeeder::class);
+        $this->call(DepartmentsSeeder::class);
+        //$this->call(ChannelsSeeder::class);
         $this->call(EventTypesSeeder::class);
         $this->call(ParticipationTypesSeeder::class);
         //$this->call(FakeUsersSeeder::class);
