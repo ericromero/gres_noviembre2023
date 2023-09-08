@@ -21,6 +21,7 @@ use App\Mail\RequestSpaceEmail;
 use App\Mail\RequestRecordEmail;
 use App\Mail\RequestStreamingEmail;
 
+
 class EventController extends Controller
 {
     public function cartelera() {
@@ -290,19 +291,18 @@ class EventController extends Controller
         // Notificación al gestor de espacio
         $eventSpace=EventSpace::where('event_id',$event->id)->first();
         $space=Space::find($eventSpace->space_id);
-        // Se verifica si el evento solicito espacio, se registra y notifica al usuario correspondiente
-        if($event->space_required==1) {
+        if($event->space_required==1) { // Se verifica si el evento solicito espacio, se registra y notifica al usuario correspondiente
             $user=User::find($space->department->responsible_id);
             Mail::to($user->email)->send(new RequestSpaceEmail($event, $space));
         }
 
         // Notificación al gestor de grabación
-        if($event->recording_required) {
+        if($event->recording_required!=null&&$event->recording_required==1) {
             Mail::to('udemat.psicologia@unam.mx')->send(new RequestRecordEmail($event, $space));
         }
 
         // Notificación al gestor de transmisión 
-        if($event->transmission_required) {
+        if($event->transmission_required!=null&&$event->transmission_required==1) {
             Mail::to('udemat.psicologia@unam.mx')->send(new RequestStreamingEmail($event, $space));
         }
 

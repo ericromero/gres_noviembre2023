@@ -7,6 +7,8 @@ use App\Models\EventSpace;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\NewEventMail;
+use Illuminate\Support\Facades\Mail;
 
 class EventSpaceController extends Controller
 {
@@ -26,6 +28,14 @@ class EventSpaceController extends Controller
         $event->published=1;
         $event->status='finalizado';
         $event->save();
+
+        // Obtén el usuario autenticado
+        $user = Auth::user();
+
+        // Notificaciones para anunciar que se ha publicado un nuevo evento
+        $emailList = ['augarued@unam.mx', 'alejandramireles@psicologia.unam.mx','publicaciones.psicologia@unam.mx'];
+        $mail = new NewEventMail($event, $emailList);
+        Mail::to($user)->send($mail);
 
         return redirect()->back()->with('success', 'La solicitud ha sido autorizada.');
     }
