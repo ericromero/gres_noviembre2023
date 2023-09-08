@@ -37,14 +37,16 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     // Ruta para acceder a los eventos de un usuario
     Route::get('/mis_eventos', [EventController::class, 'myEvents'])->name('events.my-events');
 
+    // Ruta para mostrar los detalles de un evento específico
+    Route::get('/evento/detalle/{event}', [EventController::class, 'show'])->name('events.show');
+
 // Ruta para mostrar la lista de eventos
 //Route::get('/eventos', [EventController::class, 'index'])->name('events.index');
 
 // // Ruta para acceder a la creación de eventos
 // Route::get('/evento/nuevo', [EventController::class,'create'])->name('events.create');
 
-// // Ruta para mostrar los detalles de un evento específico
-// //Route::get('/eventos/{id}', [EventController::class, 'show'])->name('events.show');
+
 
 // // Ruta para guadar los participantes de un evento
 // Route::get('/evento/{event}/menu_edicion', [EventController::class, 'menuEdit'])->name('events.menuEdit');

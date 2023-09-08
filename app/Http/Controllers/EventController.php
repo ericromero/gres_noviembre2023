@@ -327,4 +327,22 @@ class EventController extends Controller
         return $events;
 
     }
+
+    public function calendario() {
+        $allEvents=Event::where('published','1')->get();
+        $events=[];
+        foreach($allEvents as $event) {
+            $events[] = [
+                'title'=>$event->title,
+                'start' => $event->start_date . ' ' . $event->start_time, // Combina fecha y hora de inicio
+                'end' => $event->end_date . ' ' . $event->end_time,       // Combina fecha y hora de finalización
+                'id'=>$event->id,
+            ];
+        }
+        return view ('calendar',compact('events'));
+    }
+
+    public function show(Event $event) {
+        return view('events.show',compact('event'));
+    }
 }

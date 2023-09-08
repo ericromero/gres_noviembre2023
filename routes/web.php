@@ -22,6 +22,8 @@ use App\Http\Controllers\PermissionController;
 // });
 Route::get('/', [EventController::class, 'cartelera'])->name('eventos.cartelera');
 
+Route::get('/calendario', [EventController::class, 'calendario'])->name('eventos.calendario');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

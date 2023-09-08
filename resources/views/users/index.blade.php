@@ -16,6 +16,10 @@
             @endif
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div>
+                    <a href="{{ route('users.create') }}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Agregar usuario</a>
+                </div>
+                
                 <div class="p-6 bg-white border-b border-gray-200">
                     <h3 class="font-bold text-lg mb-4">Usuarios Registrados</h3>
                     <table class="min-w-full divide-y divide-gray-200">
@@ -71,9 +75,7 @@
                         </tbody>
                     </table>                
                 
-                    <div>
-                        <a href="{{ route('users.create') }}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Agregar usuario</a>
-                    </div>
+                    
 
                 </div>
             </div>

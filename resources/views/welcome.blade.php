@@ -15,6 +15,9 @@
                     <p class="text-xl font-semibold">No hay eventos próximos</p>
                 </div>
             @else
+                <div class="mb-2">
+                    <a href="{{route('eventos.calendario')}}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Ver calendario</a>
+                </div>
                 <div class="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                     @foreach ($events as $event)
                         <div class="bg-white dark:bg-gray-800 overflow-hidden rounded-lg shadow-sm sm:rounded-lg mb-4">
@@ -23,10 +26,14 @@
                                 <h2 class="text-xl font-semibold mb-2">{{ $event->title }}</h2>
                                 <p class="text-gray-500 mb-2">{{ $event->summary }}</p>
                                 <p><strong>Responsable:</strong> {{ $event->responsible->name }}</p>
-                                <p><strong>Fecha:</strong> {{ $event->start_date }} - {{ $event->end_date }}</p>
+                                <p><strong>Fecha:</strong> {{ $event->start_date }}
+                                @if($event->start_date!=$event->end_date)
+                                 - {{ $event->end_date }}
+                                @endif
+                                </p>
                                 <p><strong>Horario:</strong> {{ $event->start_time }} - {{ $event->end_time }}</p>
-                                {{-- <p><strong>Lugar:</strong> {{ $event->space->name }}</p>
-                                <p><strong>Ubicacion:</strong> {{ $event->space->location }}</p> --}}
+                                <p><strong>Lugar:</strong> {{ $event->eventspace->space->name }}</p>
+                                <p><strong>Ubicacion:</strong> {{ $event->eventspace->space->location }}</p>
                                 
                                 @if ($event->registration_url!=null)
                                     <p><strong>Registro:</strong> {{ $event->registration_url }}</p>
