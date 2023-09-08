@@ -52,7 +52,6 @@ class EventSpaceController extends Controller
         $event->status='finalizado';
         $event->save();
 
-
         return redirect()->back()->with('success', 'La solicitud ha sido rechazada.');
     }
 
