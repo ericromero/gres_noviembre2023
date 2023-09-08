@@ -12,7 +12,7 @@ class CreateDepartmentsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->unsignedBigInteger('responsible_id')->unique();
+            $table->unsignedBigInteger('responsible_id')->unique()->nullable();
             $table->unsignedBigInteger('institution_id');
 
             // Restricciones de llaves foráneas
