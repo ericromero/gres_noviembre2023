@@ -346,4 +346,8 @@ class EventController extends Controller
         
         return view('events.show',compact('event'));
     }
+
+    public function creditos() {
+        return view('creditos');
+    }
 }

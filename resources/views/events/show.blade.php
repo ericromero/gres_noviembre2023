@@ -10,10 +10,10 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="flex">
                     <div class="mb-2">
-                        <a href="{{route('eventos.cartelera')}}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Ver cartelera</a>
+                        <a href="{{route('eventos.cartelera')}}" class="text-blue-500 hover:underline">Ver cartelera</a>
                     </div>
                     <div class="mb-2 ml-4">
-                        <a href="{{route('eventos.calendario')}}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Ver calendario</a>
+                        <a href="{{route('eventos.calendario')}}" class="text-blue-500 hover:underline">Ver calendario</a>
                     </div>
                 </div>
                 <div class="p-6 bg-white border-b border-gray-200 dark:border-gray-700">

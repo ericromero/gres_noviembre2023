@@ -10,8 +10,8 @@
 
     <div class="py-2">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">            
-            <div class="mb-2">
-                <a href="{{route('eventos.cartelera')}}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Ver cartelera</a>
+            <div class="mb-4">
+                <a href="{{route('eventos.cartelera')}}" class="text-blue-500 hover:underline">Ver cartelera</a>
             </div>
 
             <div id="calendar">

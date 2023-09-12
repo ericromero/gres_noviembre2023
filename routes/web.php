@@ -24,6 +24,8 @@ Route::get('/', [EventController::class, 'cartelera'])->name('eventos.cartelera'
 
 Route::get('/calendario', [EventController::class, 'calendario'])->name('eventos.calendario');
 
+Route::get('/creditos', [EventController::class, 'creditos'])->name('desarrolladores');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

@@ -8,7 +8,7 @@
                     {{-- <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a> --}}
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('eventos.cartelera') }}">
                         <img src="{{ asset('images/50anios.png') }}" alt="G-RES" class="block h-10 w-auto sm:rounded-lg" />
                     </a>
                     
@@ -77,6 +77,12 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('eventos.cartelera')" :active="request()->routeIs('eventos.cartelera')">
+                {{ __('Welcome') }}
+            </x-responsive-nav-link>
+        </div>
+        
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}

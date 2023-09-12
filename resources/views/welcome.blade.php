@@ -15,8 +15,8 @@
                     <p class="text-xl font-semibold">No hay eventos próximos</p>
                 </div>
             @else
-                <div class="mb-2">
-                    <a href="{{route('eventos.calendario')}}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Ver calendario</a>
+                <div class="mb-4">
+                    <a href="{{route('eventos.calendario')}}" class="text-blue-500 hover:underline">Ver calendario</a>
                 </div>
                 <div class="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                     @foreach ($events as $event)
