@@ -236,7 +236,7 @@ class UserController extends Controller
         // Obtener la lista de tipos de eventos disponibles
          $eventTypes = EventType::all();
 
-        return view('events.create', compact('space','eventTypes','start_date','end_date','start_time','end_time','academicos','departments'))->with('success', 'Usuario creado exitosamente.');
+        return view('events.create', compact('space','eventTypes','start_date','end_date','start_time','end_time','academicos','departments'))->with('success', 'El usuario se ha registrado correctamente, ahora puede seleccinarlo desde la lista desplegable.');
     }
 
     public function team() {

@@ -9,13 +9,18 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     Route::get('/eventos/disponibilidad', [EventController::class, 'availableSearch'])->name('events.availableSearch');
 
     // Ruta para acceder a la creación de eventos
-    Route::post('/evento/seleccionado', [EventController::class,'createWithSpace'])->name('events.createwithSpace');
+    //Route::post('/evento/seleccionado', [EventController::class,'createWithSpace'])->name('events.createwithSpace');
+    Route::get('/events/seleccionado', [EventController::class,'createWithSpace'])->name('events.createwithSpace');
+
 
     // Ruta para guardar el nuevo evento en la base de datos
     Route::post('/eventos/guardar', [EventController::class, 'store'])->name('events.store');
 
     //Ruta para acceder a la creación de eventos
     Route::get('/evento/nuevo', [EventController::class,'create'])->name('events.create');
+
+    //Ruta para acceder a la creación de eventos
+    //Route::post('/evento/nuevo', [EventController::class,'create'])->name('events.create');
 
     // Ruta para guadar los participantes de un evento
     Route::get('/events/{event}/participantes', [EventController::class, 'registrarParticipantes'])->name('events.participants');
@@ -34,11 +39,11 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     
 });
 
-    // Ruta para acceder a los eventos de un usuario
-    Route::get('/mis_eventos', [EventController::class, 'myEvents'])->name('events.my-events');
+// Ruta para acceder a los eventos de un usuario
+Route::get('/mis_eventos', [EventController::class, 'myEvents'])->name('events.my-events');
 
-    // Ruta para mostrar los detalles de un evento específico
-    Route::get('/evento/detalle/{event}', [EventController::class, 'show'])->name('events.show');
+// Ruta para mostrar los detalles de un evento específico
+Route::get('/evento/detalle/{event}', [EventController::class, 'show'])->name('events.show');
 
 // Ruta para mostrar la lista de eventos
 //Route::get('/eventos', [EventController::class, 'index'])->name('events.index');

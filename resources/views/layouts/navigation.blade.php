@@ -8,7 +8,14 @@
                     {{-- <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a> --}}
+                                        
                     <div>
+                        <a href="{{ route('dashboard') }}">
+                            <img src="{{ asset('images/50anios.png') }}" alt="G-RES" class="block h-10 w-auto sm:rounded-lg" />
+                        </a>
+                    </div>                   
+
+                    <div class="ml-4">
                         <a href="{{ route('eventos.cartelera') }}">
                             <img src="{{ asset('images/cartelera.png') }}" alt="G-RES" class="block h-10 w-auto sm:rounded-lg" />
                         </a>
@@ -16,11 +23,9 @@
                     
                     <div class="ml-4">
                         <a href="{{ route('dashboard') }}">
-                            <img src="{{ asset('images/50anios.png') }}" alt="G-RES" class="block h-10 w-auto sm:rounded-lg" />
+                            <img src="{{ asset('images/home.png') }}" alt="G-RES" class="block h-10 w-auto sm:rounded-lg" />
                         </a>
                     </div>
-                    
-                    
                     
                 </div>
 

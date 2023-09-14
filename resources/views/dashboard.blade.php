@@ -41,7 +41,7 @@
                 <!-- Imagen y enlace para gestionar usuarios -->
                 @hasrole('Administrador')
                     <a href="{{ route('users.index') }}">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                             <img src="{{ asset('images/usuarios.png') }}" alt="Usuarios" class="mx-auto h-20">
                             <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Usuarios</p>
                         </div>
@@ -51,7 +51,7 @@
                 <!-- Imagen y enlace para gestionar departamentos -->
                 @hasrole('Administrador')
                     <a href="{{ route('departments.index') }}">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                             <img src="{{ asset('images/departamento.png') }}" alt="Departamentos" class="mx-auto h-20">
                             <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Departamentos</p>
                         </div>
@@ -61,7 +61,7 @@
                 <!-- Imagen y enlace para gestionar espacios -->
                 @hasrole('Administrador')
                     <a href="{{ route('spaces.index') }}">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                             <img src="{{ asset('images/espacios.png') }}" alt="Espacios" class="mx-auto h-20">
                             <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Espacios</p>
                         </div>
@@ -71,7 +71,7 @@
                 <!-- Imagen y enlace para consultar espacios -->
                 @hasanyrole('Coordinador')
                     <a href="{{ route('spaces.my-spaces') }}">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                             <img src="{{ asset('images/espacios.png') }}" alt="Mis espacios" class="mx-auto h-20">
                             <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Mis espacios</p>
                         </div>
@@ -81,7 +81,7 @@
                 <!-- Imagen y enlace para contruir el equipo de trabajo -->
                 @hasanyrole('Coordinador')
                     <a href="{{ route('users.team') }}">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                             <img src="{{ asset('images/equipo.png') }}" alt="Equipo de trabajo" class="mx-auto h-20">
                             <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Equipo de trabajo</p>
                         </div>
@@ -91,7 +91,7 @@
                 <!-- Imagen y enlace para crear un nuevo evento -->
                 @hasanyrole('Coordinador|Gestor de eventos')
                     <a href="{{ route('spaces.search') }}">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                             <img src="{{ asset('images/calendario.png') }}" alt="Solicitar espacio" class="mx-auto h-20">
                             <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Registrar evento</p>
                         </div>
@@ -101,7 +101,7 @@
                 <!-- Imagen y enlace para revisar los eventos solicitados -->
                 @hasanyrole('Coordinador|Gestor de eventos')
                     <a href="{{ route('events.byArea') }}">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                             <img src="{{ asset('images/autorizacioneventos.png') }}" alt="Autorización de eventos" class="mx-auto h-20">
                             <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Eventos de la coordinación</p>
                         </div>
@@ -111,7 +111,7 @@
                 <!-- Imagen y enlace Mis eventos -->
                 @hasrole('Gestor de espacios')
                 <a href="{{ route('event_spaces.review') }}">
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                         <img src="{{ asset('images/evento.png') }}" alt="Mis eventos" class="mx-auto h-20">
                         <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Espacios solicitados</p>
                     </div>
@@ -122,22 +122,3 @@
         </div>
     </div>
 </x-app-layout>
-
-
-{{-- <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout> --}}

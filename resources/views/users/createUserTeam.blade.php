@@ -1,29 +1,29 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
             {{ __('Nuevo usuario')}}
         </h2>
     </x-slot>
 
-    <div class="py-4">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="border-2 p-6">
+    {{-- <div class="py-4"> --}}
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            <div class="flex overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-4 border dark:border-gray-300 border-gray-700">
+                    {{-- <div class="border-2 p-6"> --}}
                         <form action="{{ route('users.storeUserTeam') }}" method="POST">
                             @csrf
                             <input type="hidden" name="department" value="{{ $department->id }}">
-                            <h3 class="font-bold text-lg mb-4">Agrega un usuario existente al equipo</h3>
+                            <h3 class="font-bold text-lg mb-4 border-b border-gray-700 dark:border-gray-300">Agrega un usuario existente al equipo</h3>
                             <div class="mb-4">
-                                <label for="doi" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Número de trabajador:</label>
-                                <input type="text" name="doi" id="doi" value="{{ old('doi') }}" class="form-input" required>
+                                <label for="doi" class="block font-bold mb-2">Número de trabajador:</label>
+                                <input type="text" name="doi" id="doi" value="{{ old('doi') }}" class="form-input dark:bg-gray-800 dark:text-white" required>
                                 @error('doi')
                                     <p class="text-red-500 text-sm">{{ $message }}</p>
                                 @enderror
                             </div>   
 
                             <div class="mb-4">
-                                <label for="roles" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Funciones del usuario</label>
+                                <label for="roles" class="block font-bold mb-2">Funciones del usuario</label>
                                 @foreach($roles as $role)
                                     <label class="inline-flex items-center mt-1">
                                         <input type="checkbox" name="roles[]" value="{{ $role->id }}" class="form-checkbox">
@@ -37,19 +37,19 @@
 
                             <button type="submit" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md">Agregar al equipo</button>
                         </form>
-                    </div>
+                    {{-- </div> --}}
                 </div>
 
-                <div class="p-6 bg-white border-b border-gray-200 border-2">
-                    <div class="border-2 p-6">
+                <div class="p-4 mx-2 border dark:border-gray-300 border-gray-700">
+                    {{-- <div class="border-2 p-6"> --}}
                         <form action="{{ route('users.storeNewUserTeam') }}" method="POST">
                             @csrf
                             <input type="hidden" name="department" value="{{ $department->id }}">
-                            <h3 class="font-bold text-lg mb-4">Crea un nuevo usuario y agrégalo al equipo. La contraseña se genera de manera automática y se envía por correo electrónico.</h3>
+                            <h3 class="font-bold text-lg mb-4 border-b border-gray-700 dark:border-gray-300">Crea un nuevo usuario y agrégalo al equipo. La contraseña se genera de manera automática y se envía por correo electrónico al nuevo usuario.</h3>
                             
                             <div class="mb-4">
                                 <label for="degree" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Grado académico actual:</label>
-                                <select name="degree" id="degree" class="form-input" required>
+                                <select name="degree" id="degree" class="form-input dark:bg-gray-800 dark:text-white" required>
                                     <option value="C." {{ old('degree') === 'C.' ? 'selected' : '' }}>C.</option>
                                     <option value="Sra." {{ old('degree') === 'Sra.' ? 'selected' : '' }}>Sra.</option>
                                     <option value="Sr." {{ old('degree') === 'Sr.' ? 'selected' : '' }}>Sr.</option>
@@ -66,7 +66,7 @@
                             
                             <div class="mb-4">
                                 <label for="name" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Nombre completo: <span class="text-sm">(Comenzando por nombre y después apellidos).</span></label>
-                                <input type="name" name="name" id="name" value="{{ old('name') }}" class="form-input" required>
+                                <input type="name" name="name" id="name" value="{{ old('name') }}" class="form-input dark:bg-gray-800 dark:text-white" required>
                                 @error('name')
                                     <p class="text-red-500 text-sm">{{ $message }}</p>
                                 @enderror
@@ -74,7 +74,7 @@
 
                             <div class="mb-4">
                                 <label for="doi" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Número de trabajador</label>
-                                <input type="doi" name="doi" id="doi" value="{{ old('doi') }}" class="form-input" required>
+                                <input type="doi" name="doi" id="doi" value="{{ old('doi') }}" class="form-input dark:bg-gray-800 dark:text-white" required>
                                 @error('doi')
                                     <p class="text-red-500 text-sm">{{ $message }}</p>
                                 @enderror
@@ -82,7 +82,7 @@
 
                             <div class="mb-4">
                                 <label for="email" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Correo electrónico:</label>
-                                <input type="email" name="email" id="email" value="{{ old('email') }}" class="form-input" required>
+                                <input type="email" name="email" id="email" value="{{ old('email') }}" class="form-input dark:bg-gray-800 dark:text-white" required>
                                 @error('email')
                                     <p class="text-red-500 text-sm">{{ $message }}</p>
                                 @enderror
@@ -103,9 +103,15 @@
 
                             <button type="submit" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md">Crea usuario y agregar al equipo</button>
                         </form>
-                    </div>
+                    {{-- </div> --}}
                 </div>
+                
             </div>
+
+            <div class="mt-4">                
+                <a href="{{ route('users.team') }}" class="block mb-4 text-center ml-2 px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 inline-block">Regresar</a>
+            </div>
+
         </div>
-    </div>
+    {{-- </div> --}}
 </x-app-layout>

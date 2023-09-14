@@ -41,7 +41,17 @@ class EventController extends Controller
     }
 
     public function availableSearch() {
-        return view('events.availablesearch');
+        $allEvents=Event::where('published','1')->get();
+        $events=[];
+        foreach($allEvents as $event) {
+            $events[] = [
+                'title'=>$event->title,
+                'start' => $event->start_date . ' ' . $event->start_time, // Combina fecha y hora de inicio
+                'end' => $event->end_date . ' ' . $event->end_time,       // Combina fecha y hora de finalización
+                'id'=>$event->id,
+            ];
+        }
+        return view('events.availablesearch',compact('events'));
     }
 
     public function availableResult() {
@@ -96,24 +106,114 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'title' => 'required|string|max:255',
-        //     'summary' => 'required|string',
-        //     'start_date' => 'required|date|after_or_equal:' . now()->addDays(4)->format('Y-m-d'),
-        //     'end_date' => 'required|date|after_or_equal:start_date',
-        //     'start_time' => 'required|date_format:H:i|after_or_equal:07:00|before:end_time',
-        //     'end_time' => 'required|date_format:H:i|after:start_time|before_or_equal:21:00',
-        //     'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        //     'space_id' => 'required|exists:spaces,id',
-        //     'requires_registration' => 'boolean',
-        //     'registration_url' => 'nullable|required_if:requires_registration,true',
-        // ]);
+        $rules = [
+            'title' => [
+                'required',
+                'string',
+                'max:255'],
+            'summary' => [
+                'required',
+                'string'],
+            'start_date' => [
+                'required',
+                'date','
+                after_or_equal:' . now()->addDays(4)->format('Y-m-d')],
+            'end_date' => [
+                'required',
+                'date',
+                'after_or_equal:start_date'],
+            'start_time' => [
+                'required',
+                'date_format:H:i',
+                'after_or_equal:07:00',
+                'before:end_time'],
+            'end_time' => [
+                'required',
+                'date_format:H:i',
+                'after:start_time',
+                'before_or_equal:21:00'],
+            'cover_image' => [
+                'required',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'max:5120'],
+            'program' => [
+                'required',
+                'file',
+                'mimes:pdf',
+                'max:5120',
+            ],
+            'registration_url' => [
+                'nullable',
+                'required_if:registration_required,1'],
+            
+            'responsible' => [
+                'required', 
+                'exists:users,id', 
+                'distinct:coresponsible'],
+                
+            'coresponsible' => [
+                'required', 
+                'exists:users,id', 
+                'distinct:responsible'],
+        ];
+    
+        $messages = [
+            'title.required' => 'El título del evento es obligatorio.',
+            'title.string' => 'El título del evento debe ser una cadena de texto.',
+            'title.max' => 'El título del evento no puede exceder los 255 caracteres.',
+            
+            'summary.required' => 'El resumen del evento es obligatorio.',
+            'summary.string' => 'El resumen del evento debe ser una cadena de texto.',
+            
+            'start_date.required' => 'La fecha de inicio es obligatoria.',
+            'start_date.date' => 'La fecha de inicio debe ser una fecha válida.',
+            'start_date.after_or_equal' => 'La fecha de inicio debe ser igual o posterior a ' . now()->addDays(4)->format('Y-m-d'),
+            
+            'end_date.required' => 'La fecha de finalización es obligatoria.',
+            'end_date.date' => 'La fecha de finalización debe ser una fecha válida.',
+            'end_date.after_or_equal' => 'La fecha de finalización debe ser igual o posterior a la fecha de inicio.',
+            
+            'start_time.required' => 'La hora de inicio es obligatoria.',
+            'start_time.date_format' => 'La hora de inicio debe estar en formato HH:mm.',
+            'start_time.after_or_equal' => 'La hora de inicio debe ser igual o posterior a las 07:00 AM.',
+            'start_time.before' => 'La hora de inicio debe ser anterior a la hora de finalización.',
+            
+            'end_time.required' => 'La hora de finalización es obligatoria.',
+            'end_time.date_format' => 'La hora de finalización debe estar en formato HH:mm.',
+            'end_time.after' => 'La hora de finalización debe ser posterior a la hora de inicio.',
+            'end_time.before_or_equal' => 'La hora de finalización debe ser igual o anterior a las 09:00 PM.',
+            
+            'cover_image.required' => 'Se requiere adjuntar una imagen de portada.',
+            'cover_image.image' => 'El archivo de imagen de portada debe ser una imagen válida.',
+            'cover_image.mimes' => 'Los formatos admitidos para la imagen de portada son .jpg, .jpeg y .png',
+            'cover_image.max' => 'La imagen de portada es demasiado pesada, el tamaño máximo permitido es de 5 MB.',
+            
+            'program.required' => 'Se requiere adjuntar un programa en formato PDF.',
+            'program.file' => 'El archivo del programa debe ser un archivo válido.',
+            'program.mimes' => 'El formato admitido para el programa es PDF.',
+            'program.max' => 'El archivo del programa es demasiado pesado, el tamaño máximo permitido es de 5 MB.',
+            
+            'registration_required.boolean' => 'El campo "Registro requerido" debe ser verdadero o falso.',
+            'registration_url.required_if' => 'La URL de registro es obligatoria cuando el registro es requerido.',
+                      
+            'responsible.required' => 'El campo "Responsable" es obligatorio.',
+            'responsible.exists' => 'El usuario seleccionado como responsable no existe.',
+            'responsible.distinct' => 'El responsable y el corresponsable deben ser usuarios diferentes.',
+            
+            'coresponsible.required' => 'El campo "Corresponsable" es obligatorio.',
+            'coresponsible.exists' => 'El usuario seleccionado como corresponsable no existe.',
+            'coresponsible.distinct' => 'El corresponsable y el responsable deben ser usuarios diferentes.',
+        ];
+        
+    
+        $validatedData = $request->validate($rules, $messages);
 
         $user=Auth::user();
 
         $event = new Event();
-        $event->responsible_id = $request->input('responsable');
-        $event->coresponsible_id = $request->input('corresponsable');
+        $event->responsible_id = $request->input('responsible');
+        $event->coresponsible_id = $request->input('coresponsible');
         $event->register_id = $user->id;
         $event->department_id = $request->input('department');
         $event->title = $request->input('title');
@@ -123,7 +223,7 @@ class EventController extends Controller
         $event->start_time = $request->input('start_time');
         $event->end_time = $request->input('end_time');
         // $event->space_id = $request->input('space_id');
-        $event->registration_required  = $request->has('requires_registration');
+        $event->registration_required  = $request->has('registration_required');
         $event->registration_url = $request->input('registration_url');
 
         // Guardar la imagen de portada

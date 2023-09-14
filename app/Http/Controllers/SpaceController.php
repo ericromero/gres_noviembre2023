@@ -8,18 +8,32 @@ use App\Models\Space;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Department;
 use Illuminate\Support\Facades\DB;
+use App\Models\Event;
 
 class SpaceController extends Controller
 {
     public function search(Request $request)
     {
+        // Código para obtener los eventos y mostrar el calendario
+        $allEvents=Event::where('published','1')->get();
+        $events=[];
+        foreach($allEvents as $event) {
+            $events[] = [
+                'title'=>$event->title,
+                'start' => $event->start_date . ' ' . $event->start_time, // Combina fecha y hora de inicio
+                'end' => $event->end_date . ' ' . $event->end_time,       // Combina fecha y hora de finalización
+                'id'=>$event->id,
+            ];
+        }
+        // Fin del código para desplegar el calendario
+
         if (
             $request->input('start_date') == null ||
             $request->input('end_date') == null ||
             $request->input('start_time') == null ||
             $request->input('end_time') == null
         ) {
-            return view('events.availablesearch');
+            return view('events.availablesearch',compact('events'));
         }
 
         $startDateTime = $request->input('start_date') . ' ' . $request->input('start_time');
@@ -29,18 +43,6 @@ class SpaceController extends Controller
         $end_date=$request->input('end_date');
         $start_time=$request->input('start_time');
         $end_time=$request->input('end_time');
-
-        // $availableSpaces = Space::whereDoesntHave('events', function ($query) use ($startDateTime, $endDateTime) {
-        //     $query->where('events.published', '1')
-        //         ->where(function ($query) use ($startDateTime, $endDateTime) {
-        //             $query->whereBetween('start_date', [$startDateTime, $endDateTime])
-        //                 ->orWhereBetween('end_date', [$startDateTime, $endDateTime])
-        //                 ->orWhere(function ($query) use ($startDateTime, $endDateTime) {
-        //                     $query->where('start_date', '<=', $startDateTime)
-        //                         ->where('end_date', '>=', $endDateTime);
-        //                 });
-        //         });
-        // })->get();
 
         $overlappingEventIds = $this->getOverlappingEventIds($start_date, $end_date, $start_time, $end_time);
 
@@ -53,39 +55,8 @@ class SpaceController extends Controller
             ->get();
 
 
-        return view('events.availablesearch', compact('availableSpaces','start_date','end_date','start_time','end_time'));
+        return view('events.availablesearch', compact('availableSpaces','start_date','end_date','start_time','end_time','events'));
     }
-
-
-
-
-    // public function search(Request $request)
-    // {
-    //     if($request->input('start_date')==null||
-    //         $request->input('end_date')==null||
-    //         $request->input('start_time')==null||
-    //         $request->input('end_time')==null) {
-            
-    //         return view('events.availablesearch');
-    //     }
-
-    //     $startDateTime = $request->input('start_date') . ' ' . $request->input('start_time');
-    //     $endDateTime = $request->input('end_date') . ' ' . $request->input('end_time');
-
-    //     $availableSpaces = Space::whereDoesntHave('events', function ($query) use ($startDateTime, $endDateTime) {
-    //         $query->where('status', 'Aceptado')
-    //             ->where(function ($query) use ($startDateTime, $endDateTime) {
-    //                 $query->whereBetween('start_date', [$startDateTime, $endDateTime])
-    //                     ->orWhereBetween('end_date', [$startDateTime, $endDateTime])
-    //                     ->orWhere(function ($query) use ($startDateTime, $endDateTime) {
-    //                         $query->where('start_date', '<=', $startDateTime)
-    //                                 ->where('end_date', '>=', $endDateTime);
-    //                     });
-    //             });
-    //     })->get();
-
-    //     return view('events.availablesearch', compact('availableSpaces'));
-    // }
 
     public function index() {
         // Obtener todos los espacios

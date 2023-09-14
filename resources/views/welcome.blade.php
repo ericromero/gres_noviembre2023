@@ -3,12 +3,12 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Cartelera') }}
         </h2>
-        <div class="text-gray-600 mb-2">
+        <div class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-2">
             <p>Ven a disfrutar de los diversos eventos académicos, culturales y deportivos que la Facultad de Psicología tiene para tí.</p>
         </div>
     </x-slot>
 
-    <div class="py-2">
+    <div class="py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if ($events->isEmpty())
                 <div class="text-center">
