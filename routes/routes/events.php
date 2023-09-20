@@ -26,7 +26,7 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     Route::get('/events/{event}/participantes', [EventController::class, 'registrarParticipantes'])->name('events.participants');
 
     // Ruta para guardar el nuevo evento en la base de datos
-    Route::post('/eventos/busca/participante', [EventController::class, 'searchparticipant'])->name('event.searchparticipant');
+    //Route::post('/eventos/busca/participante', [EventController::class, 'searchparticipant'])->name('event.searchparticipant');
 
     // Ruta para eliminar un evento
     Route::delete('/eventos/{id}', [EventController::class, 'destroy'])->name('events.destroy');

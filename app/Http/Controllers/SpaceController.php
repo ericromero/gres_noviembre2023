@@ -15,7 +15,7 @@ class SpaceController extends Controller
     public function search(Request $request)
     {
         // Código para obtener los eventos y mostrar el calendario
-        $allEvents=Event::where('published','1')->get();
+        $allEvents=Event::where('status','aceptado')->get();
         $events=[];
         foreach($allEvents as $event) {
             $events[] = [

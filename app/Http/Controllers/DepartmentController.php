@@ -25,6 +25,7 @@ class DepartmentController extends Controller
         $users = User::whereIn('id', function($query) {
             $query->select('user_id')
                 ->from('adscriptions')
+                ->orderBy('name')
                 ->distinct();
         })->get();
 
@@ -73,6 +74,7 @@ class DepartmentController extends Controller
         $users = User::whereIn('id', function($query) {
             $query->select('user_id')
                 ->from('adscriptions')
+                ->orderBy('name')
                 ->distinct();
         })->get();
 

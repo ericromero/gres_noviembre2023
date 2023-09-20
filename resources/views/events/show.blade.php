@@ -5,21 +5,21 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+    {{-- <div class="py-6"> --}}
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            {{-- <div class="overflow-hidden shadow-sm sm:rounded-lg"> --}}
                 <div class="flex">
                     <div class="mb-2">
-                        <a href="{{route('eventos.cartelera')}}" class="text-blue-500 hover:underline">Ver cartelera</a>
+                        <a href="{{route('eventos.cartelera')}}" class="text-blue-500 hover:underline dark:text-blue-300">Ver cartelera</a>
                     </div>
                     <div class="mb-2 ml-4">
-                        <a href="{{route('eventos.calendario')}}" class="text-blue-500 hover:underline">Ver calendario</a>
+                        <a href="{{route('eventos.calendario')}}" class="text-blue-500 hover:underline dark:text-blue-300">Ver calendario</a>
                     </div>
                 </div>
-                <div class="p-6 bg-white border-b border-gray-200 dark:border-gray-700">
+                <div class="p-6 border border-gray-700 dark:border-gray-300">
                     <img src="{{asset($event->cover_image)}}" alt="{{ $event->title }}" class="w-full h-40 object-cover">
                     <h2 class="text-2xl font-semibold">Resumen:</h2>
-                    <p class="text-gray-600">{{ $event->summary }}</p>
+                    <p>{{ $event->summary }}</p>
 
                     <div class="mt-4">
                         <p><strong>Responsable:</strong> {{ $event->responsible->name }}</p>
@@ -36,7 +36,7 @@
                     @if ($event->program)
                     <div class="mt-4">
                         <h3 class="text-lg font-semibold">Programa:</h3>
-                        <a href="{{ asset($event->program) }}" class="text-blue-600 hover:text-blue-900 underline" download>Descargar Programa</a>
+                        <a href="{{ asset($event->program) }}" class="text-blue-600 hover:underline dark:text-blue-300" download>Descargar Programa</a>
                     </div>
                     @endif
 
@@ -55,7 +55,7 @@
                     @endif
 
                 </div>
-            </div>
+            {{-- </div> --}}
         </div>
-    </div>
+    {{-- </div> --}}
 </x-app-layout>

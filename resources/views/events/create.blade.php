@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight text-gray-800 dark:text-gray-200">
             {{ __('Crear Evento') }}
         </h2>
 
@@ -12,9 +12,9 @@
         @endif
 
         <div class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
-            <p>Ingresa toda la información de tu evento, en caso de que se requiera realizar el registro, escribe la URL del herramienta de registro.</p>
+            <p>Ingresa toda la información de tu evento, en caso de que se requiera realizar el registro, escribe la URL de la herramienta de registro.</p>
             
-                <form action="{{ route('users.altaAcademicoPre') }}" method="POST" enctype="multipart/form-data">
+                {{-- <form action="{{ route('users.altaAcademicoPre') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @if($space!=null)
                         @php
@@ -27,7 +27,7 @@
                     <input type="hidden" name="start_time" value="{{$start_time}}">
                     <input type="hidden" name="end_time" value="{{$end_time}}">
                     En caso de que el o la académica no esté en lista, puedes agregarle dando clic aquí <button type="submit" class="text-orange-500 hover:underline">Dar de alta a un académico(a).
-                </form>
+                </form> --}}
             
         </div>
     </x-slot>
@@ -67,7 +67,7 @@
 
                         <div class="mb-4">
                             <label for="event_type_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Tipo de Evento:</label>
-                            <select name="event_type_id" id="event_type_id" class="form-select dark:bg-gray-800 dark:text-white @error('event_type_id') border-red-500 @enderror" required>
+                            <select name="event_type_id" id="event_type_id" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('event_type_id') border-red-500 @enderror" required>
                                 <option value="">Seleccionar tipo de evento</option>
                                 @foreach($eventTypes as $eventType)
                                     <option value="{{ $eventType->id }}">{{ $eventType->name }}</option>
@@ -88,7 +88,7 @@
 
                         <div class="mb-4">
                             <label for="responsible" class="block font-bold mb-2">Responsable:</label>
-                            <select name="responsible" id="responsible" class="form-select dark:bg-gray-800 dark:text-white" required>
+                            <select name="responsible" id="responsible" class="js-example-basic-single dark:bg-gray-800 dark:text-white" required>
                                 <option value="">Seleccionar responsable</option>
                                 @foreach($academicos as $academico)
                                     <option value="{{ $academico->id }}">{{ $academico->name }}</option>
@@ -98,10 +98,10 @@
                                 <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
                         </div>
-
+                        
                         <div class="mb-4">
                             <label for="coresponsible" class="block font-bold mb-2">Corresponsable:</label>
-                            <select name="coresponsible" id="coresponsible" class="form-select dark:bg-gray-800 dark:text-white" required>
+                            <select name="coresponsible" id="coresponsible" class="js-example-basic-single form-select dark:bg-gray-800 dark:text-white" required>
                                 <option value="">Seleccionar corresponsable</option>
                                 @foreach($academicos as $academico)
                                     <option value="{{ $academico->id }}">{{ $academico->name }}</option>
@@ -188,7 +188,7 @@
                         
                         <div id="registration_url_container" class="mb-4 hidden">
                             <label for="registration_url" class="block font-bold mb-2">URL de Registro: <span class="text-sm">(Anotala URL comenzado con http)</span></label>
-                            <input type="text" name="registration_url" id="registration_url" class="form-input @error('registration_url') border-red-500 @enderror" value="{{ old('registration_url') }}">
+                            <input type="text" name="registration_url" id="registration_url" class="form-input dark:bg-gray-800 dark:text-white @error('registration_url') border-red-500 @enderror" value="{{ old('registration_url') }}">
                             @error('registration_url')
                                 <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
@@ -210,23 +210,6 @@
                             @enderror
                         </div>
                         
-                        <script>
-                            const requiresRegistrationCheckbox = document.getElementById('requires_registration');
-                            const registrationUrlContainer = document.getElementById('registration_url_container');
-                            const registrationUrlInput = document.getElementById('registration_url');
-                        
-                            requiresRegistrationCheckbox.addEventListener('change', () => {
-                                if (requiresRegistrationCheckbox.checked) {
-                                    registrationUrlContainer.classList.remove('hidden');
-                                    registrationUrlInput.setAttribute('required', true);
-                                } else {
-                                    registrationUrlContainer.classList.add('hidden');
-                                    registrationUrlInput.removeAttribute('required');
-                                }
-                            });
-                        </script>
-                        
-                        
                         <div class="flex">
                             <div class="flex items-center justify-end mt-4">
                                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">Registrar Evento</button>
@@ -242,3 +225,26 @@
         </div>
     </div>
 </x-app-layout>
+
+
+<script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+    });
+</script>
+
+<script>
+    const requiresRegistrationCheckbox = document.getElementById('registration_required');
+    const registrationUrlContainer = document.getElementById('registration_url_container');
+    const registrationUrlInput = document.getElementById('registration_url');
+
+    requiresRegistrationCheckbox.addEventListener('change', () => {
+        if (requiresRegistrationCheckbox.checked) {
+            registrationUrlContainer.classList.remove('hidden');
+            registrationUrlInput.setAttribute('required', true);
+        } else {
+            registrationUrlContainer.classList.add('hidden');
+            registrationUrlInput.removeAttribute('required');
+        }
+    });
+</script>

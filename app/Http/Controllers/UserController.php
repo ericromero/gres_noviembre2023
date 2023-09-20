@@ -155,89 +155,89 @@ class UserController extends Controller
         //
     }
 
-    public function altaAcademicoPre(Request $request)
-    {
-        // Variables para controlar el regreso a la pantalla principal
-        $space=$request->space;        
-        $start_date=$request->start_date;
-        $end_date=$request->end_date;
-        $start_time=$request->start_time;
-        $end_time=$request->end_time;
+    // public function altaAcademicoPre(Request $request)
+    // {
+    //     // Variables para controlar el regreso a la pantalla principal
+    //     $space=$request->space;        
+    //     $start_date=$request->start_date;
+    //     $end_date=$request->end_date;
+    //     $start_time=$request->start_time;
+    //     $end_time=$request->end_time;
 
-        // Obtener el usuario actualmente autenticado
-        $user = Auth::user();
+    //     // Obtener el usuario actualmente autenticado
+    //     $user = Auth::user();
 
-        // Obtener los departamentos del usuario
-        $departments = $user->departments;
+    //     // Obtener los departamentos del usuario
+    //     $departments = $user->departments;
 
-        return view('users.createPreEvent',compact('departments','space','start_date','end_date','start_time','end_time'));
-    }
+    //     return view('users.createPreEvent',compact('departments','space','start_date','end_date','start_time','end_time'));
+    // }
 
-    public function storePreEvent(Request $request)
-    {        
-        $rules = [
-            'degree' => ['required'],
-            'name' => ['required', 'string'],
-            'doi' => ['required', 'numeric', 'unique:users','min:1','max:9999999'],
-            'email' => ['required', 'email', 'unique:users'],
-            'department' => ['required'],
-        ];
+    // public function storePreEvent(Request $request)
+    // {        
+    //     $rules = [
+    //         'degree' => ['required'],
+    //         'name' => ['required', 'string'],
+    //         'doi' => ['required', 'numeric', 'unique:users','min:1','max:9999999'],
+    //         'email' => ['required', 'email', 'unique:users'],
+    //         'department' => ['required'],
+    //     ];
 
-        $messages = [
-            'email.required' => 'El correo electrónico es requerido.',
-            'email.email' => 'El correo electrónico debe ser una dirección válida.',
-            'email.unique' => 'Este correo electrónico ya está en uso por otro usuario.',
-            'doi.required' => 'El número de trabajador (DOI) es requerido.',
-            'doi.numeric' => 'El número de trabajador (DOI) debe ser numérico.',
-            'doi.max' => 'El número de trabajador (DOI) no puede ser mayor a 7 dígitos.',
-            'department.required' => 'Se requiere seleccionar al menos un departamento',
-        ];
+    //     $messages = [
+    //         'email.required' => 'El correo electrónico es requerido.',
+    //         'email.email' => 'El correo electrónico debe ser una dirección válida.',
+    //         'email.unique' => 'Este correo electrónico ya está en uso por otro usuario.',
+    //         'doi.required' => 'El número de trabajador (DOI) es requerido.',
+    //         'doi.numeric' => 'El número de trabajador (DOI) debe ser numérico.',
+    //         'doi.max' => 'El número de trabajador (DOI) no puede ser mayor a 7 dígitos.',
+    //         'department.required' => 'Se requiere seleccionar al menos un departamento',
+    //     ];
 
-        $validatedData = $request->validate($rules, $messages);
+    //     $validatedData = $request->validate($rules, $messages);
     
-        $email = $validatedData['email'];
-        $password=Str::random(8); // Generar una contraseña aleatoria
+    //     $email = $validatedData['email'];
+    //     $password=Str::random(8); // Generar una contraseña aleatoria
 
-        $user = User::create([
-            'degree' => $validatedData['degree'],
-            'name' => $validatedData['name'],
-            'doi' => $validatedData['doi'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($password),
-        ]);
+    //     $user = User::create([
+    //         'degree' => $validatedData['degree'],
+    //         'name' => $validatedData['name'],
+    //         'doi' => $validatedData['doi'],
+    //         'email' => $validatedData['email'],
+    //         'password' => Hash::make($password),
+    //     ]);
 
-        // Se agregan los departamentos seleccionados
-        if (isset($validatedData['department'])) {
-            $user->departments()->sync($validatedData['department']);
-        }
+    //     // Se agregan los departamentos seleccionados
+    //     if (isset($validatedData['department'])) {
+    //         $user->departments()->sync($validatedData['department']);
+    //     }
 
-        // Notificación por correo electrónico de la cuenta creada
-        Mail::to($email)->send(new WelcomeEmail($email, $password));
+    //     // Notificación por correo electrónico de la cuenta creada
+    //     Mail::to($email)->send(new WelcomeEmail($email, $password));
 
-        // Se prepara el retorno a la creación del evento
-        $space=Space::find($request->space);
-        $start_date=$request->start_date;
-        $end_date=$request->end_date;
-        $start_time=$request->start_time;
-        $end_time=$request->end_time;
+    //     // Se prepara el retorno a la creación del evento
+    //     $space=Space::find($request->space);
+    //     $start_date=$request->start_date;
+    //     $end_date=$request->end_date;
+    //     $start_time=$request->start_time;
+    //     $end_time=$request->end_time;
 
-        // Se obtiene la lista de departmanetos del usuario
-        // Obtén el usuario autenticado
-        $user = Auth::user();
+    //     // Se obtiene la lista de departmanetos del usuario
+    //     // Obtén el usuario autenticado
+    //     $user = Auth::user();
 
-        // Lista de departamentos a los que pertenece el usuario
-        $departments = $user->adscriptions->map(function ($adscription) {
-            return $adscription->department;
-        });
+    //     // Lista de departamentos a los que pertenece el usuario
+    //     $departments = $user->adscriptions->map(function ($adscription) {
+    //         return $adscription->department;
+    //     });
 
-        // Obtener los usuarios con departamento asignado
-        $academicos = User::has('adscriptions.department')->get();
+    //     // Obtener los usuarios con departamento asignado
+    //     $academicos = User::has('adscriptions.department')->get();
 
-        // Obtener la lista de tipos de eventos disponibles
-         $eventTypes = EventType::all();
+    //     // Obtener la lista de tipos de eventos disponibles
+    //      $eventTypes = EventType::all();
 
-        return view('events.create', compact('space','eventTypes','start_date','end_date','start_time','end_time','academicos','departments'))->with('success', 'El usuario se ha registrado correctamente, ahora puede seleccinarlo desde la lista desplegable.');
-    }
+    //     return view('events.create', compact('space','eventTypes','start_date','end_date','start_time','end_time','academicos','departments'))->with('success', 'El usuario se ha registrado correctamente, ahora puede seleccinarlo desde la lista desplegable.');
+    // }
 
     public function team() {
         // Obtén el departamento del usuario autenticado
@@ -255,120 +255,123 @@ class UserController extends Controller
     {
         // Obtén el departamento del usuario autenticado
         $department = Auth::user()->coordinatedDepartment;
-        $roles=Role::where('name','Gestor de eventos')->get();
+        $academics=User::all();        
+        $roles=Role::whereIn('name',['Gestor de eventos','Gestor de espacios'])->get();
 
-        return view('users.createUserTeam',compact('department','roles'));
+        return view('users.createUserTeam',compact('department','roles','academics'));
     }
 
     public function storeUserTeam(Request $request)
     {        
         $rules = [
-            'doi' => ['required', 'numeric','min:1','max:9999999'],
+            'academic' => ['required', 'numeric','unique:teams,user_id'],
             'department' => ['required'],
-            'roles'=>['required', 'array', 'min:1','in:3'],
+            'roles'=>['required', 'array', 'min:1','in:3,4'],
         ];
 
         $messages = [
-            'doi.required' => 'El número de trabajador (DOI) es requerido.',
-            'doi.numeric' => 'El número de trabajador (DOI) debe ser numérico.',
-            'doi.max' => 'El número de trabajador (DOI) no puede ser mayor a 7 dígitos.',
-            'department.required' => 'Se requiere seleccionar al menos un departamento',
-            'roles.required' => 'Se requiere seleccionar al menos una función del usuario',
+            'academic.required' => 'Seleccione un académico(a).',
+            'academic.numeric' => 'Error al identificar al número de trabajador.',
+            'academic.unique' => 'El académico(a) ya forma parte de un equipo de trabajo.',
+            'department.required' => 'Se requiere seleccionar al menos un departamento.',
+            'roles.required' => 'Se requiere seleccionar al menos una función del usuario.',
             'roles.in' => 'Valor inválido',
         ];
 
         $validatedData = $request->validate($rules, $messages);
 
-        $user = User::where('doi',$validatedData['doi'])->first();
+        $user = User::find($validatedData['academic']);
         if($user==null) {
             return redirect()->route('users.team')
-            ->with('success', 'El usuario no existe, verifique el número de trabajador.');
+            ->with('error', 'El académico no existe, favor de seleccionar un académico(a) de la lista.');
         }
 
         // Se agregan roles en caso de que existan
         if ($request->has('roles')) {
-            $user->roles()->sync($request->input('roles'));
+            $user->roles()->attach($request->input('roles'));
         }
 
         // Crear un nuevo registro en la tabla teams
         $usuarioAutenticado=Auth::user();
         Team::create([
-            'user_id' => $user->id,
+            'user_id' => $validatedData['academic'],
             'department_id' => $validatedData['department'],
             'register_id'=>$usuarioAutenticado->id,
         ]);
     
         return redirect()->route('users.team')
-            ->with('success', 'Usuario creado exitosamente.');
+            ->with('success', 'Usuario agregado al equipo correctamente.');
     }
 
-    public function storeNewUserTeam(Request $request)
-    {        
-        $rules = [
-            'degree' => ['required'],
-            'name' => ['required', 'string'],
-            'doi' => ['required', 'numeric', 'unique:users','min:1','max:9999999'],
-            'email' => ['required', 'email', 'unique:users'],
-            'department' => ['required'],
-            'roles'=>['required', 'array', 'min:1','in:3'],
-        ];
+    // public function storeNewUserTeam(Request $request)
+    // {        
+    //     $rules = [
+    //         'degree' => ['required'],
+    //         'name' => ['required', 'string'],
+    //         'doi' => ['required', 'numeric', 'unique:users','min:1','max:9999999'],
+    //         'email' => ['required', 'email', 'unique:users'],
+    //         'department' => ['required'],
+    //         'roles'=>['required', 'array', 'min:1','in:3'],
+    //     ];
 
-        $messages = [
-            'email.required' => 'El correo electrónico es requerido.',
-            'email.email' => 'El correo electrónico debe ser una dirección válida.',
-            'email.unique' => 'Este correo electrónico ya está en uso por otro usuario.',
-            'doi.required' => 'El número de trabajador (DOI) es requerido.',
-            'doi.numeric' => 'El número de trabajador (DOI) debe ser numérico.',
-            'doi.max' => 'El número de trabajador (DOI) no puede ser mayor a 7 dígitos.',
-            'department.required' => 'Se requiere seleccionar al menos un departamento',
-            'roles.required' => 'Se requiere seleccionar al menos una función del usuario',
-            'roles.in' => 'Valor inválido',
-        ];
+    //     $messages = [
+    //         'email.required' => 'El correo electrónico es requerido.',
+    //         'email.email' => 'El correo electrónico debe ser una dirección válida.',
+    //         'email.unique' => 'Este correo electrónico ya está en uso por otro usuario.',
+    //         'doi.required' => 'El número de trabajador (DOI) es requerido.',
+    //         'doi.numeric' => 'El número de trabajador (DOI) debe ser numérico.',
+    //         'doi.max' => 'El número de trabajador (DOI) no puede ser mayor a 7 dígitos.',
+    //         'department.required' => 'Se requiere seleccionar al menos un departamento',
+    //         'roles.required' => 'Se requiere seleccionar al menos una función del usuario',
+    //         'roles.in' => 'Valor inválido',
+    //     ];
 
-        $validatedData = $request->validate($rules, $messages);
+    //     $validatedData = $request->validate($rules, $messages);
     
-        $email = $validatedData['email'];
-        $password=Str::random(8); // Generar una contraseña aleatoria
+    //     $email = $validatedData['email'];
+    //     $password=Str::random(8); // Generar una contraseña aleatoria
 
-        $user = User::create([
-            'degree' => $validatedData['degree'],
-            'name' => $validatedData['name'],
-            'doi' => $validatedData['doi'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($password),
-        ]);
+    //     $user = User::create([
+    //         'degree' => $validatedData['degree'],
+    //         'name' => $validatedData['name'],
+    //         'doi' => $validatedData['doi'],
+    //         'email' => $validatedData['email'],
+    //         'password' => Hash::make($password),
+    //     ]);
 
-        // Se agregan roles en caso de que existan
-        if ($request->has('roles')) {
-            $user->roles()->sync($request->input('roles'));
-        }
+    //     // Se agregan roles en caso de que existan
+    //     if ($request->has('roles')) {
+    //         $user->roles()->sync($request->input('roles'));
+    //     }
 
-        // Agregar un solo departamento al usuario
-        if (isset($validatedData['department'])) {
-            $user->departments()->attach($validatedData['department']);
-        }
+    //     // Agregar un solo departamento al usuario
+    //     if (isset($validatedData['department'])) {
+    //         $user->departments()->attach($validatedData['department']);
+    //     }
 
-        // Crear un nuevo registro en la tabla teams
-        $usuarioAutenticado=Auth::user();
-        Team::create([
-            'user_id' => $user->id,
-            'department_id' => $validatedData['department'],
-            'register_id'=>$usuarioAutenticado->id,
-        ]);
+    //     // Crear un nuevo registro en la tabla teams
+    //     $usuarioAutenticado=Auth::user();
+    //     Team::create([
+    //         'user_id' => $user->id,
+    //         'department_id' => $validatedData['department'],
+    //         'register_id'=>$usuarioAutenticado->id,
+    //     ]);
 
-        // Notificación por correo electrónico de la cuenta creada
-        Mail::to($email)->send(new WelcomeEmail($email, $password));
+    //     // Notificación por correo electrónico de la cuenta creada
+    //     Mail::to($email)->send(new WelcomeEmail($email, $password));
     
-        return redirect()->route('users.team')
-            ->with('success', 'Usuario creado y agregado al equipo exitosamente.');
-    }
+    //     return redirect()->route('users.team')
+    //         ->with('success', 'Usuario creado y agregado al equipo exitosamente.');
+    // }
 
     public function removeTeam(Team $team)
     {
         $user = User::find($team->user_id); // Obtén el usuario asociado al equipo
 
         // Remueve los roles específicos del usuario
-        $rolesToRemove = Role::where('name', 'Gestor de eventos')->get();
+        $rolesToRemove = Role::whereIn('name', ['Gestor de eventos', 'Gestor de espacios'])->get();
+
+        // Remueve los roles específicos del usuario
         $user->roles()->detach($rolesToRemove);
 
         $team->delete();

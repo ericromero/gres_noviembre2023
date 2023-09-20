@@ -16,10 +16,17 @@
 
         <!-- Estilos personalizados -->
         <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> 
 
+        <!-- Librerias para usar Select2 de Jquery-->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
+
     </head>
     {{-- <body class="font-sans antialiased"> --}}
     <body class="font-sans antialiased flex flex-col min-h-screen bg-white dark:bg-gray-800 shadow">

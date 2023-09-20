@@ -14,10 +14,16 @@
                             @csrf
                             <input type="hidden" name="department" value="{{ $department->id }}">
                             <h3 class="font-bold text-lg mb-4 border-b border-gray-700 dark:border-gray-300">Agrega un usuario existente al equipo</h3>
+                            
                             <div class="mb-4">
-                                <label for="doi" class="block font-bold mb-2">Número de trabajador:</label>
-                                <input type="text" name="doi" id="doi" value="{{ old('doi') }}" class="form-input dark:bg-gray-800 dark:text-white" required>
-                                @error('doi')
+                                <label for="user" class="block font-bold mb-2">Académico(a):</label>
+                                <select type="select" name="academic" id="academic" value="{{ old('academic') }}" class="form-select js-example-basic-single dark:bg-gray-800 dark:text-white" required>
+                                    <option>Selecciona un académico</option>
+                                    @foreach ($academics as $academic)
+                                        <option value="{{$academic->id}}">{{$academic->degree}} {{$academic->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('academic')
                                     <p class="text-red-500 text-sm">{{ $message }}</p>
                                 @enderror
                             </div>   
@@ -27,7 +33,7 @@
                                 @foreach($roles as $role)
                                     <label class="inline-flex items-center mt-1">
                                         <input type="checkbox" name="roles[]" value="{{ $role->id }}" class="form-checkbox">
-                                        <span class="ml-2">{{ $role->name }}</span>
+                                        <span class="ml-1 mr-4">{{ $role->name }}</span>
                                     </label>
                                 @endforeach
                                 @error('roles')
@@ -40,8 +46,7 @@
                     {{-- </div> --}}
                 </div>
 
-                <div class="p-4 mx-2 border dark:border-gray-300 border-gray-700">
-                    {{-- <div class="border-2 p-6"> --}}
+                {{-- <div class="p-4 mx-2 border dark:border-gray-300 border-gray-700">
                         <form action="{{ route('users.storeNewUserTeam') }}" method="POST">
                             @csrf
                             <input type="hidden" name="department" value="{{ $department->id }}">
@@ -93,7 +98,7 @@
                                 @foreach($roles as $role)
                                     <label class="inline-flex items-center mt-1">
                                         <input type="checkbox" name="roles[]" value="{{ $role->id }}" class="form-checkbox">
-                                        <span class="ml-2">{{ $role->name }}</span>
+                                        <span class="ml-1 mr-4">{{ $role->name }}</span>
                                     </label>
                                 @endforeach
                                 @error('roles')
@@ -103,15 +108,20 @@
 
                             <button type="submit" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md">Crea usuario y agregar al equipo</button>
                         </form>
-                    {{-- </div> --}}
-                </div>
+                </div> --}}
                 
             </div>
 
             <div class="mt-4">                
-                <a href="{{ route('users.team') }}" class="block mb-4 text-center ml-2 px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 inline-block">Regresar</a>
+                <a href="{{ route('users.team') }}" class="block mb-4 text-center ml-2 px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 inline-block">Cancelar conformación de integrante</a>
             </div>
 
         </div>
     {{-- </div> --}}
 </x-app-layout>
+
+<script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+    });
+</script>

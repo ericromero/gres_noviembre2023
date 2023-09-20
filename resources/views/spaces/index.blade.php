@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight text-gray-800 dark:text-gray-200">
             {{ __('Espacios Disponibles') }}
         </h2>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    {{-- <div class="py-6"> --}}
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
             {{-- Código para el manejo de notificaciones --}}
             @if(session('success'))
                 <div class="bg-green-200 text-green-800 p-4 mb-4 rounded-md">
@@ -22,18 +22,18 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($spaces as $space)
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-md rounded-lg">
+                    <div class="bg-white dark:bg-gray-700 overflow-hidden shadow-md rounded-lg">
                         <img src="{{ asset($space->photography) }}" alt="Imagen del espacio" class="w-full h-40 object-cover">
                         <div class="p-4">
                             <h3 class="text-lg font-semibold">{{ $space->name }}</h3>
-                            <p class="text-gray-600">{{ $space->description }}</p>
+                            <p>{{ $space->description }}</p>
                         </div>
-                        <div class="p-4 border-t dark:border-gray-700">
-                            <p class="text-gray-600">Capacidad: {{ $space->capacity }}</p>
-                            <p class="text-gray-600">Disponibilidad: {{ $space->availability }}</p>
+                        <div class="p-2 ml-2 border-t dark:border-gray-700">
+                            <p>Capacidad: {{ $space->capacity }}</p>
+                            <p>Disponibilidad: {{ $space->availability }}</p>
                         </div>
-                        <div class="p-4 flex justify-end items-center space-x-2">
-                            <a href="{{ route('spaces.edit', $space) }}" class="text-blue-500 hover:underline">Editar</a>
+                        <div class="p-2 flex justify-end items-center space-x-2">
+                            <a href="{{ route('spaces.edit', $space) }}" class="text-blue-500 dark:text-blue-300 hover:underline">Editar</a>
                             <form action="{{ route('spaces.destroy', $space) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este espacio?')">
                                 @csrf
                                 @method('DELETE')
@@ -43,6 +43,10 @@
                     </div>
                 @endforeach
             </div>
+
+            <div class="mt-4">
+                <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md">Regresar</a>
+            </div>
         </div>
-    </div>
+    {{-- </div> --}}
 </x-app-layout>

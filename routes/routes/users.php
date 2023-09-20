@@ -30,23 +30,23 @@ Route::middleware(['role:Coordinador'])->group(function () {
     Route::post('/equipo/agregaUsuario', [UserController::class, 'storeUserTeam'])->name('users.storeUserTeam');
 
     // Ruta para guardar el nuevo usuario en la base de datos
-    Route::post('/equipo/agregaNuevoUsuario', [UserController::class, 'storeNewUserTeam'])->name('users.storeNewUserTeam');
+    //Route::post('/equipo/agregaNuevoUsuario', [UserController::class, 'storeNewUserTeam'])->name('users.storeNewUserTeam');
 
     // Ruta para quitar a un usuario del equipo
     Route::delete('/equipo/quitar/{team}', [UserController::class, 'removeTeam'])->name('users.removeTeam');
 
 });
 
-Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
-    // Ruta para mostrar el formulario de creación de usuario
-    Route::post('/usuario/alta', [UserController::class, 'altaAcademicoPre'])->name('users.altaAcademicoPre');
+// Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
+//     // Ruta para mostrar el formulario de creación de usuario
+//     Route::post('/usuario/alta', [UserController::class, 'altaAcademicoPre'])->name('users.altaAcademicoPre');
 
-    // Ruta para mostrar el formulario de creación de usuario
-    Route::get('/usuario/alta', [UserController::class, 'altaAcademicoPre'])->name('users.altaAcademicoPre');
+//     // Ruta para mostrar el formulario de creación de usuario
+//     Route::get('/usuario/alta', [UserController::class, 'altaAcademicoPre'])->name('users.altaAcademicoPre');
 
-    // Ruta para guardar el nuevo usuario en la base de datos
-    Route::post('/evento/usuario_agregado', [UserController::class, 'storePreEvent'])->name('users.storePreEvent');
-});
+//     // Ruta para guardar el nuevo usuario en la base de datos
+//     Route::post('/evento/usuario_agregado', [UserController::class, 'storePreEvent'])->name('users.storePreEvent');
+// });
 
     
 

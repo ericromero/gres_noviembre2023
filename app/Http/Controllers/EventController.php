@@ -332,7 +332,8 @@ class EventController extends Controller
         // Obtener los tipos de participantes (ajusta esto según cómo los obtienes)
         $participationTypes = ParticipationType::all();
         $participants=EventParticipant::where('event_id',$event->id)->get();
-        return view('events.eventparticipants', compact('event', 'participationTypes','participants'));
+        $academics = User::has('adscriptions.department')->get();
+        return view('events.eventparticipants', compact('event', 'participationTypes','participants','academics'));
     }
 
     public function menuEdt(Event $event) {
