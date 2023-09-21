@@ -451,4 +451,5 @@ class EventController extends Controller
     public function creditos() {
         return view('creditos');
     }
+    
 }

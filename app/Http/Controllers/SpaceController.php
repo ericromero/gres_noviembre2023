@@ -203,6 +203,4 @@ class SpaceController extends Controller
         return $spacesInOverlappingEvents;
     }
 
-
-
 }
