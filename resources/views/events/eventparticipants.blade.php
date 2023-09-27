@@ -4,7 +4,7 @@
             {{ __('Registro de participantes') }}
         </h2>
         <div class="text-gray-700 dark:text-gray-300">
-            Si el participante es académico(a) de la Facutad de Psicología, búscalo en el apartado "Académico(a) de la facultad", caso contrario, regístralo en el apartado "Académico(a) externo a la Facultad".
+            Si el participante es académico(a) de la Facutad de Psicología, búscalo en el apartado "Registro de académico(a) de la Facultad de Psicología", caso contrario, regístralo en el apartado "registro de académico(a) externo".
         </div>
     </x-slot>
 
@@ -20,11 +20,11 @@
         <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-2 mx-auto sm:px-2 lg:px-2">
             <!-- Campo de búsqueda para el usuario por DOI -->
             <div class="p-2 border border-gray-700 dark:border-gray-300">
-                <h2 class="text-lg border-b border-gray-700 dark:border-gray-500">Académico(a) de la Facultad de Psicología</h2>
+                <h2 class="text-lg border-b border-gray-700 dark:border-gray-500">Registro de académico(a) de la Facultad de Psicología</h2>
                 <form action="{{ route('eventparticipant.storeparticipant') }}" method="POST" class="space-y-4">
                     @csrf
                     <label for="fullname" class="block font-bold mb-2">Nombre del académico(a)
-                        <br><span class="text-sm text-gray-700 dark:text-gray-500">(Busca al académico(a) escribiendo su nombre y apellidos)</span>
+                        <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Busca al académico(a) de la Facultad de Psicología escribiendo su nombre y apellidos.">?</span>
                     </label>
                     <select class="js-example-basic-single dark:bg-gray-800 dark:text-white" name="fullname" id="fullname" placeholder="Nombre del académico(a)" required>
                         <option>Selecciona un académico</option>
@@ -47,7 +47,7 @@
 
                     <!-- Botón para registrar al participante -->
                     <div class="flex items-center">
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">{{ __('Registrar Participante') }}</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">{{ __('Registrar participante de la Facultad') }}</button>
                     </div>
 
                 </form>
@@ -55,12 +55,12 @@
             
 
             <div class="p-2 ml-2 border border-gray-700 dark:border-gray-300">
-                <h2 class="text-lg border-b border-gray-700 dark:border-gray-500">Académico(a) externo a la Facultad de Psicología</h2>
+                <h2 class="text-lg border-b border-gray-700 dark:border-gray-500">Registro de académico(a) externo.</h2>
                 <form action="{{ route('eventparticipant.storeparticipant') }}" method="POST" class="space-y-4">
                     @csrf
                     <!-- Campos para llenar en caso de que el usuario no exista en la base de datos -->    
                     <label for="fullname" class="block font-bold mb-2">Grado y nombre del académico(a)
-                        <br><span class="text-sm text-gray-700 dark:text-gray-500"> (Escribe su Grado y Nombre y por último apellidos) </span>
+                        <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Registra al académico(a) escribiendo su grado, nombre y apellidos.">?</span>
                     </label>
                     <input class="dark:bg-gray-800 dark:text-white" type="text" name="fullname" id="fullname" required/>
 
@@ -78,7 +78,7 @@
 
                     <!-- Botón para registrar al participante -->
                     <div class="flex items-center">
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">{{ __('Registrar Participante') }}</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">{{ __('Registrar participante externo') }}</button>
                     </div>
 
                 </form>
@@ -126,14 +126,19 @@
         <div class="flex mt-4 mb-4">
             <!-- Botón para cerrar el registro -->
             <a href="{{route('events.register',$event->id)}}" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md"
-                onclick="return confirm('Una vez registrado el evento no podrá modificar la información o agregar participantes. ¿Desea continuar?')">
+                onclick="return confirm('Una vez registrado el evento no podrá modificar la información primordial como lo es el título, fechas y espacio solicitado del evento. ¿Desea continuar?')">
                 {{ __('Registrar evento') }}
             </a>
             <!-- Botón para cancelar registro -->
-            <a href="{{route('events.destroy',$event->id)}}" class="px-4 py-2 ml-4 bg-red-500 text-white font-semibold rounded-md"
-                onclick="return confirm('¿Estás seguro de que deseas cancelar este registro?')">
-                {{ __('Cancelar registro') }}
-            </a>
+            <form action="{{ route('events.destroy', $event->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                
+                <button type="submit" class="px-4 py-2 ml-4 bg-red-500 text-white font-semibold rounded-md" onclick="return confirm('¿Estás seguro de que deseas cancelar este registro?')">
+                    {{ __('Cancelar registro') }}
+                </button>
+            </form>
+            
         </div>
 
     </div>
@@ -144,4 +149,8 @@
     $(document).ready(function() {
         $('.js-example-basic-single').select2();
     });
+</script>
+
+<script>
+    tippy('[data-tippy-content]');
 </script>

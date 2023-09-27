@@ -110,10 +110,12 @@ class EventController extends Controller
             'title' => [
                 'required',
                 'string',
-                'max:255'],
+                'max:250'],
             'summary' => [
                 'required',
-                'string'],
+                'string',
+                'nullable',
+                'max:500'],
             'start_date' => [
                 'required',
                 'date','
@@ -142,6 +144,7 @@ class EventController extends Controller
                 'file',
                 'mimes:pdf',
                 'max:5120',
+                'nullable'
             ],
             'registration_url' => [
                 'nullable',
@@ -161,10 +164,11 @@ class EventController extends Controller
         $messages = [
             'title.required' => 'El título del evento es obligatorio.',
             'title.string' => 'El título del evento debe ser una cadena de texto.',
-            'title.max' => 'El título del evento no puede exceder los 255 caracteres.',
+            'title.max' => 'El título del evento no puede exceder los 250 caracteres.',
             
             'summary.required' => 'El resumen del evento es obligatorio.',
             'summary.string' => 'El resumen del evento debe ser una cadena de texto.',
+            'summary.max'=>'El resumen no debe exceder los 500 caracteres.',
             
             'start_date.required' => 'La fecha de inicio es obligatoria.',
             'start_date.date' => 'La fecha de inicio debe ser una fecha válida.',
@@ -329,7 +333,7 @@ class EventController extends Controller
     }
 
     public function registrarParticipantes(Event $event) {
-        // Obtener los tipos de participantes (ajusta esto según cómo los obtienes)
+        // Obtener los tipos de participantes
         $participationTypes = ParticipationType::all();
         $participants=EventParticipant::where('event_id',$event->id)->get();
         $academics = User::has('adscriptions.department')->get();
@@ -342,9 +346,9 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
-        // Eliminar los registros relacionados en event_participants
-        $event->participants()->delete();
-
+        // Eliminar los registros relacionados en event_participants si es que existen
+        $event->users()->detach();
+        
         // Eliminar la imagen de portada si existe
         if ($event->cover_image) {
             $imagePath = public_path($event->cover_image);
@@ -353,6 +357,7 @@ class EventController extends Controller
             }
         }
 
+        // Eliminar el cartel o programa de portada si existe
         if ($event->program) {
             $programPath = public_path($event->program);
             if (file_exists($programPath)) {
@@ -362,7 +367,7 @@ class EventController extends Controller
 
         $event->delete();
 
-        return view('dashboard')->with('success', 'El registro del evento ha sido cancelado.');
+        return redirect()->route('dashboard')->with('success', 'El registro del evento ha sido cancelado.');
     }
 
     public function searchparticipant(Request $request) {

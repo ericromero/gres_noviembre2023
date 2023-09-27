@@ -101,4 +101,9 @@ class Event extends Model
     {
         return $this->hasMany(EventStreaming::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'event_participants');
+    }
 }

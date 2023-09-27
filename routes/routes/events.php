@@ -29,7 +29,7 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     //Route::post('/eventos/busca/participante', [EventController::class, 'searchparticipant'])->name('event.searchparticipant');
 
     // Ruta para eliminar un evento
-    Route::delete('/eventos/{id}', [EventController::class, 'destroy'])->name('events.destroy');
+    Route::delete('/eventos/{event}', [EventController::class, 'destroy'])->name('events.destroy');
 
     //Ruta para acceder a la creación de eventos
     Route::get('/evento/registro/{event}', [EventController::class,'register'])->name('events.register');

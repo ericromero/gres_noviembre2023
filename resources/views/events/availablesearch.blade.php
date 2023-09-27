@@ -7,30 +7,40 @@
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 overflow-hidden shadow-sm sm:rounded-lg dark:bg-gray-800 text-gray-700 dark:text-gray-300">
         {{-- En este DIV se pone el formulario del buscador así como el calendario con eventos ya reservados --}}
-        <div class="flex">
-            <div class="p-2 border border-slate-400">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2">
+            <div class="p-2 border border-slate-400"> <!-- Contenedor para mostrar la opción de fechas -->
                 <div class="mb-2 dark:bg-gray-800 dark:text-white border-b border-gray-700 dark:border-gray-300">
                     <p>Selecciona la fecha y horario de tu evento.</p>
                 </div>
                 <form action="{{ route('spaces.search') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <table class="border-separate border-spacing-x-2">
-                    <tr>
-                        <th><label for="start_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Fecha de inicio</label></th>
-                        <th><label for="end_date" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Fecha de fin</label></th>
-                        <th><label for="start_time" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Hora de inicio</label></th>
-                        <th><label for="end_time" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Hora de termino</label></th>
-                        <th></th>
+                    @csrf
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2">
                         
-                    </tr>
-                    <tr>
-                        <td><input class="dark:bg-gray-800 dark:text-white" type="date" name="start_date" min="{{ now()->addDays(4)->format('Y-m-d') }}" max="{{ now()->addMonths(6)->format('Y-m-d') }}" required></td>
-                        <td><input class="dark:bg-gray-800 dark:text-white" type="date" name="end_date" min="{{ now()->addDays(4)->format('Y-m-d') }}" max="{{ now()->addMonths(6)->format('Y-m-d') }}" required></td>
-                        <td><input class="dark:bg-gray-800 dark:text-white" type="time" name="start_time" required></td>
-                        <td><input class="dark:bg-gray-800 dark:text-white" type="time" name="end_time" required></td>
-                        <td><button class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block" type="submit">Buscar disponibilidad</button></td>
-                    </tr>
-                </table>
+                        <div class="my-2">
+                            <label for="start_date" class="text-gray-700 dark:text-gray-300 font-bold mb-2">Fecha de inicio</label>
+                            <input class="dark:bg-gray-800 dark:text-white" type="date" name="start_date" min="{{ now()->addDays(4)->format('Y-m-d') }}" max="{{ now()->addMonths(6)->format('Y-m-d') }}" required>
+                        </div>
+                        
+                        <div class="my-2">
+                            <label for="end_date" class="text-gray-700 dark:text-gray-300 font-bold mb-2">Fecha de fin</label>
+                        <input class="dark:bg-gray-800 dark:text-white" type="date" name="end_date" min="{{ now()->addDays(4)->format('Y-m-d') }}" max="{{ now()->addMonths(6)->format('Y-m-d') }}" required>
+                        </div>
+                        
+                        <div class="my-2">
+                            <label for="start_time" class="text-gray-700 dark:text-gray-300 font-bold mb-2">Hora de inicio</label>
+                            <input class="dark:bg-gray-800 dark:text-white" type="time" name="start_time" required>
+                        </div>
+                        
+                        <div class="my-2">
+                            <label for="end_time" class="text-gray-700 dark:text-gray-300 font-bold mb-2">Hora de termino</label>
+                            <input class="dark:bg-gray-800 dark:text-white" type="time" name="end_time" required>
+                        </div>
+                        
+                        <div class="my-2">
+                            <button class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block" type="submit">Buscar disponibilidad</button>
+                        </div>                   
+                                           
+                    </div>
                 </form>
             </div>
             

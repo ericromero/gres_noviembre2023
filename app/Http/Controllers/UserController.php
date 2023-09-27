@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users=User::all();
+        $users = User::orderBy('name', 'asc')->paginate(10);
         return view('users.index',compact('users'));
     }
 
@@ -85,6 +85,14 @@ class UserController extends Controller
             $user->departments()->sync($validatedData['departments']);
         }
 
+        // Verificar si el usuario tiene el rol de Coordinador el cual tiene role_id = 2
+        if (in_array('2', $request->input('roles', []))) {
+            // Se integra al equipo de cada departamento seleccionado
+            foreach ($validatedData['departments'] as $departmentId) {
+                $this->integrateUserTeam($user->id, $departmentId);
+            }
+        }
+
         // Notificación por correo electrónico de la cuenta creada
         Mail::to($email)->send(new WelcomeEmail($email, $password));
     
@@ -143,6 +151,14 @@ class UserController extends Controller
         // Actualizar roles del usuario
         $user->syncRoles($request->input('roles', []));
 
+        // Verificar si el usuario tiene el rol de Coordinador el cual tiene role_id = 2
+        if (in_array('2', $request->input('roles', []))) {
+            // Se integra al equipo de cada departamento seleccionado
+            foreach ($validatedData['departments'] as $departmentId) {
+                $this->integrateUserTeam($user->id, $departmentId);
+            }
+        }
+
         return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
@@ -167,14 +183,8 @@ class UserController extends Controller
         return view('users.team',compact('users'));
     }
 
-    public function createUserTeam()
-    {
-        // Obtén el departamento del usuario autenticado
-        $department = Auth::user()->coordinatedDepartment;
-        $academics=User::all();        
-        $roles=Role::whereIn('name',['Gestor de eventos','Gestor de espacios'])->get();
-
-        return view('users.createUserTeam',compact('department','roles','academics'));
+    public function integracionEquipo() {
+        
     }
 
     public function storeUserTeam(Request $request)
@@ -208,15 +218,25 @@ class UserController extends Controller
         }
 
         // Crear un nuevo registro en la tabla teams
-        $usuarioAutenticado=Auth::user();
-        Team::create([
-            'user_id' => $validatedData['academic'],
-            'department_id' => $validatedData['department'],
-            'register_id'=>$usuarioAutenticado->id,
-        ]);
+        $this->integrateUserTeam($validatedData['academic'],$validatedData['department']);
+        // $usuarioAutenticado=Auth::user();
+        // Team::create([
+        //     'user_id' => $validatedData['academic'],
+        //     'department_id' => $validatedData['department'],
+        //     'register_id'=>$usuarioAutenticado->id,
+        // ]);
     
         return redirect()->route('users.team')
             ->with('success', 'Usuario agregado al equipo correctamente.');
+    }
+
+    public function integrateUserTeam($academic, $department) {
+        $usuarioAutenticado=Auth::user();
+        Team::create([
+            'user_id' => $academic,
+            'department_id' => $department,
+            'register_id'=>$usuarioAutenticado->id,
+        ]);
     }
 
     // public function storeNewUserTeam(Request $request)

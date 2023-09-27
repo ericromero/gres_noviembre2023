@@ -70,7 +70,17 @@
                             <form action="{{ route('users.removeTeam', ['team' => $user->team->id]) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas quitar a este usuario del equipo?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-indigo-500 hover:text-indigo-900 dark:text-indigo-300 dark:hover:text-indigo-500">Quitar</button>
+                                @php $PuedeEliminar=true; @endphp
+                                @foreach ($user->roles as $role)
+                                    @if($role->name=='Administrador'||$role->name=='Coordinador')
+                                        @php $PuedeEliminar=false; @endphp
+                                    @endif
+                                @endforeach
+                                
+                                @if($PuedeEliminar)
+                                        <button type="submit" class="text-indigo-500 hover:text-indigo-900 dark:text-indigo-300 dark:hover:text-indigo-500">Quitar</button>
+                                    @endif
+                                
                             </form>
                         </td>
                         
