@@ -37,4 +37,9 @@ class Space extends Model
         return $this->belongsToMany(Event::class, 'event_spaces', 'space_id', 'event_id');
     }
 
+    public function eventSpaces()
+    {
+        return $this->hasMany(EventSpace::class, 'space_id');
+    }
+
 }

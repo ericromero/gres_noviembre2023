@@ -183,7 +183,13 @@
                             @enderror                            
                         </div>
 
-                        <div class="mb-4">
+                        <div class="border p-4 border-gray-800 dark:border-gray-300">
+                            <b>Nota:</b> Si requiere servicio de grabación, fotografia o transmisión, por favor acuda directamente a UDEMAT para solicitar el servicio.
+                        </div>
+
+                        {{-- Se remueven las opciones de servicios de UDEMAT hasta que esté implementado --}}
+
+                        {{-- <div class="mb-4">
                             <label for="transmission_required" class="block font-bold mb-2">Requiere transmisión: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Si requiere que su evento sea transmitido por los canales institucionales gestionados por UDEMAT, active esta casilla.">?</span></label>
                             <input type="checkbox" name="transmission_required" class="form-checkbox">
                             @error('transmission_required')
@@ -197,7 +203,7 @@
                             @error('recording_required')
                                 <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
-                        </div>
+                        </div> --}}
                         
                         <div class="flex">
                             <div class="flex items-center justify-end mt-4">

@@ -6,6 +6,9 @@ Route::middleware(['role:Administrador'])->group(function () {
     // Ruta para mostrar la lista de usuarios
     Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 
+    // Ruta para guardar el nuevo usuario en la base de datos
+    Route::post('/usuario/busqueda', [UserController::class, 'search'])->name('users.search');
+
     // Ruta para mostrar el formulario de edición de un usuario
     Route::get('/usuario/{user}/actualizar', [UserController::class, 'edit'])->name('users.edit');
 

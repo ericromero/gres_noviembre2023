@@ -87,9 +87,9 @@ class Event extends Model
         return $this->belongsTo(EventType::class);
     }
 
-    public function eventspace()
+    public function spaces()
     {
-        return $this->hasOne(EventSpace::class);
+        return $this->belongsToMany(Space::class, 'event_spaces', 'event_id', 'space_id');
     }
 
     public function eventRecordings()
@@ -106,4 +106,5 @@ class Event extends Model
     {
         return $this->belongsToMany(User::class, 'event_participants');
     }
+
 }

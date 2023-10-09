@@ -17,7 +17,7 @@
                     <option value="C.">C.</option>
                     <option value="Sra.">Sra.</option>
                     <option value="Sr.">Sr.</option>
-                    <option value="Lic.">Lic</option>
+                    <option value="Lic.">Lic.</option>
                     <option value="Mtra.">Mtra.</option>
                     <option value="Mtro.">Mtro.</option>
                     <option value="Dra.">Dra.</option>
@@ -68,12 +68,11 @@
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
-
-            <div class="mt-4">
+            
+            <div class="mt-4 mb-2">
                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">Guardar cambios</button>
                 <a href="{{ route('users.index') }}" class="ml-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-md">Cancelar cambios</a>
-            </div>
-            
+            </div>            
         </form>
     </div>
 </x-app-layout>

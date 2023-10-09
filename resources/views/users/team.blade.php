@@ -38,9 +38,9 @@
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                         Rol(es)
                     </th>
-                    <th scope="col" class="relative px-6 py-3">
+                    {{-- <th scope="col" class="relative px-6 py-3">
                         <span class="sr-only">Acciones</span>
-                    </th>
+                    </th> --}}
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-700 dark:divide-gray-200">
@@ -66,7 +66,7 @@
                             @endforeach
                         </td>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        {{-- <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <form action="{{ route('users.removeTeam', ['team' => $user->team->id]) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas quitar a este usuario del equipo?')">
                                 @csrf
                                 @method('DELETE')
@@ -82,7 +82,7 @@
                                     @endif
                                 
                             </form>
-                        </td>
+                        </td> --}}
                         
                     </tr>
                 @endforeach
@@ -90,7 +90,7 @@
         </table>                
     
         <div>
-            <a href="{{ route('users.createUserTeam') }}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Agregar usuario al equipo</a>
+            {{-- <a href="{{ route('users.team') }}" class="block mb-4 text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Agregar usuario al equipo</a> --}}
             <a href="{{ route('dashboard') }}" class="block mb-4 text-center ml-2 px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 inline-block">Regresar</a>
         </div>
 

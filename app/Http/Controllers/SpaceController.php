@@ -12,10 +12,11 @@ use App\Models\Event;
 
 class SpaceController extends Controller
 {
+
     public function search(Request $request)
     {
         // Código para obtener los eventos y mostrar el calendario
-        $allEvents=Event::where('status','aceptado')->get();
+        $allEvents = Event::whereIn('status', ['solicitado', 'aceptado', 'finalizado'])->get();
         $events=[];
         foreach($allEvents as $event) {
             $events[] = [
@@ -35,6 +36,22 @@ class SpaceController extends Controller
         ) {
             return view('events.availablesearch',compact('events'));
         }
+
+        $request->validate([
+            'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
+            'start_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):(?:[03]0|00)$/'],
+            'end_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):(?:[03]0|00)$/', 'after:start_time'],
+        ], [
+            'start_date.required' => 'La fecha de inicio es obligatoria.',
+            'end_date.required' => 'La fecha de finalización es obligatoria.',
+            'end_date.after_or_equal' => 'La fecha de finalización debe ser igual o posterior a la fecha de inicio.',
+            'start_time.required' => 'La hora de inicio es obligatoria.',
+            'start_time.regex' => 'La hora de inicio debe tener minutos en 00 o 30.',
+            'end_time.required' => 'La hora de finalización es obligatoria.',
+            'end_time.regex' => 'La hora de finalización debe tener minutos en 00 o 30.',
+            'end_time.after' => 'La hora de finalización debe ser posterior a la hora de inicio.',
+        ]);
 
         $startDateTime = $request->input('start_date') . ' ' . $request->input('start_time');
         $endDateTime = $request->input('end_date') . ' ' . $request->input('end_time');
@@ -178,7 +195,7 @@ class SpaceController extends Controller
 
     public function getOverlappingEventIds($start_date, $end_date, $start_time, $end_time) {
         $overlappingEventIds = DB::table('events')
-            ->where('published', 1)
+            ->whereIn('status', ['solicitado', 'aceptado', 'finalizado'])
             ->where(function ($query) use ($start_date, $end_date, $start_time, $end_time) {
                 $query->where('start_date', '<=', $end_date)
                     ->where('end_date', '>=', $start_date)

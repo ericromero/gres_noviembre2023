@@ -32,8 +32,12 @@
                                 @endif
                                 </p>
                                 <p><strong>Horario:</strong> {{ $event->start_time }} - {{ $event->end_time }}</p>
-                                <p><strong>Lugar:</strong> {{ $event->eventspace->space->name }}</p>
-                                <p><strong>Ubicacion:</strong> {{ $event->eventspace->space->location }}</p>
+                                <p><strong>Lugar:</strong>
+                                    @foreach($event->spaces as $event_space)
+                                        {{$event_space->name}} ({{$event_space->location}})<br>
+                                    @endforeach
+                                </p>foreach
+                                </p>
                                 
                                 @if ($event->registration_url!=null)
                                     <p><strong>Registro:</strong> {{ $event->registration_url }}</p>

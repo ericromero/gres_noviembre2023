@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('name', 'asc')->paginate(10);
+        $users = User::orderBy('name', 'asc')->get();
         return view('users.index',compact('users'));
     }
 
@@ -85,8 +85,8 @@ class UserController extends Controller
             $user->departments()->sync($validatedData['departments']);
         }
 
-        // Verificar si el usuario tiene el rol de Coordinador el cual tiene role_id = 2
-        if (in_array('2', $request->input('roles', []))) {
+        // Si tiene rol asignado, se le integra al equipo de trabajo de departamento
+        if ($request->input('roles', [])!=null) {
             // Se integra al equipo de cada departamento seleccionado
             foreach ($validatedData['departments'] as $departmentId) {
                 $this->integrateUserTeam($user->id, $departmentId);
@@ -100,6 +100,11 @@ class UserController extends Controller
             ->with('success', 'Usuario creado exitosamente.');
     }
 
+
+    public function search(Request $request) {
+        $user=User::find($request->user);
+        return redirect()->route('users.edit',compact('user'));
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -151,12 +156,14 @@ class UserController extends Controller
         // Actualizar roles del usuario
         $user->syncRoles($request->input('roles', []));
 
-        // Verificar si el usuario tiene el rol de Coordinador el cual tiene role_id = 2
-        if (in_array('2', $request->input('roles', []))) {
+        // Si tiene rol asignado, se le integra al equipo de trabajo de departamento
+        if ($request->input('roles', [])!=null) {
             // Se integra al equipo de cada departamento seleccionado
             foreach ($validatedData['departments'] as $departmentId) {
                 $this->integrateUserTeam($user->id, $departmentId);
             }
+        } else { // Si no tiene roles, se les quita del equipo
+            $this->removeUserTeam($user->id);
         }
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
@@ -181,10 +188,6 @@ class UserController extends Controller
         })->get();
 
         return view('users.team',compact('users'));
-    }
-
-    public function integracionEquipo() {
-        
     }
 
     public function storeUserTeam(Request $request)
@@ -232,11 +235,24 @@ class UserController extends Controller
 
     public function integrateUserTeam($academic, $department) {
         $usuarioAutenticado=Auth::user();
+        // Primero se verifica si el usuario pertenece a algún departamento, lo remueve
+        $userTeams=Team::where('user_id',$academic)->get();
+        // Eliminar todos los equipos obtenidos
+        $userTeams->each->delete();
+
         Team::create([
             'user_id' => $academic,
             'department_id' => $department,
             'register_id'=>$usuarioAutenticado->id,
         ]);
+    }
+
+    public function removeUserTeam($academic) {
+        $usuarioAutenticado=Auth::user();
+        // Primero se verifica si el usuario pertenece a algún departamento, lo remueve
+        $userTeams=Team::where('user_id',$academic)->get();
+        // Eliminar todos los equipos obtenidos
+        $userTeams->each->delete();
     }
 
     // public function storeNewUserTeam(Request $request)

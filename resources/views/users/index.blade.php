@@ -14,11 +14,30 @@
             </div>
         @endif
 
-        <div>
+        <div class="my-2">
             <a href="{{ route('users.create') }}" class="block text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 inline-block">Agregar usuario</a>
         </div>
+
+        <form action="{{route('users.search')}}" method="POST">
+            <div class="my-2 p-4 border border-gray-300">            
+                @csrf
+                <div>
+                    <label for="user">Búsqueda de usuario usuario</label>
+                    <select name="user" id="user" class="js-example-basic-single" required>
+                        <option value="">Ingresa el nombre y/o apellidos del usuario a buscar</option>
+                        @foreach ($users as $user)
+                            <option value="{{$user->id}}">{{$user->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div>
+                    <input type="submit" value="Buscar académico" class="block text-center px-3 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 inline-block cursor-pointer">
+                </div>
+            </div>
+        </form>
         
-        <div class="overflow-x-auto">
+        {{-- <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 mt-4">
                 <thead class="bg-gray-50 dark:bg-gray-600">
                     <tr>
@@ -72,7 +91,7 @@
 
         <div class="mt-4">
             {{ $users->links() }}
-        </div>
+        </div> --}}
 
         <div class="my-4">
             <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md">Regresar</a>
@@ -80,3 +99,9 @@
 
     </div>
 </x-app-layout>
+
+<script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+    });
+</script>

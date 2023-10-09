@@ -17,7 +17,7 @@
             </div>
         @endif
         
-        <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-2 mx-auto sm:px-2 lg:px-2">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-2 mx-auto sm:px-1 lg:px-2">
             <!-- Campo de búsqueda para el usuario por DOI -->
             <div class="p-2 border border-gray-700 dark:border-gray-300">
                 <h2 class="text-lg border-b border-gray-700 dark:border-gray-500">Registro de académico(a) de la Facultad de Psicología</h2>

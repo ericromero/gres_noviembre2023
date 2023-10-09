@@ -41,7 +41,7 @@ class EventController extends Controller
     }
 
     public function availableSearch() {
-        $allEvents=Event::where('published','1')->get();
+        $allEvents = Event::whereIn('status', ['solicitado', 'aceptado', 'finalizado'])->get();
         $events=[];
         foreach($allEvents as $event) {
             $events[] = [
@@ -52,10 +52,6 @@ class EventController extends Controller
             ];
         }
         return view('events.availablesearch',compact('events'));
-    }
-
-    public function availableResult() {
-
     }
 
     public function create()
