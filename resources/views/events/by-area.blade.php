@@ -36,26 +36,23 @@
                             <p><a href="{{ asset($event->program) }}" class="text-blue-600 hover:text-blue-900 underline" download>Descargar Programa</a></p>
                             @endif
 
-                            <p><strong>Solicitud de espacio:</strong> {{ $event->eventspace->status }}</p>
-                            @if($event->eventspace->status=="rechazado")
-                                <p><strong>Motivo de rechazo:</strong> {{ $event->eventspace->observation }}</p>                              
-                            @endif
+                            <p><strong>Solicitud de espacio:</strong>
+                                @foreach($event->spaces as $eventspace)
+                                    @if($eventspace->status=="rechazado")
+                                        <p><strong>Motivo de rechazo:</strong> {{ $eventspace->observation }}</p>                              
+                                    @endif
+                                @endforeach
+                            </p>
                             
                             <p><strong>Espacio solicitado:</strong>
                                 @if ($event->space_required)
-                                    @if ($event->eventspace)
-                                        {{ $event->eventspace->space->name }} ({{ $event->eventspace->status }})
-                                    @else
-                                        No se ha registrado un espacio
-                                    @endif
+                                    @foreach($event->spaces as $eventspace)
+                                            {{ $eventspace->name }} ({{ $eventspace->status }})                                        
+                                    @endforeach                                    
                                 @else
                                     No se requiere espacio
                                 @endif
                             </p>
-
-                            @if ($event->eventspace && $event->eventspace->status == "rechazado")
-                                <p><strong>Motivo de rechazo:</strong> {{ $event->eventspace->observation }}</p>
-                            @endif
                             
                             @if($event->published==1)
                                 <p class="text-center text-green-600"><strong>¡EVENTO PUBLICADO!</strong>
