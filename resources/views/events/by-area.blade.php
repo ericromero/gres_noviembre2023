@@ -38,6 +38,7 @@
 
                             <p><strong>Solicitud de espacio:</strong>
                                 @foreach($event->spaces as $eventspace)
+                                    {{$eventspace->name}};
                                     @if($eventspace->status=="rechazado")
                                         <p><strong>Motivo de rechazo:</strong> {{ $eventspace->observation }}</p>                              
                                     @endif
