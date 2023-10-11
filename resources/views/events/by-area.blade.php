@@ -21,7 +21,7 @@
                         <div class="p-4">
                             <h2 class="text-xl font-semibold mb-2">{{ $event->title }}</h2>
                             <p class="text-gray-500 dark:text-gray-300 mb-2">{{ $event->summary }}</p>
-                            <p><strong>Responsable:</strong> {{ $event->responsible->name }}</p>
+                            <p><strong>Solicitante:</strong> {{ $event->responsible->name }} ({{$event->department->name}})</p>
                             <p><strong>Fecha:</strong> {{ $event->start_date }} - {{ $event->end_date }}</p>
                             <p><strong>Horario:</strong> {{ $event->start_time }} - {{ $event->end_time }}</p>
                                                             
@@ -36,20 +36,14 @@
                             <p><a href="{{ asset($event->program) }}" class="text-blue-600 hover:text-blue-900 underline" download>Descargar Programa</a></p>
                             @endif
 
-                            <p><strong>Solicitud de espacio:</strong>
-                                @foreach($event->spaces as $eventspace)
-                                    {{$eventspace->name}};
-                                    @if($eventspace->status=="rechazado")
-                                        <p><strong>Motivo de rechazo:</strong> {{ $eventspace->observation }}</p>                              
-                                    @endif
-                                @endforeach
-                            </p>
-                            
-                            <p><strong>Espacio solicitado:</strong>
+                            <p><strong>Espacio solicitado espacio:</strong>
                                 @if ($event->space_required)
                                     @foreach($event->spaces as $eventspace)
-                                            {{ $eventspace->name }} ({{ $eventspace->status }})                                        
-                                    @endforeach                                    
+                                        {{$eventspace->name}} ({{$eventspace->location}})<br>
+                                        @if($eventspace->status=="rechazado")
+                                            <p><strong>Motivo de rechazo:</strong> {{ $eventspace->observation }}</p>                              
+                                        @endif
+                                    @endforeach
                                 @else
                                     No se requiere espacio
                                 @endif
