@@ -56,16 +56,6 @@ class EventController extends Controller
 
     public function create()
     {
-        // Obtener los listados de usuarios para seleccionar responsable y corresponsable, éste último puede ser de cualquier departamento
-        // $authUser = Auth::user();
-        // $userDepartments = $authUser->adscriptions()->pluck('department_id');
-
-        // $responsables = User::whereIn('id', function ($query) use ($userDepartments) {
-        //     $query->select('user_id')
-        //         ->from('adscriptions')
-        //         ->whereIn('department_id', $userDepartments);
-        // })->get();
-
         // Obtener los usuarios con departamento asignado
         $academicos = User::has('adscriptions.department')->get();
         
@@ -155,6 +145,12 @@ class EventController extends Controller
                 'required', 
                 'exists:users,id', 
                 'distinct:responsible'],
+            'other' => [
+                'nullable',
+                'required_if:event_type_id,Other',
+                'string',
+                'max:250',
+            ],
         ];
     
         $messages = [
@@ -204,10 +200,27 @@ class EventController extends Controller
             'coresponsible.required' => 'El campo "Corresponsable" es obligatorio.',
             'coresponsible.exists' => 'El usuario seleccionado como corresponsable no existe.',
             'coresponsible.distinct' => 'El corresponsable y el responsable deben ser usuarios diferentes.',
+
+            'other.required_if' => 'El campo "Otro" es obligatorio cuando el tipo de evento es "Otro".',
+            'other.string' => 'El campo "Otro" debe ser una cadena de texto.',
+            'other.max' => 'El campo "Otro" no debe exceder los 250 caracteres.',
         ];
         
     
         $validatedData = $request->validate($rules, $messages);
+
+        $eventType = $request->input('event_type_id');
+
+        if ($eventType == 'Other') {
+            // Si el tipo de evento es "Other", crea un nuevo tipo de evento
+            $newEventType = new EventType();
+            $newEventType->name = $request->input('other');
+            $newEventType->register_by = Auth::id();
+            $newEventType->save();
+
+            // Actualiza el valor de event_type_id para ser el ID del nuevo tipo de evento
+            $request->merge(['event_type_id' => $newEventType->id]);
+        }
 
         $user=Auth::user();
 

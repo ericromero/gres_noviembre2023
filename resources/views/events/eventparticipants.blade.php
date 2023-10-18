@@ -4,7 +4,7 @@
             {{ __('Registro de participantes') }}
         </h2>
         <div class="text-gray-700 dark:text-gray-300">
-            Si el participante es académico(a) de la Facutad de Psicología, búscalo en el apartado "Registro de académico(a) de la Facultad de Psicología", caso contrario, regístralo en el apartado "registro de académico(a) externo".
+            Selecciona a los(as) académicos que participarán en el evento, en caso de que no estén en la lista selecciona la opción "Otro(a) académico(a)."
         </div>
     </x-slot>
 
@@ -18,43 +18,67 @@
         @endif
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-2 mx-auto sm:px-1 lg:px-2">
-            <!-- Campo de búsqueda para el usuario por DOI -->
-            <div class="p-2 border border-gray-700 dark:border-gray-300">
-                <h2 class="text-lg border-b border-gray-700 dark:border-gray-500">Registro de académico(a) de la Facultad de Psicología</h2>
-                <form action="{{ route('eventparticipant.storeparticipant') }}" method="POST" class="space-y-4">
-                    @csrf
+            <!-- Bloque para agregar participantes de la entidad -->
+            <form action="{{ route('eventparticipant.storeparticipant') }}" method="POST" class="space-y-4">
+                @csrf
+                <div>
                     <label for="fullname" class="block font-bold mb-2">Nombre del académico(a)
-                        <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Busca al académico(a) de la Facultad de Psicología escribiendo su nombre y apellidos.">?</span>
+                        <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Busca al académico(a) de la Facultad de Psicología escribiendo su nombre y apellidos o bien, selecciona 'Otro(a) académico(a)' en caso de que el académico(a) no esté en la lista.">?</span>
                     </label>
                     <select class="js-example-basic-single dark:bg-gray-800 dark:text-white" name="fullname" id="fullname" placeholder="Nombre del académico(a)" required>
                         <option>Selecciona un académico</option>
+                        <option value="other_academic">Otro(a) académico(a)</option>
                         @foreach ($academics as $academic)
                             <option value="{{$academic->name}}">{{$academic->name}}</option>
-                        @endforeach
-                    </select>
-                    
-                    <!-- Selección del tipo de participante -->
-                    <label for="participation_type_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Tipo de Participante:</label>
-                    <select name="participation_type_id" id="participation_type_id" class="dark:bg-gray-800 dark:text-white">
+                        @endforeach                        
+                    </select>                    
+                </div>
+
+                <!-- Campo de entrada adicional para registrar otro académico -->
+                <div class="mt-2" id="other-academic-container" style="display: none;">
+                    <label for="other_academic_name" class="block font-bold mb-2">Grado  y nombre completo del académico(a) <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Escribe el grado y nombre completo del académico comenzando por apellidos, por ejemplo Mtro. Eric Romero Martínez.">?</span></label>
+                    <input type="text" name="other_academic_name" id="other_academic_name" class="w-full form-input dark:bg-gray-800 dark:text-white" required>
+                    @error('other_academic_name')
+                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                    @enderror
+                    <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count-other-academic-name">250</span></p>
+                </div>
+                
+                <!-- Selección del tipo de participante -->
+                <div>
+                    <label for="participation_type_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Tipo de Participación: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Selecciona el tipo de participación del académico(a) seleccionado o bien, selecciona 'Otro' para agregar otro tipo de participación que no esté en la lista.">?</span></label>
+                    <select name="participation_type_id" id="participation_type_id" class="dark:bg-gray-800 dark:text-white" required>
                         <option value="">Seleccionar tipo de participación</option>
                         @foreach($participationTypes as $participationType)
                             <option value="{{ $participationType->id }}">{{ $participationType->name }}</option>
                         @endforeach
+                        <option value="other">Otro</option>
                     </select>
+                </div>
+                
 
-                    <!-- Campo oculto para el ID del evento -->
-                    <input type="hidden" name="event_id" value="{{ $event->id }}">
+                <!-- Campo para agregar otro tipo de participación -->
+                <div class="mb-4" id="other-container" style="display: none;">
+                    <label for="other_participation" class="block dark:text-gray-300 font-bold mb-2">Indica el tipo de participación: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="No debe exceder los 250 caracteres incluyendo espacios en blanco.">?</span></label>
+                    <input type="text" name="other_participation" id="other" maxlength="250" class="w-full form-input dark:bg-gray-800 dark:text-white @error('other') border-red-500 @enderror" value="{{ old('other') }}" required>
+                    @error('other_participation')
+                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                    @enderror
+                    <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count-other-participation">250</span></p>
+                </div>
 
-                    <!-- Botón para registrar al participante -->
-                    <div class="flex items-center">
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">{{ __('Registrar participante de la Facultad') }}</button>
-                    </div>
+                <!-- Campo oculto para el ID del evento -->
+                <input type="hidden" name="event_id" value="{{ $event->id }}">
 
-                </form>
-            </div>
+                <!-- Botón para registrar al participante -->
+                <div class="flex items-center">
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">{{ __('Registrar participante') }}</button>
+                </div>
+
+            </form>
             
-
-            <div class="p-2 ml-2 border border-gray-700 dark:border-gray-300">
+            <!-- Bloque para agregar participantes externos -->
+            {{-- <div class="p-2 ml-2 border border-gray-700 dark:border-gray-300">
                 <h2 class="text-lg border-b border-gray-700 dark:border-gray-500">Registro de académico(a) externo.</h2>
                 <form action="{{ route('eventparticipant.storeparticipant') }}" method="POST" class="space-y-4">
                     @csrf
@@ -65,13 +89,24 @@
                     <input class="dark:bg-gray-800 dark:text-white" type="text" name="fullname" id="fullname" required/>
 
                     <!-- Selección del tipo de participante -->
-                    <label for="participation_type_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Tipo de Participante:</label>
+                    <label for="participation_type_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Tipo de Participación:</label>
                     <select name="participation_type_id" id="participation_type_id" class="dark:bg-gray-800 dark:text-white">
                         <option value="">Seleccionar tipo de participación</option>
                         @foreach($participationTypes as $participationType)
                             <option value="{{ $participationType->id }}">{{ $participationType->name }}</option>
                         @endforeach
+                        <option value="other">Otro</option>
                     </select>
+
+                    <!-- Campo para agregar otro tipo de participación -->
+                    <div class="mb-4" id="other-container" style="display: none;">
+                        <label for="other" class="block dark:text-gray-300 font-bold mb-2">Indica el tipo de participación: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="No debe exceder los 250 caracteres incluyendo espacios en blanco.">?</span></label>
+                        <input type="text" name="other" id="other" maxlength="250" class="w-full form-input dark:bg-gray-800 dark:text-white @error('other') border-red-500 @enderror" value="{{ old('other') }}" required>
+                        
+                        @error('other')
+                            <p class="text-red-500 text-sm">{{ $message }}</p>
+                        @enderror
+                    </div>
 
                     <!-- Campo oculto para el ID del evento -->
                     <input type="hidden" name="event_id" value="{{ $event->id }}">
@@ -82,7 +117,7 @@
                     </div>
 
                 </form>
-            </div>
+            </div> --}}
         </div>
 
         <div class="p-6">
@@ -153,4 +188,47 @@
 
 <script>
     tippy('[data-tippy-content]');
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Manejador de eventos para la entrada en el campo de entrada adicional
+        $("#other_academic_name").on('input', function () {
+            // Actualiza el conteo de caracteres restantes
+            const charCount = 250 - $(this).val().length;
+            $("#char-count-other-academic-name").text(charCount);
+        });
+
+        // Manejador de eventos para el cambio en la selección
+        $("#fullname").change(function () {
+            // Oculta el campo de entrada adicional si la opción seleccionada no es "other_academic"
+            if ($(this).val() !== "other_academic") {
+                $("#other-academic-container").hide();
+            } else {
+                // Muestra el campo de entrada adicional si la opción seleccionada es "other_academic"
+                $("#other-academic-container").show();
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Manejador de eventos para la entrada en el campo de entrada adicional
+        $("#other").on('input', function () {
+            // Actualiza el conteo de caracteres restantes
+            const charCount = 250 - $(this).val().length;
+            $("#char-count-other-participation").text(charCount);
+        });
+
+        // Manejador de eventos para el cambio en la selección
+        $("#participation_type_id").change(function () {
+            // Habilita/deshabilita el campo de entrada adicional si la opción seleccionada es "other"
+            if ($(this).val() === "other") {
+                $("#other-container").show();
+            } else {
+                $("#other-container").hide();
+            }
+        });
+    });
 </script>

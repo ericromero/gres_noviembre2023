@@ -22,8 +22,8 @@
                             <h2 class="text-xl font-semibold mb-2">{{ $event->title }}</h2>
                             <p class="text-gray-500 dark:text-gray-300 mb-2">{{ $event->summary }}</p>
                             <p><strong>Solicitante:</strong> {{ $event->responsible->name }} ({{$event->department->name}})</p>
-                            <p><strong>Fecha:</strong> {{ $event->start_date }} - {{ $event->end_date }}</p>
-                            <p><strong>Horario:</strong> {{ $event->start_time }} - {{ $event->end_time }}</p>
+                            <p><strong>Fecha:</strong> Del {{ $event->start_date }} al {{ $event->end_date }}</p>
+                            <p><strong>Horario:</strong> De {{ $event->start_time }} a {{ $event->end_time }}</p>
                                                             
                             
                             @if ($event->registration_url!=null)

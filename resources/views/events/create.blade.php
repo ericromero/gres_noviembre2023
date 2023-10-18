@@ -56,10 +56,21 @@
                                 @foreach($eventTypes as $eventType)
                                     <option value="{{ $eventType->id }}">{{ $eventType->name }}</option>
                                 @endforeach
+                                <option value="Other">Otro</option>
                             </select>
                             @error('event_type_id')
                                 <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
+                        </div>
+                        
+                        <div class="mb-4" id="other-container">
+                            <label for="other" class="block dark:text-gray-300 font-bold mb-2">Indica que tipo de evento: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="No debe exceder los 250 caracteres incluyendo espacios en blanco.">?</span></label>
+                            <input type="text" name="other" id="other" maxlength="250" class="w-full form-input dark:bg-gray-800 dark:text-white @error('other') border-red-500 @enderror" value="{{ old('other') }}">
+                            
+                            @error('other')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                            <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count-other">250</span></p>
                         </div>
 
                         <div class="mb-4">
@@ -258,6 +269,15 @@
 </script>
 
 <script>
+    const otherInput = document.getElementById('other');
+    const charCount = document.getElementById('char-count-other');
+
+    otherInput.addEventListener('input', function() {
+        charCount.textContent = 250 - otherInput.value.length;
+    });
+</script>
+
+<script>
     const textarea = document.getElementById('summary');
     const counter = document.getElementById('char-count-summary');
 
@@ -327,6 +347,29 @@
             this.value = ''; // Limpia el valor del input para permitir una nueva selección
         }
     });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Ocultar el campo other al inicio
+        $('#other-container').hide();
+
+        // Manejar el cambio en la lista desplegable
+        $('#event_type_id').change(function() {
+            // Mostrar u ocultar el campo other según la selección
+            if ($(this).val() === 'Other') {
+                $('#other-container').show();
+            } else {
+                $('#other-container').hide();
+            }
+        });
+    });
+
+    // Delegar el evento 'input' al documento para manejar campos que aparecen después de cargar la página
+    $(document).on('input', '#other', function() {
+            // Actualizar el conteo de caracteres
+            $('#char-count-other').text(250 - $(this).val().length);
+        });
 </script>
 
 
