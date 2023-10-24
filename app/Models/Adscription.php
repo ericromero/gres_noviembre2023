@@ -12,6 +12,7 @@ class Adscription extends Model
     protected $fillable = [
         'user_id',
         'department_id',
+        'external',
     ];
 
     public function user()

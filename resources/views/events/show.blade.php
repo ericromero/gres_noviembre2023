@@ -43,19 +43,49 @@
                     </div>
                     @endif
 
-                    @if ($event->registration_url!=null)
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold">Registro:</h3>{{ $event->registration_url }}
-                        </div>
-                    @else
+                    <!-- Lista de participantes -->
                     <div class="mt-4">
-                        <h3 class="text-lg font-semibold">Registro:</h3> No se requiere
-                    </div>
-                    @endif
+                        <h3 class="text-lg font-semibold">Participantes</h3>
+                        @if ($participants!=null&&$participants->count() > 0)
+                            <table class="border border-gray-700 dark:border-gray-300">
+                                <thead class="bg-gray-300 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-2">Nombre completo</th>
+                                        <th class="px-4 py-2">Tipo de participación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($participants as $participant)
+                                        <tr>
+                                            <td class="px-4 py-2">
+                                                @if($participant->user_id!=null)
+                                                    {{ $participant->user->degree }}
+                                                @endif 
+                                                {{ $participant->fullname }}
+                                            </td>
+                                            <td class="px-4 py-2">{{ $participant->participationType->name }}</td>
+                                            
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p>No hay participantes agregados al evento.</p>
+                        @endif
+                    </div>                    
 
-                    @if ($event->registration_required)
-                        <a href="{{ $event->registration_url }}" class="mt-2 block text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Registrarse</a>
-                    @endif
+                    <div class="mt-4">
+                        <h3 class="text-lg font-semibold">Registro:</h3>
+                        @if ($event->registration_url!=null)
+                            @if ($event->start_time > now() )
+                                <a href="{{ $event->registration_url }}" class="mt-2 block text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Registrarse</a>
+                            @else
+                            {{ $event->registration_url }}
+                            @endif
+                        @else
+                            No se requiere
+                        @endif
+                    </div>
 
                 </div>
             {{-- </div> --}}

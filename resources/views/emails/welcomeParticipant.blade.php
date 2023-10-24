@@ -6,7 +6,7 @@
 
 # ¡Bienvenido(a)!
 
-Se ha creado una cuenta para ti en la Cartelera - Psicología. Para acceder al sistema utiliza los siguientes datos:
+Se ha creado una cuenta para ti en la Cartelera - Psicología dado que has sido registrado como participante en un evento.
 
 - Nombre de usuario: {{ $email }}
 - Contraseña: {{ $password }}

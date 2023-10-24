@@ -12,13 +12,30 @@ use Illuminate\Support\Str;
 use App\Mail\WelcomeEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Space;
-use App\Models\EventType;
 use App\Models\Team;
-
+use App\Models\Event;
 
 class UserController extends Controller
 {
+    public function dashboard() {
+        // Eventos pendientes por atender
+        $pendingEvents=null;
+        $user=Auth::user();
+        
+        if ($user->hasAnyRole(['Gestor de espacios', 'Coordinador'])) {
+            // Paso 1: Obtener el ID del departamento del usuario autenticado
+            $usuarioDepartamentoId = Auth::user()->team->department_id;        
+
+            // Paso 2: Obtener todos los eventos solicitados del departamento del usuario
+            $pendingEvents = Event::join('event_spaces', 'events.id', '=', 'event_spaces.event_id')
+                ->join('spaces', 'event_spaces.space_id', '=', 'spaces.id')
+                ->where('spaces.department_id', $usuarioDepartamentoId)
+                ->where('events.status', 'solicitado')
+                ->select('events.*') // Seleccionar todos los campos de la tabla events
+                ->get();
+        }
+        return view('dashboard',compact('pendingEvents'));
+    }
     /**
      * Display a listing of the resource.
      */

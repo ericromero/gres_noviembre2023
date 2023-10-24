@@ -19,18 +19,17 @@ class EventParticipant extends Model
     // Relación con el tipo de participante
     public function participationType()
     {
-        return $this->belongsTo(ParticipationType::class);
+        return $this->belongsTo(ParticipationType::class, 'participation_type_id');
     }
 
-    // Relación con el evento
     public function event()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class, 'event_id');
     }
 
-    // Relación con el usuario si es un usuario existente
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
 }

@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
-
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -52,10 +50,15 @@ class User extends Authenticatable
         return $this->hasMany(Adscription::class);
     }
 
+    // public function events()
+    // {
+    //     return $this->hasMany(Event::class, 'user_id');
+    // }
     public function events()
     {
-        return $this->hasMany(Event::class, 'user_id');
+        return $this->belongsToMany(Event::class, 'event_participants');
     }
+    
 
     public function departments()
     {
@@ -71,4 +74,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Team::class);
     }
+
+    public function participationTypes()
+    {
+        return $this->hasMany(EventParticipant::class, 'user_id');
+    }
+
 }

@@ -98,7 +98,7 @@
                     </a>
                 @endhasrole
 
-                <!-- Imagen y enlace para revisar los eventos solicitados -->
+                <!-- Imagen y enlace para revisar los eventos solicitados por la coordinación -->
                 @hasanyrole('Coordinador|Gestor de eventos')
                     <a href="{{ route('events.byArea') }}">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
@@ -108,15 +108,28 @@
                     </a>
                 @endhasrole
                 
-                <!-- Imagen y enlace Mis eventos -->
+                <!-- Imagen y enlace a los espacios solicitados por la coordinación -->
                 @hasrole('Gestor de espacios')
                 <a href="{{ route('event_spaces.review') }}">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
                         <img src="{{ asset('images/evento.png') }}" alt="Mis eventos" class="mx-auto h-20">
                         <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Espacios solicitados</p>
                     </div>
+                    @if ($pendingEvents->count()>0)
+                        <div class="border bg-orange-300 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
+                            Hay {{ $pendingEvents->count() }} pendientes
+                        </div>
+                    @endif
                 </a>
                 @endhasrole
+
+                <!-- Imagen y enlace Mis eventos -->
+                <a href="{{ route('events.my-events') }}">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
+                        <img src="{{ asset('images/mis_eventos.png') }}" alt="Mis eventos" class="mx-auto h-20">
+                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Mis eventos</p>
+                    </div>
+                </a>
 
             </div>
         </div>

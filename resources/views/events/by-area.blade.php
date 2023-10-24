@@ -64,6 +64,10 @@
             @endif
         </div>
 
+        <div>
+            {{ $events->links() }}
+        </div>
+
         <div class="items-center my-4 ml-4">
             <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-orange-500 text-white font-semibold rounded-md">Regresar</a>
         </div>

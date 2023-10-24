@@ -32,16 +32,17 @@
                             @endif                            
                         </div>
 
-                        <div class="mb-4 block font-bold mb-2">
+                        <div class="mb-4 block font-bold">
                             Fecha o periodo: del {{$start_date}} al {{$end_date}}, de {{$start_time}} a {{$end_time}} horas.
                         </div>
 
+                        <!-- Departamento solicitante -->
                         <div class="mb-4">
                             <label for="department" class="block font-bold mb-2">Departamento solicitante: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Selecciona el departamento del cual solicitas el evento.">?</span></label>
                             <select name="department" id="department" class="js-example-basic-single form-select dark:bg-gray-800 dark:text-white @error('department') border-red-500 @enderror" required>
                                 <option value="">Selecciona el departamento solicitante</option>
                                 @foreach($departments as $department)
-                                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                    <option value="{{ $department->id }}" {{ old('department') == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
                                 @endforeach
                             </select>                            
                             @error('department')
@@ -49,12 +50,13 @@
                             @enderror
                         </div>
 
+                        <!-- Tipo de evento -->
                         <div class="mb-4">
-                            <label for="event_type_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Tipo de Evento: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="En caso de no encontrar el tipo de Evento adecuado, selecciona Congreso y pide el ajuste al correo ericrm@unam.mx.">?</span></label>
+                            <label for="event_type_id" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Tipo de Evento: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="En caso de no encontrar el tipo de Evento adecuado, selecciona la opción Otro e ingresa la información correspondiente.">?</span></label>
                             <select name="event_type_id" id="event_type_id" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('event_type_id') border-red-500 @enderror" required>
                                 <option value="">Seleccionar tipo de evento</option>
                                 @foreach($eventTypes as $eventType)
-                                    <option value="{{ $eventType->id }}">{{ $eventType->name }}</option>
+                                    <option value="{{ $eventType->id }}" {{ old('event_type_id') == $eventType->id ? 'selected' : '' }}>{{ $eventType->name }}</option>
                                 @endforeach
                                 <option value="Other">Otro</option>
                             </select>
@@ -63,6 +65,7 @@
                             @enderror
                         </div>
                         
+                        <!-- Otro espacio solicitado  -->
                         <div class="mb-4" id="other-container">
                             <label for="other" class="block dark:text-gray-300 font-bold mb-2">Indica que tipo de evento: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="No debe exceder los 250 caracteres incluyendo espacios en blanco.">?</span></label>
                             <input type="text" name="other" id="other" maxlength="250" class="w-full form-input dark:bg-gray-800 dark:text-white @error('other') border-red-500 @enderror" value="{{ old('other') }}">
@@ -73,6 +76,7 @@
                             <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count-other">250</span></p>
                         </div>
 
+                        <!-- Título -->
                         <div class="mb-4">
                             <label for="title" class="block dark:text-gray-300 font-bold mb-2">Título: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="No debe exceder los 250 caracteres incluyendo espacios en blanco.">?</span></label>                            
                             <input type="text" name="title" id="title" maxlength="250" class="w-full form-input dark:bg-gray-800 dark:text-white @error('title') border-red-500 @enderror" value="{{ old('title') }}" required>
@@ -83,32 +87,122 @@
                             <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count">250</span></p>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="responsible" class="block font-bold mb-2">Responsable: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Selecciona al académico(a) que está organizando el evento y es responsable de realizar los trámites necesarios para llevarlo a cabo.">?</span></label>
-                            <select name="responsible" id="responsible" class="js-example-basic-single dark:bg-gray-800 dark:text-white" required>
-                                <option value="">Seleccionar responsable</option>
-                                @foreach($academicos as $academico)
-                                    <option value="{{ $academico->id }}">{{ $academico->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('responsible')
-                                <p class="text-red-500 text-sm">{{ $message }}</p>
-                            @enderror
+                        <div class="border p-2 border-gray-700 dark:border-gray-300">
+                            <!-- Responsable -->
+                            <div class="mb-4">
+                                <label for="responsible" class="block font-bold mb-2">Responsable: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
+                                    data-tippy-content="Selecciona al académico(a) que está organizando el evento y es responsable de realizar los trámites necesarios para llevarlo a cabo. En caso de no encontarlo en la lista, selecciona 'Otro responsable' e ingresa la información.">?</span>
+                                </label>
+                                <select name="responsible" id="responsible" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('responsible') border-red-500 @enderror" required>
+                                    <option value="">Seleccionar responsable</option>
+                                    <option value="other_responsible" {{ old('responsible') == 'other_responsible' ? 'selected' : '' }}>Otro(a) responsable</option>
+                                    @foreach($academicos as $academico)
+                                        <option value="{{ $academico->id }}" {{ old('responsible') == $academico->id ? 'selected' : '' }}>{{ $academico->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('responsible')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Otro responsable -->
+                            <div class="mt-2" id="other-responsible-container" style="{{ $errors->has('responsible') ? 'display: block;' : 'display: none;' }}">
+                                <label for="degree_responsible" class="block font-bold mb-2">Grado académico
+                                    <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Seleciona el grado académico.">?</span>
+                                </label>
+                                <select name="degree_responsible" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('degree_responsible') border-red-500 @enderror" id="degree_responsible" placeholder="Grado del académico(a)">
+                                    <option value="">Selecciona el grado académico</option>
+                                    <option value="C." {{ old('degree_responsible') == 'C.' ? 'selected' : '' }}>C.</option>
+                                    <option value="Lic." {{ old('degree_responsible') == 'Lic.' ? 'selected' : '' }}>Lic.</option>
+                                    <option value="Ing." {{ old('degree_responsible') == 'Ing.' ? 'selected' : '' }}>Ing.</option>
+                                    <option value="Mtro." {{ old('degree_responsible') == 'Mtro.' ? 'selected' : '' }}>Mtro.</option>
+                                    <option value="Mtra." {{ old('degree_responsible') == 'Mtra.' ? 'selected' : '' }}>Mtra.</option>
+                                    <option value="Dr." {{ old('degree_responsible') == 'Dr.' ? 'selected' : '' }}>Dr.</option>
+                                    <option value="Dra." {{ old('degree_responsible') == 'Dra.' ? 'selected' : '' }}>Dra.</option>
+                                </select>
+                                
+                                @error('degree_responsible')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+
+                                <label for="other_responsible_name" class="block font-bold mb-2">Nombre completo del(la) responsable comenzando por nombre y después apellidos.<span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Escribe el grado y nombre completo del académico comenzando por apellidos, por ejemplo Mtro. Eric Romero Martínez.">?</span></label>
+                                <input type="text" name="other_responsible_name" id="other_responsible_name" class="w-full form-input dark:bg-gray-800 dark:text-white @error('other_responsible_name') border-red-500 @enderror" value="{{ old('other_responsible_name') }}">
+                                @error('other_responsible_name')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                                <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count-other-resposible-name">250</span></p>
+
+                                <label for="email_responsible" class="block font-bold mb-2">Correo electrónico del académico(a) <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Escribe el correo electrónico del académico. Se generará una nueva contraseña y se le enviará por correo electrónico para dar seguimiento a la publicación de su evento.">?</span></label>
+                                <input type="text" name="email_responsible" id="email_responsible" class="w-full form-input dark:bg-gray-800 dark:text-white @error('email_responsible') border-red-500 @enderror" value="{{ old('email_responsible') }}">
+                                @error('email_responsible')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+
+                                {{-- <input type="checkbox" name="external_responsible" class="my-4 input-checkbox dark:bg-gray-800 dark:text-white" ><label for="external_responsible" class="ml-2 font-bold mb-2">Selecciona esta opción si el académico es externo a la entidad</label>
+                                @error('external_responsible')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror --}}
+
+                            </div>
                         </div>
-                        
-                        <div class="mb-4">
-                            <label for="coresponsible" class="block font-bold mb-2">Corresponsable: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="En caso de que el (la) responsable no pueda continuar con la organización del evento, el(la) corresponsable dará continuidad a la organización del evento.">?</span></label>
-                            <select name="coresponsible" id="coresponsible" class="js-example-basic-single form-select dark:bg-gray-800 dark:text-white" required>
-                                <option value="">Seleccionar corresponsable</option>
-                                @foreach($academicos as $academico)
-                                    <option value="{{ $academico->id }}">{{ $academico->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('corresponsible')
-                                <p class="text-red-500 text-sm">{{ $message }}</p>
-                            @enderror
+
+                        <div class="my-2 p-2 border border-gray-700 dark:border-gray-300">
+                            <!-- Corresponsable -->
+                            <div class="mb-4">
+                                <label for="coresponsible" class="block font-bold mb-2">Corresponsable: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="En caso de que el (la) responsable no pueda continuar con la organización del evento, el(la) corresponsable dará continuidad a la organización del evento.">?</span></label>
+                                <select name="coresponsible" id="coresponsible" class="js-example-basic-single form-select dark:bg-gray-800 dark:text-white @error('coresponsible') border-red-500 @enderror" required>
+                                    <option value="">Seleccionar corresponsable</option>
+                                    <option value="other_coresponsible" {{ old('coresponsible') == 'other_coresponsible' ? 'selected' : '' }}>Otro(a) corresponsable</option>
+                                    @foreach($academicos as $academico)
+                                        <option value="{{ $academico->id }}" {{ old('coresponsible') == $academico->id ? 'selected' : '' }}>{{ $academico->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('coresponsible')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Otro coresponsable -->
+                            <div class="mt-2" id="other-coresponsible-container" style="{{ $errors->has('coresponsible') ? 'display: block;' : 'display: none;' }}">
+                                <label for="degree_coresponsible" class="block font-bold mb-2">Grado académico
+                                    <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Seleciona el grado académico.">?</span>
+                                </label>
+                                <select name="degree_coresponsible" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('degree_coresponsible') border-red-500 @enderror" id="degree_coresponsible" placeholder="Grado del académico(a)">
+                                    <option value="">Selecciona el grado académico</option>
+                                    <option value="C." {{ old('degree_coresponsible') == 'C.' ? 'selected' : '' }}>C.</option>
+                                    <option value="Lic." {{ old('degree_coresponsible') == 'Lic.' ? 'selected' : '' }}>Lic.</option>
+                                    <option value="Ing." {{ old('degree_coresponsible') == 'Ing.' ? 'selected' : '' }}>Ing.</option>
+                                    <option value="Mtro." {{ old('degree_coresponsible') == 'Mtro.' ? 'selected' : '' }}>Mtro.</option>
+                                    <option value="Mtra." {{ old('degree_coresponsible') == 'Mtra.' ? 'selected' : '' }}>Mtra.</option>
+                                    <option value="Dr." {{ old('degree_coresponsible') == 'Dr.' ? 'selected' : '' }}>Dr.</option>
+                                    <option value="Dra." {{ old('degree_coresponsible') == 'Dra.' ? 'selected' : '' }}>Dra.</option>
+                                </select>
+                                
+                                @error('degree_coresponsible')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+
+                                <label for="other_coresponsible_name" class="block font-bold mb-2">Nombre completo del(la) corresponsable, comenzando por nombre y después apellidos.<span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Escribe el grado y nombre completo del académico comenzando por apellidos, por ejemplo Mtro. Eric Romero Martínez.">?</span></label>
+                                <input type="text" name="other_coresponsible_name" id="other_coresponsible_name" class="w-full form-input dark:bg-gray-800 dark:text-white @error('other_coresponsible_name') border-red-500 @enderror" value="{{ old('other_coresponsible_name') }}">
+                                @error('other_coresponsible_name')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                                <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count-other-coresponsible-name">250</span></p>
+                                
+                                <label for="email_coresponsible" class="block font-bold mb-2">Correo electrónico del académico(a) <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Escribe el correo electrónico del académico. Se generará una nueva contraseña y se le enviará por correo electrónico para dar seguimiento a la publicación de su evento.">?</span></label>
+                                <input type="text" name="email_coresponsible" id="email_coresponsible" class="w-full form-input dark:bg-gray-800 dark:text-white @error('email_coresponsible') border-red-500 @enderror" value="{{ old('email_coresponsible') }}">
+                                @error('email_coresponsible')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+
+                                {{-- <input type="checkbox" name="external_coresponsible" class="my-4 input-checkbox dark:bg-gray-800 dark:text-white" ><label for="external_coresponsible" class="ml-2 font-bold mb-2">Selecciona esta opción si el académico es externo a la entidad</label>
+                                @error('external_coresponsible')
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror --}}
+                            </div>
                         </div>
-                        
+
+                        <!-- Resumen -->
                         <div class="mb-4">
                             <label for="summary" class="block font-bold mb-2">Resumen: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Agrega un resumen y/o información adicional para el público interesado en el evento, como máximo se admiten 500 caracteres.">?</span></label>
                             <textarea name="summary" id="summary" maxlength="500" rows="4" class="w-full form-textarea dark:bg-gray-800 dark:text-white @error('summary') border-red-500 @enderror" required>{{ old('summary') }}</textarea>
@@ -118,6 +212,7 @@
                             <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count-summary">500</span></p>
                         </div>
 
+                        <!-- Fechas y horarios -->
                         <div class="flex">
                             <div>
                                 <input type="hidden" name="start_date" id="start_date" class="form-input @error('start_date') border-red-500 @enderror" value="{{ $start_date}}" min="{{ now()->addDays(4)->format('Y-m-d') }}" max="{{ now()->addMonths(6)->format('Y-m-d') }}" required>
@@ -132,9 +227,7 @@
                                 <p class="text-red-500 text-sm">{{ $message }}</p>
                                 @enderror
                             </div>
-                        </div>
 
-                        <div class="flex">
                             <div>
                                 <input type="hidden" name="start_time" id="start_time" class="form-input @error('start_time') border-red-500 @enderror" value="{{$start_time}}" required readonly>
                                 @error('start_time')
@@ -150,6 +243,7 @@
                             </div>
                         </div>
 
+                        <!-- Banner del evento -->
                         <div class="mb-4">
                             <label for="cover_image" class="block font-bold mb-2">Banner o imagen publicitaria: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Esta imagen será utilizada para mostrar en la cartelera, debe ser breve y atractiva para el público interesado. Solo se admiten los formatos .jpg, .jpeg y .png con un peso máximo de 5 MB">?</span></label>
                             <input 
@@ -164,6 +258,7 @@
                             @enderror
                         </div>
 
+                        <!-- Programa -->
                         <div class="mb-4">
                             <label for="program" class="block font-bold mb-2">Cartel o programa: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Suba un documento con mayor información sobre el evento, puede ser un cartel o el programa. Solo se admite el formato pdf con un peso máximo de 5 MB">?</span></label>
                             <input
@@ -178,6 +273,7 @@
                             @enderror
                         </div>
 
+                        <!-- Se requiere registro -->
                         <div class="mb-4">
                             <label for="registration_required" class="block font-bold mb-2">Requiere Registro: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Si requiere un registro de los asistentes al evento, active esta casilla y posteriormente escriba la URL del enlace web donde se pueden registrar los asistentes. Este sitio de registro debe ser gestionado por el responsable del evento.">?</span></label>
                             <input type="checkbox" name="registration_required" id="registration_required" class="form-checkbox" {{ old('registration_required') ? 'checked' : '' }}>
@@ -186,6 +282,7 @@
                             @enderror
                         </div>
                         
+                        <!-- Enlace del registro -->
                         <div id="registration_url_container" class="mb-4 hidden">
                             <label for="registration_url" class="block font-bold mb-2">URL de Registro: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Escriba la URL del sitio de registro del sistema.">?</span></label>
                             <input type="text" name="registration_url" id="registration_url" class="form-input dark:bg-gray-800 dark:text-white @error('registration_url') border-red-500 @enderror" value="{{ old('registration_url') }}">
@@ -371,5 +468,76 @@
             $('#char-count-other').text(250 - $(this).val().length);
         });
 </script>
+
+<!-- Mostrar/Ocultar campos para agregar responable y corresponsable -->
+<script>
+    $(document).ready(function () {
+        // Manejador de eventos para la entrada en el campo de entrada adicional (otros corresponsables)
+        $("#other_coresponsible_name").on('input', function () {
+            // Actualiza el conteo de caracteres restantes
+            const charCount = 250 - $(this).val().length;
+            $("#char-count-other-coresponsible-name").text(charCount);
+        });
+
+        // Manejador de eventos para el cambio en la selección de corresponsable
+        $("#coresponsible").change(function () {
+            // Oculta el campo de entrada adicional si la opción seleccionada no es "other_coresponsible"
+            if ($(this).val() !== "other_coresponsible") {
+                $("#other-coresponsible-container").hide();
+            } else {
+                // Muestra el campo de entrada adicional si la opción seleccionada es "other_coresponsible"
+                $("#other-coresponsible-container").show();
+            }
+        });
+
+        // Agregamos un evento adicional para manejar la visibilidad inicial basada en el valor seleccionado
+        $("#coresponsible").trigger('change');
+
+        // Manejador de eventos para la entrada en el campo de entrada adicional (otros responsables)
+        $("#other_responsible_name").on('input', function () {
+            // Actualiza el conteo de caracteres restantes
+            const charCount = 250 - $(this).val().length;
+            $("#char-count-other-responsible-name").text(charCount);
+        });
+
+        // Manejador de eventos para el cambio en la selección de responsable
+        $("#responsible").change(function () {
+            // Oculta el campo de entrada adicional si la opción seleccionada no es "other_responsible"
+            if ($(this).val() !== "other_responsible") {
+                $("#other-responsible-container").hide();
+            } else {
+                // Muestra el campo de entrada adicional si la opción seleccionada es "other_responsible"
+                $("#other-responsible-container").show();
+            }
+        });
+
+        // Agregamos un evento adicional para manejar la visibilidad inicial basada en el valor seleccionado
+        $("#responsible").trigger('change');
+    });
+
+</script>
+
+<!-- Otro contenido de la página ... -->
+
+<script>
+    $(document).ready(function () {
+        // Manejador de eventos para el envío del formulario
+        $('form').submit(function (event) {
+            // Obtén los valores de los correos electrónicos del responsable y corresponsable
+            var emailResponsible = $('#email_responsible').val();
+            var emailCoresponsible = $('#email_coresponsible').val();
+
+            // Verifica si los correos electrónicos son iguales
+            if (emailResponsible === emailCoresponsible) {
+                // Evita que se envíe el formulario
+                alert('El correo del responsable y corresponsable deben ser diferentes.');
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+
+
+
 
 

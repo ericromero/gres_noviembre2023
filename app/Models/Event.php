@@ -39,11 +39,11 @@ class Event extends Model
 
     protected $dates = ['start_date', 'end_date'];
 
-    // Relación con el modelo User (un evento pertenece a un usuario)
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // // Relación con el modelo User (un evento pertenece a un usuario)
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
     public function department()
     {
@@ -105,6 +105,12 @@ class Event extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'event_participants');
+    }
+
+    public function participants()
+    {
+        return $this->belongsToMany(User::class, 'event_participants')
+            ->withPivot('participation_type_id', 'other_participation');
     }
 
 }

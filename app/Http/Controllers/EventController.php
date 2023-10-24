@@ -20,7 +20,11 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\RequestSpaceEmail;
 use App\Mail\RequestRecordEmail;
 use App\Mail\RequestStreamingEmail;
-
+use Illuminate\Support\Str;
+use App\Mail\WelcomeMailParticipant;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use App\Models\Adscription;
 
 class EventController extends Controller
 {
@@ -36,8 +40,11 @@ class EventController extends Controller
 
     public function myEvents()
     {
-        $userEvents = Auth::user()->events; // Recupera los eventos del usuario autenticado
-        return view('events.my-events', compact('userEvents'));
+        $events = Event::where('responsible_id', Auth::user()->id)
+            ->orWhere('coresponsible_id', Auth::user()->id)
+            ->orderBy('created_at', 'desc') 
+            ->paginate(8);
+        return view('events.my-events', compact('events'));
     }
 
     public function availableSearch() {
@@ -60,7 +67,7 @@ class EventController extends Controller
         $academicos = User::has('adscriptions.department')->get();
         
         // Obtener la lista de tipos de eventos disponibles
-         $eventTypes = EventType::all();
+         $eventTypes = EventType::orderBy('name','asc')->get();
 
         return view('events.create', compact('eventTypes','academicos'));
     }
@@ -82,10 +89,10 @@ class EventController extends Controller
         $end_time=$request->end_time;
 
         // Obtener los usuarios con departamento asignado
-        $academicos = User::has('adscriptions.department')->get();
+        $academicos = User::has('adscriptions.department')->orderBy('name','asc')->get();
 
         // Obtener la lista de tipos de eventos disponibles
-         $eventTypes = EventType::all();
+         $eventTypes = EventType::orderBy('name','asc')->get();
 
         return view('events.create', compact('space','eventTypes','start_date','end_date','start_time','end_time','academicos','departments'));
     }
@@ -137,19 +144,53 @@ class EventController extends Controller
                 'required_if:registration_required,1'],
             
             'responsible' => [
-                'required', 
-                'exists:users,id', 
+                'required',  
                 'distinct:coresponsible'],
                 
             'coresponsible' => [
                 'required', 
-                'exists:users,id', 
                 'distinct:responsible'],
             'other' => [
                 'nullable',
                 'required_if:event_type_id,Other',
                 'string',
                 'max:250',
+            ],
+            'other_responsible_name' => [
+                'nullable',
+                'required_if:responsible,other_responsible',
+                'string',
+                'max:250',
+            ],
+            'degree_responsible' => [
+                'nullable',
+                'required_if:responsible,other_responsible',
+            ],
+            'email_responsible' => [
+                'nullable',
+                'required_if:responsible,other_responsible',
+                'email',
+                'unique:users,email',
+            ],
+            'other_coresponsible_name' => [
+                'nullable',
+                'required_if:coresponsible,other_coresponsible',
+                'string',
+                'max:250',
+            ],
+            'degree_coresponsible' => [
+                'nullable',
+                'required_if:coresponsible,other_coresponsible',
+            ],
+            'email_coresponsible' => [
+                'nullable',
+                'required_if:coresponsible,other_coresponsible',
+                'email',
+                'unique:users,email',
+                Rule::unique('users', 'email')->where(function ($query) {
+                    // Asegurarse de que el correo del corresponsable sea diferente al del responsable
+                    $query->where('email', '!=', request('email_responsible'));
+                }),
             ],
         ];
     
@@ -194,16 +235,26 @@ class EventController extends Controller
             'registration_url.required_if' => 'La URL de registro es obligatoria cuando el registro es requerido.',
                       
             'responsible.required' => 'El campo "Responsable" es obligatorio.',
-            'responsible.exists' => 'El usuario seleccionado como responsable no existe.',
             'responsible.distinct' => 'El responsable y el corresponsable deben ser usuarios diferentes.',
             
             'coresponsible.required' => 'El campo "Corresponsable" es obligatorio.',
-            'coresponsible.exists' => 'El usuario seleccionado como corresponsable no existe.',
             'coresponsible.distinct' => 'El corresponsable y el responsable deben ser usuarios diferentes.',
 
             'other.required_if' => 'El campo "Otro" es obligatorio cuando el tipo de evento es "Otro".',
             'other.string' => 'El campo "Otro" debe ser una cadena de texto.',
             'other.max' => 'El campo "Otro" no debe exceder los 250 caracteres.',
+
+            'other_responsible_name.required_if' => 'Ingresa el nombre del responsable',
+            'degree_responsible.required_if' => 'Selecciona el Grado académico',
+            'email_responsible.required_if' => 'Ingresa el correo electrónico del corresponsable',
+            'email_responsible.email' => 'El correo electrónico invalido.',
+            'email_responsible.unique' => 'Ya hay un usuario registrado con este correo electrónico.',
+
+            'other_coresponsible_name.required_if' => 'Ingresa el nombre del corresponsable.',
+            'degree_coresponsible.required_if' => 'Seleciona el Grado académico',
+            'email_coresponsible.required_if' => 'El campo "Correo electrónico del otro corresponsable" es obligatorio cuando seleccionas "Otro corresponsable".',
+            'email_coresponsible.email' => 'El correo electrónico invalido.',
+            'email_coresponsible.unique' => 'Ya hay un usuario registrado con este correo electrónico.',
         ];
         
     
@@ -222,11 +273,33 @@ class EventController extends Controller
             $request->merge(['event_type_id' => $newEventType->id]);
         }
 
-        $user=Auth::user();
+        // Validar y crear un nuevo responsable si es seleccionado "otro responsable"
+        $responsibleId = $request->input('responsible');
+        if ($responsibleId == 'other_responsible') {
+            $name=$request->other_responsible_name;
+            $degree=$request->degree_responsible;
+            $email=$request->email_responsible;
+            $external=$request->external_responsible;
+            $newResponsible = $this->createNewUser($name,$degree,$email,$external);
+            $responsibleId = $newResponsible->id;
+        }
 
+        // Validar y crear un nuevo corresponsable si es seleccionado "otro corresponsable"
+        $coresponsibleId = $request->input('coresponsible');
+        if ($coresponsibleId == 'other_coresponsible') {
+            $name=$request->other_coresponsible_name;
+            $degree=$request->degree_coresponsible;
+            $email=$request->email_coresponsible;
+            $external=$request->external_coresponsible;
+            $newCoresponsible = $this->createNewUser($name,$degree,$email,$external);
+            $coresponsibleId = $newCoresponsible->id;
+        }
+
+        // Guardar datos del evento
+        $user = Auth::user();
         $event = new Event();
-        $event->responsible_id = $request->input('responsible');
-        $event->coresponsible_id = $request->input('coresponsible');
+        $event->responsible_id = $responsibleId;
+        $event->coresponsible_id = $coresponsibleId;
         $event->register_id = $user->id;
         $event->department_id = $request->input('department');
         $event->title = $request->input('title');
@@ -379,21 +452,6 @@ class EventController extends Controller
         return redirect()->route('dashboard')->with('success', 'El registro del evento ha sido cancelado.');
     }
 
-    public function searchparticipant(Request $request) {
-        $academico = User::where('doi', $request->user_doi)->first();
-        $event = Event::find($request->event_id);
-        $participants=EventParticipant::where('event_id',$request->event_id)->get();
-        $participationTypes = ParticipationType::all();
-    
-        if ($academico != null) {
-            $message = 'Registro encontrado';
-            return view('events.eventparticipants', compact('event', 'academico', 'participationTypes', 'message','participants'));
-        } else {
-            $message = 'No se encontró el registro';
-            return view('events.eventparticipants', compact('event', 'participationTypes', 'message'));
-        }
-    }
-
     public function register(Event $event) {
         // Se actualiza el estado del registro
         $event->status='solicitado';
@@ -421,7 +479,7 @@ class EventController extends Controller
             Mail::to('udemat.psicologia@unam.mx')->send(new RequestStreamingEmail($event, $space));
         }
 
-        return redirect()->route('dashboard')->with('success', 'Evento registrado correctamente. En el apartado "Eventos de la coordinación" puede publicar el evento.');
+        return redirect()->route('dashboard')->with('success', 'Evento registrado correctamente. Acceda a "Eventos de la coordinación" para dar seguimiento y publicarlo cuando así lo considere pertinente.');
     }
 
     public function by_area()
@@ -438,7 +496,7 @@ class EventController extends Controller
         $departmentIds = $user->adscriptions->pluck('department_id');
 
         // Obtén los eventos que pertenecen a los departamentos del usuario
-        $events = Event::whereIn('department_id', $departmentIds)->get();
+        $events = Event::whereIn('department_id', $departmentIds)->orderBy('created_at', 'desc')->paginate(8);
         return $events;
 
     }
@@ -458,12 +516,44 @@ class EventController extends Controller
     }
 
     public function show(Event $event) {
-        
-        return view('events.show',compact('event'));
+        //return $event->users;
+        $participants=EventParticipant::where('event_id',$event->id)->get();
+        return view('events.show',compact('event','participants'));
     }
 
     public function creditos() {
         return view('creditos');
     }
+
+    private function createNewUser($name,$degree,$email,$external)
+    {
+        // Crear el nuevo usuario
+        $newUser = new User();
+        $newUser->name = $name;
+        $newUser->degree = $degree;
+        $newUser->email = $email;
+        // Generar una contraseña aleatoria y establecerla
+        $password = Str::random(10);
+        $newUser->password = Hash::make($password);
+
+        // Guardar el nuevo usuario en la base de datos
+        $newUser->save();
+
+        // Obtener el departamento del usuario logueado
+        $loggedInUserDepartmentId = Auth::user()->team->department_id;
+
+        // Registrar la adscripción del nuevo usuario
+        Adscription::create([
+            'department_id' => $loggedInUserDepartmentId,
+            'user_id' => $newUser->id,
+            'external'=>$external,
+        ]);
+
+        // Enviar el correo al nuevo usuario
+        Mail::to($newUser->email)->send(new WelcomeMailParticipant($newUser->email, $password));
+
+        return $newUser;
+    }
+
     
 }
