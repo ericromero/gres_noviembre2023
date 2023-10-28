@@ -20,21 +20,48 @@ class UserController extends Controller
     public function dashboard() {
         // Eventos pendientes por atender
         $pendingEvents=null;
+        $draftEvents=null;
+        $unplublishEvents=null;
         $user=Auth::user();
+        $usuarioDepartamentoId = Auth::user()->team->department_id;
         
+        // Identificación de solicitudes pendientes
         if ($user->hasAnyRole(['Gestor de espacios', 'Coordinador'])) {
-            // Paso 1: Obtener el ID del departamento del usuario autenticado
-            $usuarioDepartamentoId = Auth::user()->team->department_id;        
-
-            // Paso 2: Obtener todos los eventos solicitados del departamento del usuario
+            // Solicitudes de espacio por autorizar/rechazar
             $pendingEvents = Event::join('event_spaces', 'events.id', '=', 'event_spaces.event_id')
                 ->join('spaces', 'event_spaces.space_id', '=', 'spaces.id')
                 ->where('spaces.department_id', $usuarioDepartamentoId)
                 ->where('events.status', 'solicitado')
+                ->orderBy('events.created_at','desc')
                 ->select('events.*') // Seleccionar todos los campos de la tabla events
                 ->get();
         }
-        return view('dashboard',compact('pendingEvents'));
+
+        // Identificación de los eventos que están en borrador 
+        if ($user->hasAnyRole(['Gestor de eventos', 'Coordinador'])) {
+            // Eventos que no han sido publicados ni cancelados
+            $draftEvents=Event::where('status','borrador')
+                ->where('department_id', $usuarioDepartamentoId)
+                ->orderBy('events.created_at','desc')
+                ->get();
+        }
+
+        // Identificación de eventos que no han sido publicados
+        if ($user->hasAnyRole(['Gestor de eventos', 'Coordinador'])) {
+            // Eventos que no han sido publicados ni cancelados
+            $unplublishEvents=Event::join('event_spaces','events.id','=','event_spaces.event_id')
+                ->where('events.status','finalizado')
+                ->where('events.published','0')
+                ->where('event_spaces.status','aceptado')
+                ->where('department_id', $usuarioDepartamentoId)
+                ->select('events.*')
+                ->orderBy('events.created_at','desc')
+                ->get();
+            //return $unplublishEvents;
+        }
+
+
+        return view('dashboard',compact('pendingEvents','draftEvents','unplublishEvents'));
     }
     /**
      * Display a listing of the resource.

@@ -25,6 +25,7 @@ use App\Mail\WelcomeMailParticipant;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\Models\Adscription;
+use App\Mail\NewEventMail;
 
 class EventController extends Controller
 {
@@ -95,6 +96,104 @@ class EventController extends Controller
          $eventTypes = EventType::orderBy('name','asc')->get();
 
         return view('events.create', compact('space','eventTypes','start_date','end_date','start_time','end_time','academicos','departments'));
+    }
+
+    public function edit(Event $event)
+    {
+        // Solo se pueden editar eventos no publicados y vigentes
+        // if($event->published==1||$event->start_date>=now()) {
+        //     return redirect()->route('events.byArea')->with('error','El evento no puede ser actualizado.');
+        // }
+
+        // Obtén el usuario autenticado
+        $user = Auth::user();
+
+        // Lista de departamentos a los que pertenece el usuario
+        $departments = $user->adscriptions->map(function ($adscription) {
+            return $adscription->department;
+        });
+
+        // Obtener los usuarios con departamento asignado
+        $academicos = User::has('adscriptions.department')->orderBy('name','asc')->get();
+
+        // Obtener la lista de tipos de eventos disponibles
+         $eventTypes = EventType::orderBy('name','asc')->get();
+
+        return view('events.edit', compact('event','eventTypes','academicos','departments'));
+    }
+
+    public function update(Event $event, Request $request) {
+        $rules = [
+            'cover_image' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'max:5120'],
+            'program' => [
+                'file',
+                'mimes:pdf',
+                'max:5120',
+                'nullable'
+            ],
+        ];
+    
+        $messages = [
+            'cover_image.image' => 'El archivo de imagen de portada debe ser una imagen válida.',
+            'cover_image.mimes' => 'Los formatos admitidos para la imagen de portada son .jpg, .jpeg y .png',
+            'cover_image.max' => 'La imagen de portada es demasiado pesada, el tamaño máximo permitido es de 5 MB.',
+            
+            'program.file' => 'El archivo del programa debe ser un archivo válido.',
+            'program.mimes' => 'El formato admitido para el programa es PDF.',
+            'program.max' => 'El archivo del programa es demasiado pesado, el tamaño máximo permitido es de 5 MB.',
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
+
+        // en caso de recibir un nuevo banner, se elimina el anterior y se agrega el nuevo
+        if(isset($request->cover_image)&&$request->cover_image!=null) {
+            // Eliminar la imagen de portada si existe
+            if ($event->cover_image) {
+                $imagePath = public_path($event->cover_image);
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            // Guardar la imagen de portada
+            if ($request->hasFile('cover_image')) {
+                $coverImage = $request->file('cover_image');
+                $imageName = time() . '_' . $coverImage->getClientOriginalName();
+                $coverImage->move(public_path('images/events'), $imageName);
+                $event->cover_image = 'images/events/' . $imageName;
+            }
+        }
+        
+        // en caso de recibir un nuevo programa, se elimina el anterior y se agrega el nuevo
+        if(isset($request->program)&&$request->program!=null) {
+            // Eliminar el cartel o programa de portada si existe
+            if ($event->program) {
+                $programPath = public_path($event->program);
+                if (file_exists($programPath)) {
+                    unlink($programPath);
+                }
+            }
+
+            // Guardar el programa si está presente
+            if ($request->hasFile('program')) {
+                $programFile = $request->file('program');
+                $programName = time() . '_' . $programFile->getClientOriginalName();
+                $programFile->move(public_path('program_files'), $programName);
+                $event->program = 'program_files/' . $programName;
+            }
+        }
+        
+        if($event->save()) {
+            return redirect()->route('eventparticipants.edit',compact('event'))->with('error','Información del evento actualizada correctamente');
+        } else {
+            return redirect()->route('eventparticipants.edit',compact('event'))->with('success','Información del evento actualizada correctamente');
+        }
+
+        
     }
 
     public function store(Request $request)
@@ -408,10 +507,31 @@ class EventController extends Controller
 
     public function publish($id)
     {
+        $user=Auth::user();
         $event = Event::findOrFail($id);
-        $event->update(['published' => true]);
 
-        return redirect()->route('events.my-events')->with('success', 'El evento ha sido publicado exitosamente.');
+        // Se verifica que el evento no tenga rechazado el prestamo de espacio para poder publicar
+        
+        $rechazado=false;
+        if ($event->space_required) {
+            foreach($event->spaces as $eventspace) {
+                $eventSpaceStatus = $eventspace->pivot->status;
+                if($eventSpaceStatus == "rechazado"&&$event->status!="borrador") {
+                    $rechazado=true;
+                }
+            }
+        }
+
+        if($rechazado) {
+            return redirect()->route('dashboard')->with('error', 'Acceso ilegal para publicar un evento');
+        }
+
+        $event->update(['published' => true,'published_by'=>$user->id]);
+
+        // Notificación al responsable y coordiandor del evento
+        $this->notifyPublish($event);
+
+        return redirect()->route('dashboard')->with('success', 'El evento ha sido publicado exitosamente.');
     }
 
     public function registrarParticipantes(Event $event) {
@@ -456,7 +576,6 @@ class EventController extends Controller
         // Se actualiza el estado del registro
         $event->status='solicitado';
         if($event->space_required=='0') {
-            $event->published=1;
             $event->status='finalizado';
         }
         $event->save();
@@ -470,14 +589,14 @@ class EventController extends Controller
         }
 
         // Notificación al gestor de grabación
-        if($event->recording_required!=null&&$event->recording_required==1) {
-            Mail::to('udemat.psicologia@unam.mx')->send(new RequestRecordEmail($event, $space));
-        }
+        // if($event->recording_required!=null&&$event->recording_required==1) {
+        //     Mail::to('udemat.psicologia@unam.mx')->send(new RequestRecordEmail($event, $space));
+        // }
 
         // Notificación al gestor de transmisión 
-        if($event->transmission_required!=null&&$event->transmission_required==1) {
-            Mail::to('udemat.psicologia@unam.mx')->send(new RequestStreamingEmail($event, $space));
-        }
+        // if($event->transmission_required!=null&&$event->transmission_required==1) {
+        //     Mail::to('udemat.psicologia@unam.mx')->send(new RequestStreamingEmail($event, $space));
+        // }
 
         return redirect()->route('dashboard')->with('success', 'Evento registrado correctamente. Acceda a "Eventos de la coordinación" para dar seguimiento y publicarlo cuando así lo considere pertinente.');
     }
@@ -485,6 +604,38 @@ class EventController extends Controller
     public function by_area()
     {        
         $events=$this->eventsByDepartment();
+        return view('events.by-area', compact('events'));
+    }
+
+    public function by_area_drafts()
+    {        
+        $user = Auth::user();
+
+        // Obtén los IDs de los departamentos a los que el usuario está adscrito
+        $departmentIds = $user->adscriptions->pluck('department_id');
+
+        // Obtén los eventos que pertenecen a los departamentos del usuario
+        $events = Event::whereIn('department_id', $departmentIds)
+            ->where('status','borrador')
+            ->orderBy('created_at', 'desc')
+            ->paginate(8);
+
+        return view('events.by-area', compact('events'));
+    }
+
+    public function by_area_unpublish()
+    {   
+        $usuarioDepartamentoId = Auth::user()->team->department_id;
+        // Obtén los eventos que pertenecen a los departamentos del usuario
+        $events=Event::join('event_spaces','events.id','=','event_spaces.event_id')
+                ->where('events.status','finalizado')
+                ->where('events.published','0')
+                ->where('event_spaces.status','aceptado')
+                ->where('department_id', $usuarioDepartamentoId)
+                ->select('events.*')
+                ->orderBy('events.created_at','desc')
+                ->paginate(8);
+
         return view('events.by-area', compact('events'));
     }
 
@@ -555,5 +706,29 @@ class EventController extends Controller
         return $newUser;
     }
 
+    private function notifyPublish(Event $event) {
+        $emailList = [];
     
+        // Notificaciones para anunciar que se ha publicado un nuevo evento
+        $responsible = User::find($event->responsible_id);
+    
+        // Obtener el ID del departamento del usuario logueado
+        $user = Auth::user();
+        $userDepartmentId = $user->team->department_id;
+    
+        // Obtener la lista de correos electrónicos de usuarios en el mismo departamento
+        $areaEmails = User::join('teams', 'users.id', '=', 'teams.user_id')
+            ->where('teams.department_id', $userDepartmentId)
+            ->pluck('email')
+            ->toArray(); // Convertir la colección en una matriz
+    
+        $diffusionEmails = ['augarued@unam.mx', 'alejandramireles@psicologia.unam.mx', 'publicaciones.psicologia@unam.mx'];
+    
+        // Agregar los correos electrónicos de $areaEmails y $diffusionEmails a $emailList
+        $emailList = array_merge($emailList, $areaEmails, $diffusionEmails);
+    
+        $mail = new NewEventMail($event,$emailList);
+        Mail::to($responsible)->send($mail);
+    }
+
 }

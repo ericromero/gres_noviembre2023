@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('register_by')->default(1)->after('doi');
+            $table->unsignedBigInteger('register_by')->default(1)->after('email');
 
             // Definir la clave foránea
             $table->foreign('register_by')

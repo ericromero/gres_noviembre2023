@@ -10,8 +10,6 @@
 
     <div class="py-2">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            
             {{-- Código para el manejo de notificaciones --}}
             @if(session('success'))
                 <div class="bg-green-200 text-green-800 p-4 mb-4 rounded-md">

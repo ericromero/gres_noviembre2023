@@ -14,36 +14,20 @@ class SpacesSeeder extends Seeder
 
         $departments = Department::all();
 
-        // Espacio de SUA
-        Space::create([
-            'department_id' => 1,
-            'name' => 'Sala de videoconferencia',
-            'location' => 'Edificio B, primer piso',
-            'capacity'=>40
-        ]);
-
         // Espacio de UDEMAT
         Space::create([
-            'department_id' => 2,
-            'name' => 'Sala de maestros',
+            'department_id' => 8,
+            'name' => 'Sala de cómputo',
             'location' => 'Parte posterior del edificio A',
             'capacity'=>20
         ]);
 
         // Espacio de SASE
         Space::create([
-            'department_id' => 3,
+            'department_id' => 9,
             'name' => 'Auditorio Dr. Luis Lara Tapia',
             'location' => 'Planta baja del edificio A',
-            'capacity'=>100
-        ]);
-
-        // Espacio de SASE
-        Space::create([
-            'department_id' => 3,
-            'name' => 'Auditorio Dra. María Luisa Morales',
-            'location' => 'Edificio C, primer piso',
-            'capacity'=> 40
+            'capacity'=>138
         ]);
 
         // Espacio de POSGRADO
@@ -51,7 +35,15 @@ class SpacesSeeder extends Seeder
             'department_id' => 4,
             'name' => 'Auditorio Dra. Silvia Macotela',
             'location' => 'Edificio D, primer piso',
-            'capacity'=> 60
+            'capacity'=> 69
+        ]);
+
+        // Espacio de POSGRADO
+        Space::create([
+            'department_id' => 4,
+            'name' => 'Auditorio Dr. Florente López',
+            'location' => 'Edificio D, primer piso',
+            'capacity'=> 39
         ]);
     }
 }

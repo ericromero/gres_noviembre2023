@@ -24,8 +24,8 @@ class NewEventMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Nuevo evento: ' . $this->event->title)
+        return $this->subject('Evento publicado en Cartelera - Psicología: ' . $this->event->title)
             ->markdown('emails.new-event')
-            ->bcc($this->emailList);
+            ->cc($this->emailList);
     }
 }

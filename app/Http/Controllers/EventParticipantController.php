@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\EventParticipant;
+use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -129,6 +130,14 @@ class EventParticipantController extends Controller
         $eventParticipant->save();
 
         return redirect()->route('events.participants',$event_id)->with('success', 'Participante registrado exitosamente.');
+    }
+
+    public function edit(Event $event) {
+        // Obtener los tipos de participantes
+        $participationTypes = ParticipationType::all();
+        $participants=EventParticipant::where('event_id',$event->id)->get();
+        $academics = User::has('adscriptions.department')->get();
+        return view('eventparticipants.edit', compact('event', 'participationTypes','participants','academics'));
     }
 
     public function destroy(EventParticipant $participant)

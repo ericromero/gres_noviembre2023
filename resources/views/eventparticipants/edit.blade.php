@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Registro de participantes') }}
+            {{ __('Actualización de participantes') }}
         </h2>
         <div class="text-gray-700 dark:text-gray-300">
             Selecciona a los(as) académicos que participarán en el evento, en caso de que no estén en la lista selecciona la opción "Otro(a) académico(a)."
@@ -19,7 +19,7 @@
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-2 mx-auto sm:px-1 lg:px-2">
             <!-- Bloque para agregar participantes de la entidad -->
-            <form action="{{ route('eventparticipant.storeparticipant') }}" method="POST" class="space-y-4">
+            <form action="{{ route('eventparticipants.update') }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="p-2 border border-gray-700 dark:border-gray-300">
                     <!-- Selección del académico -->

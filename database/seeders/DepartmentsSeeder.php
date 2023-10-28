@@ -20,6 +20,14 @@ class DepartmentsSeeder extends Seeder
             'institution_id' => $institucionId,
         ]);
 
+        // Secretaria General
+        Department::create([
+            'name' => 'Secretaria General',
+            'description' => 'Secretaria General',
+            'responsible_id' => null,
+            'institution_id' => $institucionId,
+        ]);
+
         // Departamento "SUA"
         Department::create([
             'name' => 'SUA',
@@ -39,7 +47,7 @@ class DepartmentsSeeder extends Seeder
         // Departamento "DEP"
         Department::create([
             'name' => 'DEP',
-            'description' => 'División de estudios profesionales',
+            'description' => 'División de Estudios Profesionales',
             'responsible_id' => null,
             'institution_id' => $institucionId,
         ]);
@@ -108,12 +116,53 @@ class DepartmentsSeeder extends Seeder
             'institution_id' => $institucionId,
         ]);
 
-        // Departamento "PN"
+        // PCS
         Department::create([
             'name' => 'PCS',
             'description' => 'Coordinación de Psicología Clínica y de la Salud',
             'responsible_id' => null,
             'institution_id' => $institucionId,
         ]);
+
+        // CCC
+        Department::create([
+            'name' => 'PCS',
+            'description' => 'Ciencias cognitivas y del comportamiento',
+            'responsible_id' => null,
+            'institution_id' => $institucionId,
+        ]);
+
+        // Tutorías
+        Department::create([
+            'name' => 'Tutorías',
+            'description' => 'Tutorías',
+            'responsible_id' => null,
+            'institution_id' => $institucionId,
+        ]);
+
+        // UPLAN
+        Department::create([
+            'name' => 'UPLAN',
+            'description' => 'Unidad de Planeación',
+            'responsible_id' => null,
+            'institution_id' => $institucionId,
+        ]);
+
+        // Comunicación Social
+        Department::create([
+            'name' => 'Comunicación Social',
+            'description' => 'Comunicación Social',
+            'responsible_id' => null,
+            'institution_id' => $institucionId,
+        ]);
+
+        // Coordinación de Centros
+        Department::create([
+            'name' => 'Coordinación de Centros',
+            'description' => 'Coordinación de Centros',
+            'responsible_id' => null,
+            'institution_id' => $institucionId,
+        ]);
+        
     }
 }

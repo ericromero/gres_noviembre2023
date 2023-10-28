@@ -28,14 +28,38 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     // Ruta para guardar el nuevo evento en la base de datos
     //Route::post('/eventos/busca/participante', [EventController::class, 'searchparticipant'])->name('event.searchparticipant');
 
-    // Ruta para eliminar un evento
-    Route::delete('/eventos/{event}', [EventController::class, 'destroy'])->name('events.destroy');
-
     //Ruta para acceder a la creación de eventos
     Route::get('/evento/registro/{event}', [EventController::class,'register'])->name('events.register');
 
     //Ruta para acceder a la creación de eventos
     Route::get('/eventos/area', [EventController::class,'by_area'])->name('events.byArea');
+
+    // Eventos del área que se encuentran en estatus de borrador
+    Route::get('/eventos/area/borrador',[EventController::class,'by_area_drafts'])->name('events.byArea.drafts');
+
+    // Eventos del área que no están publicados
+    Route::get('/eventos/area/sinpublicar',[EventController::class,'by_area_unpublish'])->name('events.byArea.unPublish');
+
+    // Editar evento
+    Route::get('/evento/editar/{event}', [EventController::class,'edit'])->name('event.edit');
+
+    // Actualizar evento
+    Route::put('/evento/actualizar/{event}', [EventController::class,'update'])->name('event.update');
+
+    // Solicitud para cancelar un evento
+    Route::get('/evento/precancelar/{event}', [EventController::class,'preCancel'])->name('event.preCancel');
+
+    // Cancelación de evento
+    Route::get('/evento/cancelar/{event}', [EventController::class,'cancel'])->name('event.cancel');
+
+    // Solicitud para eliminar un evento
+    Route::get('/evento/pre-eliminar/{event}', [EventController::class,'preEestroy'])->name('event.preDestroy');
+
+    // Eliminar un evento
+    Route::delete('/evento/eliminar/{event}', [EventController::class,'destroy'])->name('event.destroy');
+
+    // Ruta para publicar un evento
+    Route::put('/events/{id}/publicar', [EventController::class, 'publish'])->name('events.publish');
     
 });
 
@@ -68,7 +92,6 @@ Route::get('/evento/detalle/{event}', [EventController::class, 'show'])->name('e
 // // ruta para actualizar el estatus de un evento
 // Route::put('/events/validacion/{event}', [EventController::class, 'validar'])->name('events.validar');
 
-// // Ruta para publicar un evento
-// Route::put('/events/{id}/publicar', [EventController::class, 'publish'])->name('events.publish');
+
 
 

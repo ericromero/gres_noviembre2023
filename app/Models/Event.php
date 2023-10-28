@@ -33,6 +33,7 @@ class Event extends Model
         'recording_required',
         'status',
         'published',
+        'published_by',
         'cancelled',
         'register_id',
     ];
@@ -53,6 +54,11 @@ class Event extends Model
     public function responsible()
     {
         return $this->belongsTo(User::class, 'responsible_id');
+    }
+
+    public function coresponsible()
+    {
+        return $this->belongsTo(User::class, 'coresponsible_id');
     }
 
     public function canceledEvent()
@@ -89,7 +95,7 @@ class Event extends Model
 
     public function spaces()
     {
-        return $this->belongsToMany(Space::class, 'event_spaces', 'event_id', 'space_id');
+        return $this->belongsToMany(Space::class, 'event_spaces', 'event_id', 'space_id')->withPivot(['status','observation']);
     }
 
     public function eventRecordings()

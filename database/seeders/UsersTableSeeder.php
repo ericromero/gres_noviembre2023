@@ -15,7 +15,6 @@ class UsersTableSeeder extends Seeder
         User::firstOrCreate([
             'name' => 'Eric Romero Martínez',
             'email' => 'ericrm@unam.mx',
-            'doi'=>'843913',
             'degree'=>'Mtro.',
             ], [
             'password' => Hash::make('SuperAdmin123###'),

@@ -517,8 +517,6 @@
 
 </script>
 
-<!-- Otro contenido de la página ... -->
-
 <script>
     $(document).ready(function () {
         // Manejador de eventos para el envío del formulario
@@ -528,7 +526,7 @@
             var emailCoresponsible = $('#email_coresponsible').val();
 
             // Verifica si los correos electrónicos son iguales
-            if (emailResponsible === emailCoresponsible) {
+            if (emailResponsible === emailCoresponsible&&emailResponsible!="") {
                 // Evita que se envíe el formulario
                 alert('El correo del responsable y corresponsable deben ser diferentes.');
                 event.preventDefault();

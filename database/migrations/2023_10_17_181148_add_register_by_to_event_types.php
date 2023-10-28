@@ -12,9 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('event_types', function (Blueprint $table) {
-            // Asegurar que name sea único
-            $table->string('name')->unique()->change();
-            
+          
             $table->unsignedBigInteger('register_by')->default(1)->after('name');
 
             // Definir la clave foránea

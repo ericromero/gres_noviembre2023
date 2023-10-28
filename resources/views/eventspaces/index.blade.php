@@ -12,6 +12,10 @@
             <div class="bg-green-200 text-green-800 p-4 mb-4 rounded-md">
                 {{ session('success') }}
             </div>
+        @elseif(session('error'))
+            <div class="bg-red-200 text-red-800 p-4 mb-4 rounded-md">
+                {{ session('error') }}
+            </div>
         @endif
         
         @if ($events->isEmpty())
@@ -21,7 +25,31 @@
         @else
             <div class="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                 @foreach ($events as $event)
-                    <div class="overflow-hidden rounded-lg shadow-sm sm:rounded-lg mb-4 border border-gray-700 dark:border-gray-300">
+                    
+                    <!-- Código para saber si está rechazado -->
+                    @php
+                        $rechazado=false;
+                        $motivo=null;
+                        if ($event->space_required) {
+                            foreach($event->spaces as $eventspace) {
+                                $eventSpaceStatus = $eventspace->pivot->status;
+                                if($eventSpaceStatus == "rechazado"&&$event->status!="borrador") {
+                                    $rechazado=true;
+                                    $motivo=$eventspace->pivot->observation;
+                                }
+                            }
+                        }
+                    @endphp
+
+                    <div class="overflow-hidden rounded-lg shadow-sm sm:rounded-lg mb-4 border border-gray-700 dark:border-gray-300
+                        @if($rechazado)
+                            bg-red-50 border-red-700
+                        @elseif(!$rechazado&&$event->status=="finalizado")
+                            bg-green-50 border-green-700
+                        @else
+                            bg-yellow-50 border-yellow-600
+                        @endif
+                        ">
                         
                         <img src="{{asset($event->cover_image)}}" alt="{{ $event->title }}" class="w-full h-40 object-cover">
                         
@@ -36,7 +64,7 @@
                             </p>
 
                             
-                            <p><strong>Deparamento solicitante:</strong> {{ $event->department->name }}</p>
+                            <p><strong>Departamento solicitante:</strong> {{ $event->department->name }}</p>
                             <p><strong>Responsable:</strong> {{ $event->responsible->name }}</p>
                             <p><strong>Fecha:</strong> Del {{ $event->start_date }} al {{ $event->end_date }}</p>
                             <p><strong>Horario:</strong> De {{ $event->start_time }} a {{ $event->end_time }}</p>                                                        
@@ -51,28 +79,35 @@
                                 <p><a href="{{ asset($event->program) }}" class="text-blue-600 hover:text-blue-900 underline" download>Descargar Programa</a></p>
                             @endif
 
+                            @if($rechazado)
+                                <p><strong>Motivo de rechazo:</strong> {{ $motivo }}</p>
+                            @endif
+
                             <!-- Botones de Autorizar y Rechazar -->
-                            <div class="mt-4 space-x-2">
-                                <form action="{{ route('events.authorize', $event->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md">Autorizar</button>
-                                </form>
-
-                                <form action="{{ route('events.reject', $event->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md">Rechazar</button>
-                                    <input type="text" name="observation" placeholder="Justificación" class="px-2 py-1 border rounded-md dark:bg-gray-800 dark:text-white" required>
-                                </form>
-                            </div>
-
+                            @if($event->status=="solicitado")
+                                <div class="mt-4 flex">
+                                    <div>
+                                        <a href="{{ route('eventspace.authorize', $event->id) }}" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md">Autorizar</a>
+                                    </div>
+                                    
+                                    <div class="ml-2">
+                                        <a href="{{ route('eventspace.preReject', $event->id) }}" class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md">Rechazar</a>
+                                    </div>                                
+                                </div>
+                            @endif
                         </div>
                         
                     </div>
                 @endforeach
             </div>
+
+            <div>
+                {{ $events->links() }}
+            </div>
+            
         @endif
 
-        <div class="items-center my-4 ml-4">
+        <div class="items-center my-4">
             <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-orange-500 text-white font-semibold rounded-md">Regresar</a>
         </div>
         

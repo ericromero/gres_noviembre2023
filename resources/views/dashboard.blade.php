@@ -13,6 +13,10 @@
                 <div class="bg-green-200 text-green-800 p-4 mb-4 rounded-md">
                     {{ session('success') }}
                 </div>
+            @elseif(session('error'))
+                <div class="bg-red-200 text-red-800 p-4 mb-4 rounded-md">
+                    {{ session('error') }}
+                </div>
             @endif
             
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -100,27 +104,58 @@
 
                 <!-- Imagen y enlace para revisar los eventos solicitados por la coordinación -->
                 @hasanyrole('Coordinador|Gestor de eventos')
-                    <a href="{{ route('events.byArea') }}">
+                    
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
-                            <img src="{{ asset('images/autorizacioneventos.png') }}" alt="Autorización de eventos" class="mx-auto h-20">
-                            <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Eventos de la coordinación</p>
+                            <a href="{{ route('events.byArea') }}">
+                                <img src="{{ asset('images/autorizacioneventos.png') }}" alt="Autorización de eventos" class="mx-auto h-20">
+                                <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Eventos de la coordinación</p>
+                            </a>
+
+                            <!-- Notificación de eventos en borrador -->
+                            @if ($draftEvents->count()==1)
+                                <a href="{{ route('events.byArea.drafts') }}" class="block text-center rounded-lg shadow-lg p-1 m-2 border border-orange-600 bg-orange-300 hover:bg-orange-100 hover:text-gray-700 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
+                                    Hay un evento sin registrar.
+                                </a>
+                            @elseif ($draftEvents->count()>1)
+                                <a href="{{ route('events.byArea.drafts') }}" class="block text-center rounded-lg shadow-lg p-1 m-2 border border-orange-600 bg-orange-300 hover:bg-orange-100 hover:text-gray-700 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
+                                    Hay {{ $draftEvents->count() }} eventos sin registrar.
+                                </a>
+                            @endif
+
+                            <!-- Notificación de eventos aceptado y no publicados -->                            
+                            @if ($unplublishEvents->count()==1)
+                                <a href="{{ route('events.byArea.unPublish') }}" class="block text-center rounded-lg shadow-lg p-1 m-2 border border-orange-600 bg-orange-300 hover:bg-orange-100 hover:text-gray-700 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
+                                    Hay un evento sin publicar.
+                                </a>
+                            @elseif ($unplublishEvents->count()>1)
+                                <a href="{{ route('events.byArea.unPublish') }}" class="block text-center rounded-lg shadow-lg p-1 m-2 border border-orange-600 bg-orange-300 hover:bg-orange-100 hover:text-gray-700 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
+                                    Hay {{ $unplublishEvents->count() }} eventos sin publicar.
+                                </a>
+                            @endif
+
                         </div>
-                    </a>
+                    
                 @endhasrole
                 
                 <!-- Imagen y enlace a los espacios solicitados por la coordinación -->
                 @hasrole('Gestor de espacios')
-                <a href="{{ route('event_spaces.review') }}">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer border border-gray-700 dark:border-gray-400">
-                        <img src="{{ asset('images/evento.png') }}" alt="Mis eventos" class="mx-auto h-20">
-                        <p class="text-center mt-2 text-gray-900 dark:text-gray-100">Espacios solicitados</p>
+                        <a href="{{ route('event_spaces.review') }}">
+                            <img src="{{ asset('images/evento.png') }}" alt="Mis eventos" class="mx-auto h-20">
+                            <p class="block text-center mt-2 text-gray-900 dark:text-gray-100">Espacios solicitados</p>
+                        </a>
+
+                        <!-- Notificación de espacios solicitados sin atender -->
+                        @if ($pendingEvents->count()==1)
+                            <a href="{{ route('event_spaces.awaitingRequests') }}" class="block text-center rounded-lg shadow-lg p-1 m-2 border border-orange-600 bg-orange-300 hover:bg-orange-100 hover:text-gray-700 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
+                                Hay una solicitud pendiente.
+                            </a>
+                        @elseif ($pendingEvents->count()>1)
+                            <a href="{{ route('event_spaces.awaitingRequests') }}" class="block text-center rounded-lg shadow-lg p-1 m-2 border border-orange-600 bg-orange-300 hover:bg-orange-100 hover:text-gray-700 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
+                                Hay {{ $pendingEvents->count() }} solicitudes pendientes.
+                            </a>
+                        @endif
                     </div>
-                    @if ($pendingEvents->count()>0)
-                        <div class="border bg-orange-300 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
-                            Hay {{ $pendingEvents->count() }} pendientes
-                        </div>
-                    @endif
-                </a>
                 @endhasrole
 
                 <!-- Imagen y enlace Mis eventos -->
