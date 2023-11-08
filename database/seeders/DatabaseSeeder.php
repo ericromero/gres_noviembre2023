@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(ChannelsSeeder::class);
         $this->call(EventTypesSeeder::class);
         $this->call(ParticipationTypesSeeder::class);
+        $this->call(TeamsSeeder::class);
         //$this->call(FakeUsersSeeder::class);
         //$this->call(SpacesSeeder::class);
         //$this->call(EventsSeeder::class);

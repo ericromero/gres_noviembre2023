@@ -46,15 +46,19 @@
                     <div class="overflow-hidden rounded-lg shadow-sm sm:rounded-lg mb-4 border border-gray-700 dark:border-gray-300
                     
                     @if ($event->status === 'borrador')
-                        bg-red-50 dark:bg-red-200
+                        bg-red-50 dark:bg-red-700 dark:text-gray-900
                     @elseif($rechazado)
-                        bg-pink-50 dark:bg-pink-200
-                    @elseif ($event->status === 'solicitado' && $event->published === 0)
-                        bg-yellow-50 dark:bg-yellow-200                    
+                        bg-pink-50 dark:bg-pink-700 dark:text-gray-900
+                    @elseif ($event->status === 'solicitado')
+                        bg-yellow-50 dark:bg-yellow-700 dark:text-gray-900            
+                    @elseif($event->cancelled==1)
+                        bg-pink-50 dark:bg-pink-700 dark:text-gray-900
                     @elseif($event->status === 'finalizado'&&$event->published===0)
-                        bg-blue-50 dark:bg-blue-200                    
-                    @elseif ($event->status === 'finalizado' && $event->published === 1)
-                        bg-green-50 dark:bg-green-200
+                        bg-blue-50 dark:bg-blue-700 dark:text-gray-900          
+                    @elseif ( $event->published === 1)
+                        bg-green-50 dark:bg-green-700 dark:text-gray-900
+                    @else
+                        dark:text-gray-900
                     @endif
                     ">
                         
@@ -70,6 +74,10 @@
                         @elseif($rechazado)
                             <div class="text-center text-pink-700 font-bold">
                                 SIN PRESTAMO DE ESPACIO
+                            </div>
+                        @elseif($event->cancelled==1)
+                            <div class="text-center text-pink-700 font-bold">
+                                EVENTO CANCELADO
                             </div>
                         @elseif($event->status === 'finalizado'&&$event->published===0)
                             <div class="text-center text-blue-700 font-bold">
@@ -120,6 +128,11 @@
                                 No se requiere espacio
                             @endif
                             
+                            @if($event->cancelled==1)
+                                <div>
+                                    <strong>Motivo de cancelación:</strong> {{ $event->canceledEvent->cancellation_reason }}
+                                </div>
+                            @endif
 
                             <!-- Botones de acción -->
                             <div class="mt-2 flex bg-fuchsia-50 border border-fuchsia-600">
@@ -152,8 +165,8 @@
                                 @endif
 
                                 <!-- Solo se pueden cancelar eventos cuyo registro ha concluido -->
-                                @if($event->status=='finalizado'&&$event->published==1)
-                                    <a href="{{route('event.preCancel',$event->id)}}" class="text-orange-700 hover:underline dark:text-red-300">Cancelar</a>
+                                @if($event->status=='finalizado'&&$event->published==1&&$event->cancelled==0)
+                                    <a href="{{route('event.preCancel',$event->id)}}" class="text-orange-700 hover:underline dark:text-red-300">Cancelar evento</a>
                                 @endif
 
                                 <!-- Se pueden publicar los eventos que tienen aceptado el espacio -->

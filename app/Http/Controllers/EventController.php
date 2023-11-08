@@ -188,9 +188,9 @@ class EventController extends Controller
         }
         
         if($event->save()) {
-            return redirect()->route('dashboard')->with('error','Información del evento actualizada correctamente');
-        } else {
             return redirect()->route('dashboard')->with('success','Información del evento actualizada correctamente');
+        } else {
+            return redirect()->route('dashboard')->with('error','No se pudo actualizar el evento, inténtelo nuevamente.');
         }
 
         
@@ -389,10 +389,12 @@ class EventController extends Controller
         // Validar y crear un nuevo corresponsable si es seleccionado "otro corresponsable"
         $coresponsibleId = $request->input('coresponsible');
         if ($coresponsibleId == 'other_coresponsible') {
+            if($request->external_coresponsible=='1') {
+                $external=$request->external_coresponsible;
+            }
             $name=$request->other_coresponsible_name;
             $degree=$request->degree_coresponsible;
             $email=$request->email_coresponsible;
-            $external=$request->external_coresponsible;
             $newCoresponsible = $this->createNewUser($name,$degree,$email,$external);
             $coresponsibleId = $newCoresponsible->id;
         }
@@ -697,6 +699,9 @@ class EventController extends Controller
         $loggedInUserDepartmentId = Auth::user()->team->department_id;
 
         // Registrar la adscripción del nuevo usuario
+        if($external==null) {
+            $external='0';
+        }
         Adscription::create([
             'department_id' => $loggedInUserDepartmentId,
             'user_id' => $newUser->id,
@@ -734,4 +739,36 @@ class EventController extends Controller
         Mail::to($responsible)->send($mail);
     }
 
+    public function preCancel(Event $event) {
+        return view('events.precancel',compact('event'));
+    }
+
+    public function cancel(Event $event, Request $request) {
+        $request->validate([
+            'justify' => 'required|string|min:100|max:2000', // Puedes agregar otras reglas de validación según necesites
+        ], [
+            'justify.required' => 'El motivo de la cancelación es obligatorio.',
+            'justify.string' => 'El motivo de la cancelación debe ser texto.',
+            'justify.min'=>'El motivo de la cancelación debe tener como mínimo 100 caracteres.',
+            'justify.max' => 'El motivo de la cancelación no debe superar los 2000 caracteres.',
+        ]);
+
+        $event = Event::find($event->id); // Asegúrate de reemplazar esto con la forma correcta de obtener tu evento.
+        $user=Auth::user();
+        if ($event->cancelled || $event->status !== 'finalizado') {
+            return redirect()->route('dashboard')->with('error', 'Acceso ilegal, no se puede cancelar el evento');
+        }
+
+        CanceledEvent::create([
+            'event_id' => $event->id,
+            'cancellation_reason' => $request->justify,
+            'canceled_by_user_id' => $user->id,
+        ]);
+
+        $event->update([
+            'cancelled' => 1,
+        ]);
+        
+        return redirect()->route('dashboard')->with('success','Se ha cancelado el evento correctamente');
+    }
 }

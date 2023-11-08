@@ -126,7 +126,7 @@ class DepartmentsSeeder extends Seeder
 
         // CCC
         Department::create([
-            'name' => 'PCS',
+            'name' => 'CCC',
             'description' => 'Ciencias cognitivas y del comportamiento',
             'responsible_id' => null,
             'institution_id' => $institucionId,

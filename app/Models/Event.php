@@ -119,4 +119,5 @@ class Event extends Model
             ->withPivot('participation_type_id', 'other_participation');
     }
 
+
 }

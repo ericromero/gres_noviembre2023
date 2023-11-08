@@ -57,32 +57,33 @@
                                         <strong>¡EVENTO SIN REGISTRAR!</strong>
                                         <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="Acude al departamento de adscripción para completar el registro">?</span>
                                     </p>
-                                @endif
-
+                                
                                 <!-- Evento rechazado -->
-                                @if($event->status=="rechazado")
+                                @elseif($event->status=="rechazado")
                                     <p class="text-center text-red-600"><strong>¡ESPACIO RECHAZADO!</strong></p>
                                     <p><strong>Motivo de rechazo:</strong> {{ $event->canceledEvent->cancellation_reason }}</p>                              
-                                @endif
+                                
+                                <!-- Evento cancelado -->
+                                @elseif($event->cancelled==1)
+                                    <p class="text-center text-red-600"><strong>EVENTO CANCELADO!</strong></p>
+                                    <p><strong>Motivo de cancelación:</strong> {{ $event->canceledEvent->cancellation_reason }}</p>                              
 
                                 <!-- Con el estado de solicitado se le pide al usuario que espere la dictaminación -->
-                                @if($event->status=='solicitado'&&$event->published==0)
+                                @elseif($event->status=='solicitado'&&$event->published==0)
                                     <p class="text-center text-blue-600">
                                         <strong>¡EVENTO REGISTRADO!</strong>
                                         <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="El evento está registrado pero aún no está autorizado el uso del espacio solicitado, es necesario esperar la reserva del espacio.">?</span>
                                     </p>
-                                @endif
 
                                 <!-- Evento registrado pero no publicado -->
-                                @if($event->status=='aceptado'&&$event->published==0)
+                                @elseif($event->status=='aceptado'&&$event->published==0)
                                     <p class="text-center text-orange-600">
                                         <strong>¡EVENTO SIN PUBLICAR!</strong>
                                         <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="El evento no está publicado, solicita al departamento o división de adscripción que la publicación del evento en la cartelera.">?</span>
                                     </p>
-                                @endif
 
                                 <!-- Evento publicado-->
-                                @if($event->status=='aceptado'&&$event->published==1)
+                                @elseif($event->status=='aceptado'&&$event->published==1)
                                     <p class="text-center text-green-600"><strong>¡EVENTO PUBLICADO!</strong></p>
                                     
                                 @endif

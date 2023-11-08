@@ -50,7 +50,7 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     Route::get('/evento/precancelar/{event}', [EventController::class,'preCancel'])->name('event.preCancel');
 
     // Cancelación de evento
-    Route::get('/evento/cancelar/{event}', [EventController::class,'cancel'])->name('event.cancel');
+    Route::post('/evento/cancelar/{event}', [EventController::class,'cancel'])->name('event.cancel');
 
     // Solicitud para eliminar un evento
     Route::get('/evento/pre-eliminar/{event}', [EventController::class,'preEestroy'])->name('event.preDestroy');
