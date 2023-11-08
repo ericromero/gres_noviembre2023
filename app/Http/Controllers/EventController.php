@@ -375,6 +375,9 @@ class EventController extends Controller
         // Validar y crear un nuevo responsable si es seleccionado "otro responsable"
         $responsibleId = $request->input('responsible');
         if ($responsibleId == 'other_responsible') {
+            if($request->external_responsible=='1') {
+                $external=$request->external_responsible;
+            }
             $name=$request->other_responsible_name;
             $degree=$request->degree_responsible;
             $email=$request->email_responsible;

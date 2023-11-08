@@ -20,12 +20,12 @@
             </div>
         @endif
 
+        <p>En caso de que su equipo de trabajo no esté completo o requiera modificarlo, por favor póngase en contacto con el administrador al correo ericrm@unam.mx</p>
+
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                        Número de trabajador
-                    </th>
+                    
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                         Nombre
                     </th>
@@ -46,9 +46,7 @@
             <tbody class="divide-y divide-gray-700 dark:divide-gray-200">
                 @foreach ($users as $user)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            {{ $user->doi }}
-                        </td>
+                        
                         <td class="px-6 py-4 whitespace-nowrap">
                             {{ $user->degree }} {{ $user->name }}
                         </td>
