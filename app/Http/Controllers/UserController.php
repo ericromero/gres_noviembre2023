@@ -90,7 +90,6 @@ class UserController extends Controller
         $rules = [
             'degree' => ['required'],
             'name' => ['required', 'string'],
-            'doi' => ['required', 'numeric', 'unique:users','min:1','max:9999999'],
             'email' => ['required', 'email', 'unique:users'],
             'departments' => ['required', 'array', 'min:1'],
         ];
@@ -99,9 +98,6 @@ class UserController extends Controller
             'email.required' => 'El correo electrónico es requerido.',
             'email.email' => 'El correo electrónico debe ser una dirección válida.',
             'email.unique' => 'Este correo electrónico ya está en uso por otro usuario.',
-            'doi.required' => 'El número de trabajador (DOI) es requerido.',
-            'doi.numeric' => 'El número de trabajador (DOI) debe ser numérico.',
-            'doi.max' => 'El número de trabajador (DOI) no puede ser mayor a 7 dígitos.',
             'departments.min' => 'Debe seleccionar al menos un departamento.',
             'departments.required' => 'Se requiere seleccionar al menos un departamento',
         ];
@@ -114,7 +110,6 @@ class UserController extends Controller
         $user = User::create([
             'degree' => $validatedData['degree'],
             'name' => $validatedData['name'],
-            'doi' => $validatedData['doi'],
             'email' => $validatedData['email'],
             'password' => Hash::make($password),
         ]);

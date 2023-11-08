@@ -5,6 +5,7 @@
         </h2>
         <div class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-2">
             <p>Ven a disfrutar de los diversos eventos académicos, culturales y deportivos que la Facultad de Psicología tiene para tí.</p>
+            <p>Si es académica(o) de la Facultad y requieres solicitar un espacio y/o difundir su evento en este espacio, acuda al departamento o división de adscripción.</p>
         </div>
     </x-slot>
 

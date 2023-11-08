@@ -188,9 +188,9 @@ class EventController extends Controller
         }
         
         if($event->save()) {
-            return redirect()->route('eventparticipants.edit',compact('event'))->with('error','Información del evento actualizada correctamente');
+            return redirect()->route('dashboard')->with('error','Información del evento actualizada correctamente');
         } else {
-            return redirect()->route('eventparticipants.edit',compact('event'))->with('success','Información del evento actualizada correctamente');
+            return redirect()->route('dashboard')->with('success','Información del evento actualizada correctamente');
         }
 
         

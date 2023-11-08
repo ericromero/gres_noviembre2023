@@ -35,13 +35,13 @@
                 @enderror
             </div>     
 
-            <div class="mb-4">
+            {{-- <div class="mb-4">
                 <label for="doi" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Número de trabajador</label>
                 <input type="doi" name="doi" id="doi" value="{{ old('doi') }}" class="form-input dark:bg-gray-800 dark:text-white" required>
                 @error('doi')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
-            </div>     
+            </div>      --}}
 
             <div class="mb-4">
                 <label for="email" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Correo electrónico:</label>
