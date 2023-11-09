@@ -113,7 +113,7 @@ class SpaceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string',
-            'capacity' => 'required|integer|min:1|max:100',
+            'capacity' => 'required|integer|min:1|max:150',
             'photography' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'department_id' => 'required|exists:departments,id',
         ]);
@@ -148,7 +148,7 @@ class SpaceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string',
-            'capacity' => 'required|integer|min:1',
+            'capacity' => 'required|integer|min:1|max:150',
             'photography' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'department_id' => 'required|exists:departments,id',
         ]);

@@ -19,7 +19,7 @@
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-2 mx-auto sm:px-1 lg:px-2">
             <!-- Bloque para agregar participantes de la entidad -->
-            <form action="{{ route('eventparticipant.storeparticipant') }}" method="POST" class="space-y-4">
+            <form action="{{ route('eventparticipant.updateparticipant') }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="p-2 border border-gray-700 dark:border-gray-300">
                     <!-- Selección del académico -->
@@ -183,7 +183,7 @@
                                 </td>
                                 <td class="px-4 py-2">{{ $participant->participationType->name }}</td>
                                 <td class="px-4 py-2">
-                                    <a href="{{ route('eventparticipant.delete', ['participant' => $participant->id]) }}"
+                                    <a href="{{ route('eventparticipant.delete.update', ['participant' => $participant->id]) }}"
                                     class="text-red-500"
                                     onclick="return confirm('¿Estás seguro de que deseas quitar a este participante?')">
                                         Quitar
@@ -200,30 +200,29 @@
 
         <!-- En caso de que aún no haya iniciado el registro, se muestra el botón -->
         
-            <div class="flex mt-4 mb-4">
-                @if ($event->start_date > now() )
-                    <!-- Botón para cerrar el registro -->
-                    <a href="{{route('events.register',$event->id)}}" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md"
-                        onclick="return confirm('Una vez registrado el evento no podrá modificar la información primordial como lo es el título, fechas y espacio solicitado del evento. ¿Desea continuar?')">
-                        {{ __('Registrar evento') }}
-                    </a>
-                    <!-- Botón para cancelar registro -->
-                    <form action="{{ route('event.destroy', $event->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        
-                        <button type="submit" class="px-4 py-2 ml-4 bg-red-500 text-white font-semibold rounded-md" onclick="return confirm('¿Estás seguro de que deseas cancelar este registro?')">
-                            {{ __('Cancelar registro') }}
-                        </button>
-                    </form>  
-                @endif
-                
-                <!-- Botón para salir de la actualización -->
-                <a href="{{route('dashboard')}}" class="ml-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">
-                    {{ __('Guardar sin registrar') }}
+        <div class="flex mt-4 mb-4">
+            @if ($event->start_date > now() )
+                <!-- Botón para cerrar el registro -->
+                <a href="{{route('events.register',$event->id)}}" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md"
+                    onclick="return confirm('Una vez registrado el evento no podrá modificar la información primordial como lo es el título, fechas y espacio solicitado del evento. ¿Desea continuar?')">
+                    {{ __('Registrar evento') }}
                 </a>
-            </div>
-        
+                <!-- Botón para cancelar registro -->
+                <form action="{{ route('event.destroy', $event->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    
+                    <button type="submit" class="px-4 py-2 ml-4 bg-red-500 text-white font-semibold rounded-md" onclick="return confirm('¿Estás seguro de que deseas cancelar este registro?')">
+                        {{ __('Cancelar registro') }}
+                    </button>
+                </form>    
+            @endif
+            
+            <!-- Botón para salir de la actualización -->
+            <a href="{{route('dashboard')}}" class="ml-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">
+                {{ __('Terminar actualización') }}
+            </a>
+        </div>
 
     </div>
 

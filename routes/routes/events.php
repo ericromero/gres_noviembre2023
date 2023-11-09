@@ -25,6 +25,9 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     // Ruta para guadar los participantes de un evento
     Route::get('/events/{event}/participantes', [EventController::class, 'registrarParticipantes'])->name('events.participants');
 
+    // Ruta para guadar los participantes de un evento
+    Route::get('/events/{event}/participantes/actualizar', [EventController::class, 'actualizarParticipantes'])->name('events.participants.update');
+
     // Ruta para guardar el nuevo evento en la base de datos
     //Route::post('/eventos/busca/participante', [EventController::class, 'searchparticipant'])->name('event.searchparticipant');
 

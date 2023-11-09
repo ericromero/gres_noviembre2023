@@ -23,7 +23,10 @@ class UserController extends Controller
         $draftEvents=null;
         $unplublishEvents=null;
         $user=Auth::user();
-        $usuarioDepartamentoId = Auth::user()->team->department_id;
+        $usuarioDepartamentoId = null;
+        if(Auth::user()->team!=null) {
+            $usuarioDepartamentoId=Auth::user()->team->department_id;
+        }
         
         // Identificación de solicitudes pendientes
         if ($user->hasAnyRole(['Gestor de espacios', 'Coordinador'])) {

@@ -39,7 +39,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="capacity" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Capacidad: <span class="text-sm">(Mínimo 1, máximo 100)</span></label>
+                <label for="capacity" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Capacidad: <span class="text-sm">(Mínimo 1, máximo 150)</span></label>
                 <input type="number" name="capacity" id="capacity" class="form-input dark:bg-gray-800 dark:text-white @error('capacity') border-red-500 @enderror" value="{{ old('capacity') }}" required>
                 @error('capacity')
                 <p class="text-red-500 text-sm">{{ $message }}</p>

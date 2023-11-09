@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl leading-tight text-gray-800 dark:text-gray-200">
-            {{ __('Actualizar información')}} de {{$user->name}} ({{$user->doi}})
+            {{ __('Actualizar información')}} de {{$user->name}}
         </h2>
     </x-slot>
 

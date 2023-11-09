@@ -188,7 +188,7 @@ class EventController extends Controller
         }
         
         if($event->save()) {
-            return redirect()->route('dashboard')->with('success','Información del evento actualizada correctamente');
+            return redirect()->route('events.participants.update',$event->id)->with('success','Información del evento actualizada correctamente');
         } else {
             return redirect()->route('dashboard')->with('error','No se pudo actualizar el evento, inténtelo nuevamente.');
         }
@@ -375,6 +375,7 @@ class EventController extends Controller
         // Validar y crear un nuevo responsable si es seleccionado "otro responsable"
         $responsibleId = $request->input('responsible');
         if ($responsibleId == 'other_responsible') {
+            $external=null;
             if($request->external_responsible=='1') {
                 $external=$request->external_responsible;
             }
@@ -389,6 +390,7 @@ class EventController extends Controller
         // Validar y crear un nuevo corresponsable si es seleccionado "otro corresponsable"
         $coresponsibleId = $request->input('coresponsible');
         if ($coresponsibleId == 'other_coresponsible') {
+            $external=null;
             if($request->external_coresponsible=='1') {
                 $external=$request->external_coresponsible;
             }
@@ -545,6 +547,14 @@ class EventController extends Controller
         $participants=EventParticipant::where('event_id',$event->id)->get();
         $academics = User::has('adscriptions.department')->get();
         return view('events.eventparticipants', compact('event', 'participationTypes','participants','academics'));
+    }
+
+    public function actualizarParticipantes(Event $event) {
+        // Obtener los tipos de participantes
+        $participationTypes = ParticipationType::all();
+        $participants=EventParticipant::where('event_id',$event->id)->get();
+        $academics = User::has('adscriptions.department')->get();
+        return view('events.updateeventparticipants', compact('event', 'participationTypes','participants','academics'));
     }
 
     public function menuEdt(Event $event) {

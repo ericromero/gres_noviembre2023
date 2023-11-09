@@ -4,7 +4,7 @@
             {{ __('Mis eventos') }}
         </h2>
         <div class="text-gray-600 mb-2">
-            <p>Aquí puedes ver los eventos que has registrado así como dar seguimiento a su estado.</p>
+            <p>Aquí puedes ver los eventos que has registrado así como dar seguimiento a su proceso de publicación.</p>
         </div>
     </x-slot>
 
@@ -27,10 +27,26 @@
                                 <h2 class="text-xl font-semibold mb-2">{{ $event->title }}</h2>
                                 <p><strong>Fecha:</strong> {{ $event->start_date }} - {{ $event->end_date }}</p>
                                 <p><strong>Horario:</strong> {{ $event->start_time }} - {{ $event->end_time }}</p>
-                                <p><strong>Estado: </strong>{{$event->status}}</p>
-                                @if ($event->space!=null)
-                                    <p><strong>Espacio:</strong> {{ $event->space->name }}</p>
-                                @endif                          
+                                {{-- <p><strong>Estado: </strong>{{$event->status}}</p> --}}
+                                <p><strong>Espacio solicitado:</strong></p>
+                                @if ($event->space_required)
+                                    @foreach($event->spaces as $eventspace)
+                                        {{$eventspace->name}} ({{$eventspace->location}})<br>
+                                        {{-- Acceder al atributo "status" del espacio solicitado --}}
+                                        @php
+                                            $eventSpaceStatus = $eventspace->pivot->status;
+                                        @endphp
+                                        @if ($eventSpaceStatus == "solicitado"&&$event->status!="borrador")
+                                            <p>Por favor espere mientras la(el) {{ $eventspace->department->name }} atiende su solicitud.</p>
+                                        @elseif($eventSpaceStatus == "rechazado"&&$event->status!="borrador")
+                                            <p><strong>Espacio rechazado:</strong> {{ $eventspace->pivot->observation }}</p>
+                                        @elseif($eventSpaceStatus == "aceptado"&&$event->published==0)
+                                            <p>Ahora puede publicar su evento dando clic en Publicar evento.</p>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    No se requiere espacio
+                                @endif                      
                                 
                                 {{-- @if ($event->status=="aceptado"&&$event->published==0)
                                     <div>
@@ -50,7 +66,6 @@
                                         </div>
                                     </div>
                                 @endif --}}
-
                                 <!-- Con el estatus de borrador se invita al usuario a continuar con el registro-->
                                 @if($event->status=='borrador')
                                     <p class="text-center text-red-600">
@@ -59,9 +74,9 @@
                                     </p>
                                 
                                 <!-- Evento rechazado -->
-                                @elseif($event->status=="rechazado")
+                                @elseif($eventSpaceStatus == "rechazado"&&$event->status!="borrador")
                                     <p class="text-center text-red-600"><strong>¡ESPACIO RECHAZADO!</strong></p>
-                                    <p><strong>Motivo de rechazo:</strong> {{ $event->canceledEvent->cancellation_reason }}</p>                              
+                                                                  
                                 
                                 <!-- Evento cancelado -->
                                 @elseif($event->cancelled==1)
@@ -69,32 +84,27 @@
                                     <p><strong>Motivo de cancelación:</strong> {{ $event->canceledEvent->cancellation_reason }}</p>                              
 
                                 <!-- Con el estado de solicitado se le pide al usuario que espere la dictaminación -->
-                                @elseif($event->status=='solicitado'&&$event->published==0)
+                                @elseif($eventSpaceStatus == "solicitado"&&$event->status!="borrador")
                                     <p class="text-center text-blue-600">
-                                        <strong>¡EVENTO REGISTRADO!</strong>
+                                        <strong>¡ESPERANDO AUTORIZACIÓN DE ESPACIO!</strong>
                                         <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="El evento está registrado pero aún no está autorizado el uso del espacio solicitado, es necesario esperar la reserva del espacio.">?</span>
                                     </p>
-
-                                <!-- Evento registrado pero no publicado -->
-                                @elseif($event->status=='aceptado'&&$event->published==0)
-                                    <p class="text-center text-orange-600">
+                                
+                                <!-- Con el estado de solicitado se le pide al usuario que espere la dictaminación -->
+                                @elseif($event->status=='finalizado'&&$event->published==0&&$eventSpaceStatus == "aceptado")
+                                    <p class="text-center text-blue-600">
                                         <strong>¡EVENTO SIN PUBLICAR!</strong>
-                                        <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="El evento no está publicado, solicita al departamento o división de adscripción que la publicación del evento en la cartelera.">?</span>
+                                        <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="El evento está registrado y se autorizó el uso de espacio sin emabargo aún no está publicado, acuda a su coordinación o división de adscripción para solicitar la publicación del evento.">?</span>
                                     </p>
+                                
 
                                 <!-- Evento publicado-->
-                                @elseif($event->status=='aceptado'&&$event->published==1)
+                                @elseif($event->status=='finalizado'&&$event->published==1)
                                     <p class="text-center text-green-600"><strong>¡EVENTO PUBLICADO!</strong></p>
                                     
                                 @endif
                                 
-                                <!-- Evento concluido-->
-                                @if($event->status=='finalizado'&&$event->published==1)
-                                    <p class="text-center text-purple-600">
-                                        <strong>¡EVENTO FINALIZADO!</strong>
-                                        <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="El evento ha concluído">?</span>
-                                    </p>
-                                @endif  
+                                
                                 
                                 <div class="mt-2">
                                     <a href="{{route('events.show',$event->id)}}" target="_blank" class="text-blue-500 hover:underline dark:text-blue-300">Detalle del evento</a>
