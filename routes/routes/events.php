@@ -66,6 +66,13 @@ Route::middleware(['role:Coordinador|Gestor de eventos'])->group(function () {
     
 });
 
+
+Route::middleware(['role:Coordinador|Gestor de espacios'])->group(function () {
+    // Ruta para encontrar disponibilidad de horario para reservar
+    Route::get('/eventos/agenda', [EventController::class, 'byDay'])->name('events.byDay');
+
+});
+
 // Ruta para acceder a los eventos de un usuario
 Route::get('/mis_eventos', [EventController::class, 'myEvents'])->name('events.my-events');
 

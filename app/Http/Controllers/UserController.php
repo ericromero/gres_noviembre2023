@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Team;
 use App\Models\Event;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -63,8 +64,23 @@ class UserController extends Controller
             //return $unplublishEvents;
         }
 
+        // Identificación del número de eventos para atender por día
+        if ($user->hasAnyRole(['Gestor de espacios', 'Coordinador'])) {
+            $today = Carbon::today();
+            $eventsArea = Event::select('events.*')
+                ->join('event_spaces', 'events.id', '=', 'event_spaces.event_id')
+                ->join('spaces', 'event_spaces.space_id', '=', 'spaces.id')
+                ->where('spaces.department_id', $usuarioDepartamentoId)
+                ->where('events.published','1')
+                ->where('events.status','finalizado')
+                ->where('events.cancelled','0')
+                ->whereDate('events.start_date', '<=', $today)
+                ->whereDate('events.end_date', '>=', $today)
+                ->get();
+        }
 
-        return view('dashboard',compact('pendingEvents','draftEvents','unplublishEvents'));
+
+        return view('dashboard',compact('pendingEvents','draftEvents','unplublishEvents','eventsArea'));
     }
     /**
      * Display a listing of the resource.

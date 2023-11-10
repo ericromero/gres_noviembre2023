@@ -134,6 +134,15 @@
                 // Abre la URL en una nueva ventana
                 window.open(url, '_blank');
             },
+
+            buttonText: {
+                today: 'Hoy',  // Personaliza el texto del botón 'today'
+                // Puedes personalizar otros botones si lo necesitas
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Lista'
+            },
           });
           calendar.render();
         });

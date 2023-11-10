@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Department;
 use Illuminate\Support\Facades\DB;
 use App\Models\Event;
+use Carbon\Carbon;
 
 class SpaceController extends Controller
 {
@@ -16,15 +17,28 @@ class SpaceController extends Controller
     public function search(Request $request)
     {
         // Código para obtener los eventos y mostrar el calendario
-        $allEvents = Event::whereIn('status', ['solicitado', 'aceptado', 'finalizado'])->get();
-        $events=[];
-        foreach($allEvents as $event) {
-            $events[] = [
-                'title'=>$event->title,
-                'start' => $event->start_date . ' ' . $event->start_time, // Combina fecha y hora de inicio
-                'end' => $event->end_date . ' ' . $event->end_time,       // Combina fecha y hora de finalización
-                'id'=>$event->id,
-            ];
+        $allEvents = Event::all();
+        $events = [];
+        foreach ($allEvents as $event) {
+            // Convertir las fechas de inicio y fin a objetos Carbon para poder manipularlas
+            $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $event->start_date . ' ' . $event->start_time);
+            $endDate = Carbon::createFromFormat('Y-m-d H:i:s', $event->end_date . ' ' . $event->end_time);
+
+            // Añadir un evento por cada día entre la fecha de inicio y la fecha de finalización
+            for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+                // Asegurarse de que el evento no se extienda más allá de la fecha de finalización y hora
+                $endDateTime = $date->copy()->setTimeFrom(Carbon::createFromFormat('H:i:s', $event->end_time));
+                if ($endDateTime->gt($endDate)) {
+                    $endDateTime = $endDate->copy();
+                }
+
+                $events[] = [
+                    'title' => $event->title,
+                    'start' => $date->toDateTimeString(),
+                    'end' => $endDateTime->toDateTimeString(),
+                    'id' => $event->id,
+                ];
+            }
         }
         // Fin del código para desplegar el calendario
 

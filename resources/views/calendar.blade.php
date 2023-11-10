@@ -36,6 +36,16 @@
                 minute: '2-digit',
                 meridiem: 'short',
             },
+
+            buttonText: {
+                today: 'Hoy',  // Personaliza el texto del botón 'today'
+                // Puedes personalizar otros botones si lo necesitas
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Lista'
+            },
+
             eventClick: function(info) {
                 // Obtén el ID del evento haciendo referencia a info.event.id
                 const eventId = info.event.id;

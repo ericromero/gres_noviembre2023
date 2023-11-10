@@ -27,6 +27,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Adscription;
 use App\Mail\NewEventMail;
 
+
 class EventController extends Controller
 {
     public function cartelera() {
@@ -49,15 +50,28 @@ class EventController extends Controller
     }
 
     public function availableSearch() {
-        $allEvents = Event::whereIn('status', ['solicitado', 'aceptado', 'finalizado'])->get();
-        $events=[];
-        foreach($allEvents as $event) {
-            $events[] = [
-                'title'=>$event->title,
-                'start' => $event->start_date . ' ' . $event->start_time, // Combina fecha y hora de inicio
-                'end' => $event->end_date . ' ' . $event->end_time,       // Combina fecha y hora de finalización
-                'id'=>$event->id,
-            ];
+        $allEvents = Event::all();
+        $events = [];
+        foreach ($allEvents as $event) {
+            // Convertir las fechas de inicio y fin a objetos Carbon para poder manipularlas
+            $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $event->start_date . ' ' . $event->start_time);
+            $endDate = Carbon::createFromFormat('Y-m-d H:i:s', $event->end_date . ' ' . $event->end_time);
+
+            // Añadir un evento por cada día entre la fecha de inicio y la fecha de finalización
+            for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+                // Asegurarse de que el evento no se extienda más allá de la fecha de finalización y hora
+                $endDateTime = $date->copy()->setTimeFrom(Carbon::createFromFormat('H:i:s', $event->end_time));
+                if ($endDateTime->gt($endDate)) {
+                    $endDateTime = $endDate->copy();
+                }
+
+                $events[] = [
+                    'title' => $event->title,
+                    'start' => $date->toDateTimeString(),
+                    'end' => $endDateTime->toDateTimeString(),
+                    'id' => $event->id,
+                ];
+            }
         }
         return view('events.availablesearch',compact('events'));
     }
@@ -668,15 +682,28 @@ class EventController extends Controller
     }
 
     public function calendario() {
-        $allEvents=Event::where('published','1')->get();
-        $events=[];
-        foreach($allEvents as $event) {
-            $events[] = [
-                'title'=>$event->title,
-                'start' => $event->start_date . ' ' . $event->start_time, // Combina fecha y hora de inicio
-                'end' => $event->end_date . ' ' . $event->end_time,       // Combina fecha y hora de finalización
-                'id'=>$event->id,
-            ];
+        $allEvents = Event::all();
+        $events = [];
+        foreach ($allEvents as $event) {
+            // Convertir las fechas de inicio y fin a objetos Carbon para poder manipularlas
+            $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $event->start_date . ' ' . $event->start_time);
+            $endDate = Carbon::createFromFormat('Y-m-d H:i:s', $event->end_date . ' ' . $event->end_time);
+
+            // Añadir un evento por cada día entre la fecha de inicio y la fecha de finalización
+            for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+                // Asegurarse de que el evento no se extienda más allá de la fecha de finalización y hora
+                $endDateTime = $date->copy()->setTimeFrom(Carbon::createFromFormat('H:i:s', $event->end_time));
+                if ($endDateTime->gt($endDate)) {
+                    $endDateTime = $endDate->copy();
+                }
+
+                $events[] = [
+                    'title' => $event->title,
+                    'start' => $date->toDateTimeString(),
+                    'end' => $endDateTime->toDateTimeString(),
+                    'id' => $event->id,
+                ];
+            }
         }
         return view ('calendar',compact('events'));
     }
@@ -780,5 +807,41 @@ class EventController extends Controller
         ]);
         
         return redirect()->route('dashboard')->with('success','Se ha cancelado el evento correctamente');
+    }
+
+    public function byDay() {
+        $user=Auth::user();
+        $departmentID=$user->team->department_id;
+        $allEvents = Event::select('events.*')
+            ->join('event_spaces', 'events.id', '=', 'event_spaces.event_id')
+            ->join('spaces', 'event_spaces.space_id', '=', 'spaces.id')
+            ->where('spaces.department_id', $departmentID)
+            ->where('events.published','1')
+            ->where('events.status','finalizado')
+            ->where('events.cancelled','0')
+            ->get();
+        $events = [];
+        foreach ($allEvents as $event) {
+            // Convertir las fechas de inicio y fin a objetos Carbon para poder manipularlas
+            $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $event->start_date . ' ' . $event->start_time);
+            $endDate = Carbon::createFromFormat('Y-m-d H:i:s', $event->end_date . ' ' . $event->end_time);
+
+            // Añadir un evento por cada día entre la fecha de inicio y la fecha de finalización
+            for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+                // Asegurarse de que el evento no se extienda más allá de la fecha de finalización y hora
+                $endDateTime = $date->copy()->setTimeFrom(Carbon::createFromFormat('H:i:s', $event->end_time));
+                if ($endDateTime->gt($endDate)) {
+                    $endDateTime = $endDate->copy();
+                }
+
+                $events[] = [
+                    'title' => $event->title,
+                    'start' => $date->toDateTimeString(),
+                    'end' => $endDateTime->toDateTimeString(),
+                    'id' => $event->id,
+                ];
+            }
+        }
+        return view('events.by_day',compact('events'));
     }
 }
