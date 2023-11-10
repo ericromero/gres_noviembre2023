@@ -23,6 +23,7 @@ class UserController extends Controller
         $pendingEvents=null;
         $draftEvents=null;
         $unplublishEvents=null;
+        $eventsArea=null;
         $user=Auth::user();
         $usuarioDepartamentoId = null;
         if(Auth::user()->team!=null) {
