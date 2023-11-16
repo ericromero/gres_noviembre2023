@@ -90,7 +90,7 @@ class EventController extends Controller
         return view('events.create', compact('eventTypes','academicos'));
     }
 
-    public function createWithSpace(Request $request,Space $space,$start_date,$end_date,$start_time,$end_time)
+    public function createWithSpace(Request $request,$space,$start_date,$end_date,$start_time,$end_time)
     {
         // Obtén el usuario autenticado
         $user = Auth::user();
@@ -100,7 +100,7 @@ class EventController extends Controller
             return $adscription->department;
         });
 
-        // $space=Space::find($request->space);
+        $space=Space::find($request->space);
         // $start_date=$request->start_date;
         // $end_date=$request->end_date;
         // $start_time=$request->start_time;
@@ -299,7 +299,6 @@ class EventController extends Controller
             'email_coresponsible.email' => 'El correo electrónico invalido.',
             'email_coresponsible.unique' => 'Ya hay un usuario registrado con este correo electrónico.',
         ];
-        
     
         $validatedData = $request->validate($rules, $messages);
 

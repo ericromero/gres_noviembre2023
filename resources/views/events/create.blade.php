@@ -82,7 +82,7 @@
                             <label for="category" class="block font-bold mb-2">Categoria: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
                                 data-tippy-content="Selecciona la categoria a la que corresponde el nuevo evento">?</span>
                             </label>
-                            <select name="category" id="category" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('category') border-red-500 @enderror" required>
+                            <select name="category" id="category" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('category') border-red-500 @enderror">
                                 <option value="">Selecciona una categoría</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
@@ -351,7 +351,7 @@
                                 data-tippy-content="Selecciona el campo de conocimiento">?</span>
                             </label>
                             <select name="knowledge_area" id="knowledge_area" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('knowledge_area') border-red-500 @enderror" required>
-                                <option value="">Selecciona la audiencia</option>
+                                <option value="">Selecciona el campo de conocimiento</option>
                                 @foreach($knowledge_areas as $knowledge_area)
                                     <option value="{{ $knowledge_area->id }}" {{ old('knowledge_area') == $knowledge_area->id ? 'selected' : '' }}>{{ $knowledge_area->name }}</option>
                                 @endforeach
