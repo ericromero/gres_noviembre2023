@@ -43,6 +43,27 @@
                             No hay espacios disponibles para la fecha y hora seleccionada
                         </div>
                     @endif
+                    <!-- Bloque para registrar evento sin espacio físico-->
+                    <div class="overflow-hidden shadow-md rounded-lg border border-gray-700 dark:border-gray-300">
+                        <img src="{{ asset('images/videoconferencia.png') }}" alt="Imagen del espacio" class="w-full h-40 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold">Evento por videoconferencia</h3>
+                        </div>
+                        <div class="p-4 border-t border-gray-700 dark:border-gray-300">
+                            <p>Si su evento será transmitido por videoconferencia (por ejemplo Zoom y/o youtube), seleccione esta opción para omitir la reserva de un espacio físico.</p>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <a href="{{ route('events.createwithSpace', [
+                                'space' => 0,
+                                'start_date' => $start_date,
+                                'end_date' => $end_date,
+                                'start_time' => $start_time,
+                                'end_time' => $end_time,
+                            ]) }}" class="block mb-4 text-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 inline-block">
+                                Seleccionar evento por videoconferencia
+                            </a>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>

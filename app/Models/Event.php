@@ -23,6 +23,12 @@ class Event extends Model
         'end_date',
         'start_time',
         'end_time',
+        'audience',
+        'modality',
+        'scope',
+        'project_type',
+        'gender_equality',
+        'knowledge_area',
         'cover_image',
         'user_id',
         'number_of_attendees',
@@ -39,12 +45,6 @@ class Event extends Model
     ];
 
     protected $dates = ['start_date', 'end_date'];
-
-    // // Relación con el modelo User (un evento pertenece a un usuario)
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
 
     public function department()
     {
@@ -119,5 +119,19 @@ class Event extends Model
             ->withPivot('participation_type_id', 'other_participation');
     }
 
+    public function category()
+    {
+        return $this->belongsTo(EventCategory::class, 'event_category_id');
+    }
+
+    public function audience()
+    {
+        return $this->belongsTo(Audience::class,'audience_id');
+    }
+
+    public function knowledgeArea()
+    {
+        return $this->belongsTo(KnowledgeArea::class, 'knowledge_area_id');
+    }
 
 }

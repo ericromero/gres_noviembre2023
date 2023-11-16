@@ -24,11 +24,14 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);      
         $this->call(InstitutionsSeeder::class);
         $this->call(DepartmentsSeeder::class);
-        //$this->call(ChannelsSeeder::class);
+        $this->call(AudienceSeeder::class);
+        $this->call(EventCategorySeeder::class);
+        $this->call(KnowledgeAreaSeeder::class);
+
         $this->call(EventTypesSeeder::class);
         $this->call(ParticipationTypesSeeder::class);
         $this->call(TeamsSeeder::class);
-        //$this->call(FakeUsersSeeder::class);
+        
         //$this->call(SpacesSeeder::class);
         //$this->call(EventsSeeder::class);
         
