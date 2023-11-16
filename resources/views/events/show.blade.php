@@ -16,7 +16,10 @@
                         <a href="{{route('eventos.calendario')}}" class="text-blue-500 hover:underline dark:text-blue-300">Ver calendario</a>
                     </div>
                 </div>
-                <div class="p-6 border border-gray-700 dark:border-gray-300">
+                <div class="p-6 border border-gray-700 dark:border-gray-300 {{ $event->cancelled=='1'? 'bg-red-100':'bg-green-100' }}">
+                    @if ($event->cancelled=='1')
+                        <h2 class="font-bold text-red-700 text-center text-xl mb-2">¡EVENTO CANCELADO!</h2>
+                    @endif
                     <img src="{{asset($event->cover_image)}}" alt="{{ $event->title }}" class="w-full h-40 object-cover">
                     <h2 class="text-2xl font-semibold">Resumen:</h2>
                     <p>{{ $event->summary }}</p>

@@ -2,10 +2,10 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-1" :status="session('status')" />
 
-    <div class="grid grid-cols-2">
+    {{-- <div class="grid grid-cols-2">
         <div class="p-2">
             <img src="{{ asset('images/gres.png') }}" alt="G-RES" class="w-full sm:max-w-md shadow-md overflow-hidden sm:rounded-lg" />
-        </div>
+        </div> --}}
 
         <div>
             <form method="POST" action="{{ route('login') }}">
@@ -45,7 +45,7 @@
                 </div>
             </form>
         </div>
-    </div>
+    {{-- </div> --}}
 
     <div class="flex items-center">
         @if (Route::has('password.request'))

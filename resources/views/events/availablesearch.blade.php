@@ -14,6 +14,7 @@
                     <p><b>Fecha:</b> Del {{$start_date}} al {{$end_date}}, <b>Horario:</b> De {{$start_time}} a {{$end_time}}</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-2">
+                
                     @if($availableSpaces->count()>0)
                         @foreach($availableSpaces as $space)
                             <div class="overflow-hidden shadow-md rounded-lg border border-gray-700 dark:border-gray-300">
@@ -35,6 +36,15 @@
                                     ]) }}" class="block mb-4 text-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 inline-block">
                                         Seleccionar este espacio
                                     </a>
+                                    <form action="{{ route('events.createwithSpace',[
+                                        'space' => $space->id,
+                                        'start_date' => $start_date,
+                                        'end_date' => $end_date,
+                                        'start_time' => $start_time,
+                                        'end_time' => $end_time]) }}" method="POST">
+                                        @csrf
+                                        <input type="submit" value="Seleccionar este espacio" class="block mb-4 text-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 inline-block">
+                                    </form>
                                 </div>
                             </div>
                         @endforeach
@@ -43,6 +53,7 @@
                             No hay espacios disponibles para la fecha y hora seleccionada
                         </div>
                     @endif
+<<<<<<< HEAD
                     <!-- Bloque para registrar evento sin espacio físico-->
                     <div class="overflow-hidden shadow-md rounded-lg border border-gray-700 dark:border-gray-300">
                         <img src="{{ asset('images/videoconferencia.png') }}" alt="Imagen del espacio" class="w-full h-40 object-cover">
@@ -51,6 +62,17 @@
                         </div>
                         <div class="p-4 border-t border-gray-700 dark:border-gray-300">
                             <p>Si su evento será transmitido por videoconferencia (por ejemplo Zoom y/o youtube), seleccione esta opción para omitir la reserva de un espacio físico.</p>
+=======
+
+                    <!-- Contenedor para ingresar un evento que no requiere espacio físico -->
+                    <div class="overflow-hidden shadow-md rounded-lg border border-gray-700 dark:border-gray-300">
+                        <img src="{{ asset('images/videoconferencia.png') }}" alt="Videoconferencia" class="w-full h-40 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold">Videoconferencia (no se requiere espacio físico).</h3>
+                        </div>
+                        <div class="p-4 border-t border-gray-700 dark:border-gray-300">
+                            <p>Seleccione esta opción en caso de no requerir un espacio físico para realizar su evento (por ejemplo si lo realiza a través de youtube y zoom).</p>
+>>>>>>> main
                         </div>
                         <div class="px-4 pb-4">
                             <a href="{{ route('events.createwithSpace', [
@@ -60,10 +82,18 @@
                                 'start_time' => $start_time,
                                 'end_time' => $end_time,
                             ]) }}" class="block mb-4 text-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 inline-block">
+<<<<<<< HEAD
                                 Seleccionar evento por videoconferencia
                             </a>
                         </div>
                     </div>
+=======
+                                Seleccionar este espacio
+                            </a>
+                        </div>
+                    </div>
+
+>>>>>>> main
                 </div>
             @endif
         </div>

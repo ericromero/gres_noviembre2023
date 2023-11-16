@@ -9,6 +9,10 @@
             <div class="bg-green-200 text-green-800 p-4 mb-4 rounded-md">
                 {{ session('success') }}
             </div>
+        @elseif(session('error'))
+            <div class="bg-red-200 text-red-800 p-4 mb-4 rounded-md">
+                {{ session('error') }}
+            </div>
         @endif
 
         <div class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
@@ -150,11 +154,6 @@
                                 @error('email_responsible')
                                     <p class="text-red-500 text-sm">{{ $message }}</p>
                                 @enderror
-
-                                {{-- <input type="checkbox" name="external_responsible" class="my-4 input-checkbox dark:bg-gray-800 dark:text-white" ><label for="external_responsible" class="ml-2 font-bold mb-2">Selecciona esta opción si el académico es externo a la entidad</label>
-                                @error('external_responsible')
-                                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                                @enderror --}}
 
                             </div>
                         </div>

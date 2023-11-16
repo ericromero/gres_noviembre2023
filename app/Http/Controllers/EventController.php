@@ -90,7 +90,7 @@ class EventController extends Controller
         return view('events.create', compact('eventTypes','academicos'));
     }
 
-    public function createWithSpace(Request $request)
+    public function createWithSpace(Request $request,Space $space,$start_date,$end_date,$start_time,$end_time)
     {
         // Obtén el usuario autenticado
         $user = Auth::user();
@@ -100,11 +100,11 @@ class EventController extends Controller
             return $adscription->department;
         });
 
-        $space=Space::find($request->space);
-        $start_date=$request->start_date;
-        $end_date=$request->end_date;
-        $start_time=$request->start_time;
-        $end_time=$request->end_time;
+        // $space=Space::find($request->space);
+        // $start_date=$request->start_date;
+        // $end_date=$request->end_date;
+        // $start_time=$request->start_time;
+        // $end_time=$request->end_time;
 
         // Obtener los usuarios con departamento asignado
         $academicos = User::has('adscriptions.department')->orderBy('name','asc')->get();
