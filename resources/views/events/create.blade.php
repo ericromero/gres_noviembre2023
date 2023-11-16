@@ -78,6 +78,19 @@
                                 <p class="text-red-500 text-sm">{{ $message }}</p>
                             @enderror
                             <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count-other">250</span></p>
+
+                            <label for="category" class="block font-bold mb-2">Categoria: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
+                                data-tippy-content="Selecciona la categoria a la que corresponde el nuevo evento">?</span>
+                            </label>
+                            <select name="category" id="category" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('category') border-red-500 @enderror">
+                                <option value="">Selecciona una categoría</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('category')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- Título -->
@@ -91,8 +104,8 @@
                             <p class="text-gray-500 dark:text-gray-300 text-sm">Caracteres restantes: <span id="char-count">250</span></p>
                         </div>
 
-                        <div class="border p-2 border-gray-700 dark:border-gray-300">
-                            <!-- Responsable -->
+                        <!-- Responsable -->
+                        <div class="border p-2 border-gray-700 dark:border-gray-300">                            
                             <div class="mb-4">
                                 <label for="responsible" class="block font-bold mb-2">Responsable: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
                                     data-tippy-content="Selecciona al académico(a) que está organizando el evento y es responsable de realizar los trámites necesarios para llevarlo a cabo. En caso de no encontarlo en la lista, selecciona 'Otro responsable' e ingresa la información.">?</span>
@@ -145,8 +158,8 @@
                             </div>
                         </div>
 
-                        <div class="my-2 p-2 border border-gray-700 dark:border-gray-300">
-                            <!-- Corresponsable -->
+                        <!-- Corresponsable -->
+                        <div class="my-2 p-2 border border-gray-700 dark:border-gray-300">                            
                             <div class="mb-4">
                                 <label for="coresponsible" class="block font-bold mb-2">Corresponsable: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600" data-tippy-content="En caso de que el (la) responsable no pueda continuar con la organización del evento, el(la) corresponsable dará continuidad a la organización del evento.">?</span></label>
                                 <select name="coresponsible" id="coresponsible" class="js-example-basic-single form-select dark:bg-gray-800 dark:text-white @error('coresponsible') border-red-500 @enderror" required>
@@ -240,6 +253,112 @@
                                     <p class="text-red-500 text-sm">{{ $message }}</p>
                                 @enderror
                             </div>
+                        </div>
+
+                        <!-- Audiencia -->
+                        <div class="mb-4">
+                            <label for="audience" class="block font-bold mb-2">Audiencia: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
+                                data-tippy-content="Selecciona a quién va dirigido el evento.">?</span>
+                            </label>
+                            <select name="audience" id="audience" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('audience') border-red-500 @enderror" required>
+                                <option value="">Selecciona la audiencia</option>
+                                @foreach($audiences as $audience)
+                                    <option value="{{ $audience->id }}" {{ old('audience') == $audience->id ? 'selected' : '' }}>{{ $audience->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('audience')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Modalidad -->
+                        <div class="mb-4">
+                            <label for="modality" class="block font-bold mb-2">Modalidad: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
+                                data-tippy-content="<strong>A distancia:</strong> Modalidad de enseñanza-aprendizaje no presencial. Emplea medios de comunicación remota entre el alumnado y la profesora o el profesor.
+                                                    <br><strong>Presencial:</strong> Se refiere a la actividad de impartir clase a un grupo de estudiantes en instalaciones universitarias, estando presentes tanto la profesora o el profesor, así como el alumnado.
+                                                    <br><strong>Mixta: </strong>Es una forma híbrida en la cual la modalidad educativa presencial se mezcla con multimedios que facilitan el aprendizaje de los estudiantes a su propio ritmo, con altos grados de flexibilidad y sin restricción de tiempo ni espacio.
+                                ">?</span>
+                            </label>
+                            <select name="modality" id="modality" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('modality') border-red-500 @enderror" required>
+                                <option value="">Selecciona la modalidad</option>
+                                <option value="Presencial" {{ old('modality') == 'Presencial' ? 'selected' : '' }}>Presencial</option>
+                                <option value="En línea" {{ old('modality') == 'En línea' ? 'selected' : '' }}>En línea</option>
+                                <option value="Mixta" {{ old('modality') == 'Mixta' ? 'selected' : '' }}>Mixta</option>
+                            </select>
+                            @error('modality')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Alcance -->
+                        <div class="mb-4">
+                            <label for="scope" class="block font-bold mb-2">Alcance: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
+                                data-tippy-content="Selecciona el alcance del evento.">?</span>
+                            </label>
+                            <select name="scope" id="scope" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('scope') border-red-500 @enderror" required>
+                                <option value="">Selecciona el alcance</option>
+                                <option value="Nacional" {{ old('scope') == 'Nacional' ? 'selected' : '' }}>Nacional</option>
+                                <option value="Internacional" {{ old('scope') == 'Internacional' ? 'selected' : '' }}>Internacional</option>
+                            </select>
+                            @error('scope')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Tipo de proyecto -->
+                        <div class="mb-4">
+                            <label for="project_type" class="block font-bold mb-2">Tipo de proyecto: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
+                                data-tippy-content="<strong>Abierto: </strong>Dirigido a población en general.
+                                                    <br><strong>Cerrado: </strong>Convenio con sector público, convenio con sector privado o bases de colaboración con UNAM.
+                                    ">?</span>
+                            </label>
+                            <select name="project_type" id="project_type" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('project_type') border-red-500 @enderror" required>
+                                <option value="">Selecciona el tipo de proyecto</option>
+                                <option value="Abierto" {{ old('project_type') == 'Abierto' ? 'selected' : '' }}>Abierto</option>
+                                <option value="Cerrado" {{ old('project_type') == 'Cerrado' ? 'selected' : '' }}>Cerrado</option>
+                            </select>
+                            @error('project_type')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Equidad de genero -->
+                        <div class="mb-4">
+                            <label for="gender_equality" class="block font-bold mb-2">¿La actividad refiere a equidad de género o no discriminación?: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
+                                data-tippy-content="<strong>No: </strong>El tema central del evento es ajeno a la equidad de género.
+                                                    <br><strong>Equidad de género: </strong>Establecimiento y fortalecimiento de mecanismos destinados a impulsar la igualdad de derechos, responsabilidades y oportunidades de mujeres y hombres; revalorar el papel de la mujer y del hombre en el seno familiar, y en los ámbitos institucional y social; eliminar la discriminación individual y colectiva hacia el hombre y la mujer u otras minorías. 
+                                                    <br><strong>Estadísticas desagregadas por sexo: </strong>Son fuentes de información cuantitativa diseñadas para visibilizar la situación de las mujeres con relación a los hombres, en un determinado contexto social o institucional, a lo largo del tiempo. 
+                                                    <br><strong>Género: </strong>Conjunto de ideas, creencias y atribuciones sociales construidas en cada cultura y momento histórico, tomando como base la diferencia sexual; a partir de ello se construyen los conceptos de “masculinidad” y “feminidad”, los cuales determinan el comportamiento, las funciones, oportunidades, valoración y las relaciones entre hombres y mujeres. El concepto alude a las formas históricas y socioculturales en que mujeres y hombres construyen su identidad, interactúan y organizan su participación en la sociedad. 
+                                                    <br><strong>Igualdad de género : </strong>Situación en la que mujeres y hombres tienen las mismas posibilidades u oportunidades en la vida de acceder y controlar recursos y bienes valiosos desde el punto de vista social. El objetivo no es tanto que mujeres y hombres sean iguales, sino conseguir que unos y otros tengan las mismas oportunidades en la vida.
+                                    ">?</span>
+                            </label>
+                            <select name="gender_equality" id="gender_equality" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('gender_equality') border-red-500 @enderror" required>
+                                <option value="">Selecciona una opcion</option>
+                                <option value="No" {{ old('gender_equality') == 'No' ? 'selected' : '' }}>No</option>
+                                <option value="Equidad de género" {{ old('gender_equality') == 'Equidad de género' ? 'selected' : '' }}>Equidad de género</option>
+                                <option value="Estadísticas desagregadas por sexo" {{ old('gender_equality') == 'Estadísticas desagregadas por sexo' ? 'selected' : '' }}>Estadísticas desagregadas por sexo</option>
+                                <option value="Género" {{ old('gender_equality') == 'Género' ? 'selected' : '' }}>Género</option>
+                                <option value="Igualdad de género" {{ old('gender_equality') == 'Igualdad de género' ? 'selected' : '' }}></option>
+                            </select>
+                            @error('gender_equality')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Area de conocimiento -->
+                        <div class="mb-4">
+                            <label for="knowledge_area" class="block font-bold mb-2">Campo de conocimiento: <span class="px-1 text-gray-600 bg-gray-300 dark:text-gray-300 dark:bg-gray-600"
+                                data-tippy-content="Selecciona el campo de conocimiento">?</span>
+                            </label>
+                            <select name="knowledge_area" id="knowledge_area" class="js-example-basic-single dark:bg-gray-800 dark:text-white @error('knowledge_area') border-red-500 @enderror" required>
+                                <option value="">Selecciona el campo de conocimiento</option>
+                                @foreach($knowledge_areas as $knowledge_area)
+                                    <option value="{{ $knowledge_area->id }}" {{ old('knowledge_area') == $knowledge_area->id ? 'selected' : '' }}>{{ $knowledge_area->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('knowledge_area')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- Banner del evento -->

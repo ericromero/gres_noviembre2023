@@ -101,11 +101,11 @@
                         </a>
 
                         <!-- Notificación de eventos por atender al día -->
-                        @if ($eventsArea->count()==1)
+                        @if ($eventsArea!=null&&$eventsArea->count()==1)
                             <a href="{{ route('events.byDay') }}" class="block text-center rounded-lg shadow-lg p-1 m-2 border border-orange-600 bg-orange-300 hover:bg-orange-100 hover:text-gray-700 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
                                 Hoy hay 1 evento.
                             </a>
-                        @elseif ($eventsArea->count()>1)
+                        @elseif ($eventsArea!=null&&$eventsArea->count()>1)
                             <a href="{{ route('events.byDay') }}" class="block text-center rounded-lg shadow-lg p-1 m-2 border border-orange-600 bg-orange-300 hover:bg-orange-100 hover:text-gray-700 dark:bg-orange-200 text-gray-700 dark:text-gray-300">
                                 Hoy hay {{$eventsArea->count()}} eventos.
                             </a>

@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\Models\Adscription;
 use App\Mail\NewEventMail;
+use App\Models\Audience;
+use App\Models\KnowledgeArea;
+use App\Models\EventCategory;
 
 
 class EventController extends Controller
@@ -87,7 +90,7 @@ class EventController extends Controller
         return view('events.create', compact('eventTypes','academicos'));
     }
 
-    public function createWithSpace(Request $request,Space $space,$start_date,$end_date,$start_time,$end_time)
+    public function createWithSpace(Request $request,$space,$start_date,$end_date,$start_time,$end_time)
     {
         // Obtén el usuario autenticado
         $user = Auth::user();
@@ -97,7 +100,7 @@ class EventController extends Controller
             return $adscription->department;
         });
 
-        // $space=Space::find($request->space);
+        $space=Space::find($request->space);
         // $start_date=$request->start_date;
         // $end_date=$request->end_date;
         // $start_time=$request->start_time;
@@ -107,107 +110,22 @@ class EventController extends Controller
         $academicos = User::has('adscriptions.department')->orderBy('name','asc')->get();
 
         // Obtener la lista de tipos de eventos disponibles
-         $eventTypes = EventType::orderBy('name','asc')->get();
+        $eventTypes = EventType::orderBy('name','asc')->get();
 
-        return view('events.create', compact('space','eventTypes','start_date','end_date','start_time','end_time','academicos','departments'));
-    }
-
-    public function edit(Event $event)
-    {
-        // Solo se pueden editar eventos no publicados y vigentes
-        // if($event->published==1||$event->start_date>=now()) {
-        //     return redirect()->route('events.byArea')->with('error','El evento no puede ser actualizado.');
-        // }
-
-        // Obtén el usuario autenticado
-        $user = Auth::user();
-
-        // Lista de departamentos a los que pertenece el usuario
-        $departments = $user->adscriptions->map(function ($adscription) {
-            return $adscription->department;
-        });
-
-        // Obtener los usuarios con departamento asignado
-        $academicos = User::has('adscriptions.department')->orderBy('name','asc')->get();
+         // Obtener los tipos de audiencia
+        $audiences = Audience::orderBy('name','asc')->get();
 
         // Obtener la lista de tipos de eventos disponibles
-         $eventTypes = EventType::orderBy('name','asc')->get();
+        $eventTypes = EventType::orderBy('name','asc')->get();
 
-        return view('events.edit', compact('event','eventTypes','academicos','departments'));
-    }
+        // Obtener la lista de campos de conocimiento
+        $knowledge_areas = KnowledgeArea::orderBy('name','asc')->get();
 
-    public function update(Event $event, Request $request) {
-        $rules = [
-            'cover_image' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg',
-                'max:5120'],
-            'program' => [
-                'file',
-                'mimes:pdf',
-                'max:5120',
-                'nullable'
-            ],
-        ];
-    
-        $messages = [
-            'cover_image.image' => 'El archivo de imagen de portada debe ser una imagen válida.',
-            'cover_image.mimes' => 'Los formatos admitidos para la imagen de portada son .jpg, .jpeg y .png',
-            'cover_image.max' => 'La imagen de portada es demasiado pesada, el tamaño máximo permitido es de 5 MB.',
-            
-            'program.file' => 'El archivo del programa debe ser un archivo válido.',
-            'program.mimes' => 'El formato admitido para el programa es PDF.',
-            'program.max' => 'El archivo del programa es demasiado pesado, el tamaño máximo permitido es de 5 MB.',
-        ];
-
-        $validatedData = $request->validate($rules, $messages);
-
-        // en caso de recibir un nuevo banner, se elimina el anterior y se agrega el nuevo
-        if(isset($request->cover_image)&&$request->cover_image!=null) {
-            // Eliminar la imagen de portada si existe
-            if ($event->cover_image) {
-                $imagePath = public_path($event->cover_image);
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
-            }
-
-            // Guardar la imagen de portada
-            if ($request->hasFile('cover_image')) {
-                $coverImage = $request->file('cover_image');
-                $imageName = time() . '_' . $coverImage->getClientOriginalName();
-                $coverImage->move(public_path('images/events'), $imageName);
-                $event->cover_image = 'images/events/' . $imageName;
-            }
-        }
+        // Obtener la lista de las categorias de tipos de eventos
+        $categories = EventCategory::orderBy('name','asc')->get();
         
-        // en caso de recibir un nuevo programa, se elimina el anterior y se agrega el nuevo
-        if(isset($request->program)&&$request->program!=null) {
-            // Eliminar el cartel o programa de portada si existe
-            if ($event->program) {
-                $programPath = public_path($event->program);
-                if (file_exists($programPath)) {
-                    unlink($programPath);
-                }
-            }
 
-            // Guardar el programa si está presente
-            if ($request->hasFile('program')) {
-                $programFile = $request->file('program');
-                $programName = time() . '_' . $programFile->getClientOriginalName();
-                $programFile->move(public_path('program_files'), $programName);
-                $event->program = 'program_files/' . $programName;
-            }
-        }
-        
-        if($event->save()) {
-            return redirect()->route('events.participants.update',$event->id)->with('success','Información del evento actualizada correctamente');
-        } else {
-            return redirect()->route('dashboard')->with('error','No se pudo actualizar el evento, inténtelo nuevamente.');
-        }
-
-        
+        return view('events.create', compact('space','eventTypes','start_date','end_date','start_time','end_time','academicos','departments','audiences','eventTypes','knowledge_areas','categories'));
     }
 
     public function store(Request $request)
@@ -240,6 +158,12 @@ class EventController extends Controller
                 'date_format:H:i',
                 'after:start_time',
                 'before_or_equal:21:00'],
+                'audience' => 'required|integer|exists:audiences,id',
+            'modality' => ['required', Rule::in(['Presencial', 'En línea', 'Mixta'])],
+            'scope' => ['required', Rule::in(['Nacional', 'Internacional'])],
+            'project_type' => ['required', Rule::in(['Abierto', 'Cerrado'])],
+            'gender_equality' => ['required', Rule::in(['No', 'Equidad de género', 'Estadísticas desagregadas por sexo', 'Género', 'Igualdad de género'])],
+            'knowledge_area' => 'required|integer|exists:knowledge_areas,id',
             'cover_image' => [
                 'required',
                 'image',
@@ -268,6 +192,12 @@ class EventController extends Controller
                 'required_if:event_type_id,Other',
                 'string',
                 'max:250',
+            ],
+            'category' => [
+                'nullable',
+                'required_if:event_type_id,Other',
+                'integer',
+                'exists:event_categories,id',
             ],
             'other_responsible_name' => [
                 'nullable',
@@ -369,7 +299,6 @@ class EventController extends Controller
             'email_coresponsible.email' => 'El correo electrónico invalido.',
             'email_coresponsible.unique' => 'Ya hay un usuario registrado con este correo electrónico.',
         ];
-        
     
         $validatedData = $request->validate($rules, $messages);
 
@@ -379,6 +308,7 @@ class EventController extends Controller
             // Si el tipo de evento es "Other", crea un nuevo tipo de evento
             $newEventType = new EventType();
             $newEventType->name = $request->input('other');
+            $newEventType->event_category_id=$request->input('category');
             $newEventType->register_by = Auth::id();
             $newEventType->save();
 
@@ -428,6 +358,12 @@ class EventController extends Controller
         $event->end_date = $request->input('end_date');
         $event->start_time = $request->input('start_time');
         $event->end_time = $request->input('end_time');
+        $event->audience_id = $request->input('audience');
+        $event->modality = $request->input('modality');
+        $event->scope = $request->input('scope');
+        $event->project_type = $request->input('project_type');
+        $event->gender_equality = $request->input('gender_equality');
+        $event->knowledge_area_id = $request->input('knowledge_area');
         // $event->space_id = $request->input('space_id');
         $event->registration_required  = $request->has('registration_required');
         $event->registration_url = $request->input('registration_url');
@@ -485,6 +421,102 @@ class EventController extends Controller
 
         return redirect()->route('events.participants',$event->id);
         //return redirect()->route('events.my-events')->with('success', 'El evento ha sido creado exitosamente.');
+    }
+
+    public function edit(Event $event)
+    {
+        // Solo se pueden editar eventos no publicados y vigentes
+        // if($event->published==1||$event->start_date>=now()) {
+        //     return redirect()->route('events.byArea')->with('error','El evento no puede ser actualizado.');
+        // }
+
+        // Obtén el usuario autenticado
+        $user = Auth::user();
+
+        // Lista de departamentos a los que pertenece el usuario
+        $departments = $user->adscriptions->map(function ($adscription) {
+            return $adscription->department;
+        });
+
+        // Obtener los usuarios con departamento asignado
+        $academicos = User::has('adscriptions.department')->orderBy('name','asc')->get();
+
+        // Obtener la lista de tipos de eventos disponibles
+         $eventTypes = EventType::orderBy('name','asc')->get();
+
+        return view('events.edit', compact('event','eventTypes','academicos','departments'));
+    }
+
+    public function update(Event $event, Request $request) {
+        $rules = [
+            'cover_image' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'max:5120'],
+            'program' => [
+                'file',
+                'mimes:pdf',
+                'max:5120',
+                'nullable'
+            ],
+        ];
+    
+        $messages = [
+            'cover_image.image' => 'El archivo de imagen de portada debe ser una imagen válida.',
+            'cover_image.mimes' => 'Los formatos admitidos para la imagen de portada son .jpg, .jpeg y .png',
+            'cover_image.max' => 'La imagen de portada es demasiado pesada, el tamaño máximo permitido es de 5 MB.',
+            
+            'program.file' => 'El archivo del programa debe ser un archivo válido.',
+            'program.mimes' => 'El formato admitido para el programa es PDF.',
+            'program.max' => 'El archivo del programa es demasiado pesado, el tamaño máximo permitido es de 5 MB.',
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
+
+        // en caso de recibir un nuevo banner, se elimina el anterior y se agrega el nuevo
+        if(isset($request->cover_image)&&$request->cover_image!=null) {
+            // Eliminar la imagen de portada si existe
+            if ($event->cover_image) {
+                $imagePath = public_path($event->cover_image);
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            // Guardar la imagen de portada
+            if ($request->hasFile('cover_image')) {
+                $coverImage = $request->file('cover_image');
+                $imageName = time() . '_' . $coverImage->getClientOriginalName();
+                $coverImage->move(public_path('images/events'), $imageName);
+                $event->cover_image = 'images/events/' . $imageName;
+            }
+        }
+        
+        // en caso de recibir un nuevo programa, se elimina el anterior y se agrega el nuevo
+        if(isset($request->program)&&$request->program!=null) {
+            // Eliminar el cartel o programa de portada si existe
+            if ($event->program) {
+                $programPath = public_path($event->program);
+                if (file_exists($programPath)) {
+                    unlink($programPath);
+                }
+            }
+
+            // Guardar el programa si está presente
+            if ($request->hasFile('program')) {
+                $programFile = $request->file('program');
+                $programName = time() . '_' . $programFile->getClientOriginalName();
+                $programFile->move(public_path('program_files'), $programName);
+                $event->program = 'program_files/' . $programName;
+            }
+        }
+        
+        if($event->save()) {
+            return redirect()->route('events.participants.update',$event->id)->with('success','Información del evento actualizada correctamente');
+        } else {
+            return redirect()->route('dashboard')->with('error','No se pudo actualizar el evento, inténtelo nuevamente.');
+        }        
     }
 
     public function reviewEvents()
@@ -614,8 +646,7 @@ class EventController extends Controller
             $eventSpace=EventSpace::where('event_id',$event->id)->first();
             $space=Space::find($eventSpace->space_id);
             $user=User::find($space->department->responsible_id);
-            Mail::to($user->email)->send(new RequestSpaceEmail($event, $space));
-            
+            Mail::to($user->email)->send(new RequestSpaceEmail($event, $space));            
         }
 
         // Notificación al gestor de grabación
